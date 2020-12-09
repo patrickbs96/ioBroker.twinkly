@@ -84,8 +84,9 @@
         ]
     },
     "native": {
-        "option1": true,
-        "option2": "42"
+        "devices": {},
+        "polling": 60,
+        "showDeviceInfo": true
     },
     "objects": [],
     "instanceObjects": []
