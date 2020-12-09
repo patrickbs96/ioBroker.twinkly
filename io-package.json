@@ -1,97 +1,98 @@
 {
-    "common": {
-        "name": "twinkly",
-        "version": "0.0.1",
-        "news": {
-            "0.0.1": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Начальная версия",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "zh-cn": "首次出版"
-            }
-        },
-        "title": "Twinkly",
-        "titleLang": {
-            "en": "Twinkly",
-            "de": "Twinkly",
-            "ru": "Твинкли",
-            "pt": "Twinkly",
-            "nl": "Twinkly",
-            "fr": "Twinkly",
-            "it": "Twinkly",
-            "es": "Twinkly",
-            "pl": "Błyskawicznie",
-            "zh-cn": "眨眼"
-        },
-        "desc": {
-            "en": "Adapter to communicate with the Twinkly lights.",
-            "de": "Adapter zur Kommunikation mit den Twinkly-Lichtern.",
-            "ru": "Адаптер для связи с Twinkly lights.",
-            "pt": "Adaptador para se comunicar com as luzes Twinkly.",
-            "nl": "Adapter om te communiceren met de Twinkly Lights.",
-            "fr": "Adaptateur pour communiquer avec les lumières Twinkly.",
-            "it": "Adattatore per comunicare con le luci Twinkly.",
-            "es": "Adaptador para comunicarse con las luces Twinkly.",
-            "pl": "Adapter do komunikacji ze światłami Twinkly.",
-            "zh-cn": "适配器与Twinkly灯通信。"
-        },
-        "authors": [
-            "patrickbs96 <patrickbsimon96@gmail.com>"
-        ],
-        "keywords": [
-            "template"
-        ],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "twinkly.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/patrickbs96/ioBroker.twinkly/master/admin/twinkly.png",
-        "readme": "https://github.com/patrickbs96/ioBroker.twinkly/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "lighting",
-        "connectionType": "local",
-        "dataSource": "poll",
-        "compact": true,
-        "materialize": true,
-        "materializeTab": true,
-        "adminTab": {
-            "singleton": true,
-            "name": {
-                "en": "Twinkly",
-                "de": "Twinkly",
-                "ru": "Твинкли",
-                "pt": "Twinkly",
-                "nl": "Twinkly",
-                "fr": "Twinkly",
-                "it": "Twinkly",
-                "es": "Twinkly",
-                "pl": "Twinkly",
-                "zh-cn": "Twinkly"
-            },
-            "link": "",
-            "fa-icon": "info"
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=1.4.2"
-            }
-        ]
+  "common": {
+    "name": "twinkly",
+    "version": "0.0.1",
+    "news": {
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版"
+      }
     },
-    "native": {
-        "devices": [],
-        "polling": 60,
-        "showDeviceInfo": false,
-        "mqtt": false,
-        "timer": false
+    "title": "Twinkly",
+    "titleLang": {
+      "en": "Twinkly",
+      "de": "Twinkly",
+      "ru": "Твинкли",
+      "pt": "Twinkly",
+      "nl": "Twinkly",
+      "fr": "Twinkly",
+      "it": "Twinkly",
+      "es": "Twinkly",
+      "pl": "Błyskawicznie",
+      "zh-cn": "眨眼"
     },
-    "objects": [],
-    "instanceObjects": []
+    "desc": {
+      "en": "Adapter to communicate with the Twinkly lights.",
+      "de": "Adapter zur Kommunikation mit den Twinkly-Lichtern.",
+      "ru": "Адаптер для связи с Twinkly lights.",
+      "pt": "Adaptador para se comunicar com as luzes Twinkly.",
+      "nl": "Adapter om te communiceren met de Twinkly Lights.",
+      "fr": "Adaptateur pour communiquer avec les lumières Twinkly.",
+      "it": "Adattatore per comunicare con le luci Twinkly.",
+      "es": "Adaptador para comunicarse con las luces Twinkly.",
+      "pl": "Adapter do komunikacji ze światłami Twinkly.",
+      "zh-cn": "适配器与Twinkly灯通信。"
+    },
+    "authors": [
+      "patrickbs96 <patrickbsimon96@gmail.com>"
+    ],
+    "keywords": [
+      "template"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "twinkly.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/patrickbs96/ioBroker.twinkly/master/admin/twinkly.png",
+    "readme": "https://github.com/patrickbs96/ioBroker.twinkly/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "lighting",
+    "connectionType": "local",
+    "dataSource": "poll",
+    "compact": true,
+    "materialize": true,
+    "materializeTab": true,
+    "adminTab": {
+      "singleton": true,
+      "name": {
+        "en": "Twinkly",
+        "de": "Twinkly",
+        "ru": "Твинкли",
+        "pt": "Twinkly",
+        "nl": "Twinkly",
+        "fr": "Twinkly",
+        "it": "Twinkly",
+        "es": "Twinkly",
+        "pl": "Twinkly",
+        "zh-cn": "Twinkly"
+      },
+      "link": "",
+      "fa-icon": "info"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=1.4.2"
+      }
+    ],
+    "installedFrom": "https://github.com/patrickbs96/ioBroker.twinkly/tarball/master"
+  },
+  "native": {
+    "devices": [],
+    "polling": 60,
+    "showDeviceInfo": false,
+    "mqtt": false,
+    "timer": false
+  },
+  "objects": [],
+  "instanceObjects": []
 }
