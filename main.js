@@ -8,8 +8,6 @@
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
 
-import 'twinkly';
-
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
@@ -22,13 +20,69 @@ let adapter;
 /**
  * Interval für das Polling
  */
-let pollingInterval;
+let pollingInterval = null;
 
 /**
  * Twinkly-Verbindungen
- * @type {{name: String, ipAdresse: String, connectedState: String, twinkly: Twinkly}}
+ * @type {{name: String, ipAdresse: String, twinkly: Twinkly, connectedState: String, checkConnected: Boolean, connected: Boolean}}
  */
-let connections;
+const connections = {};
+
+/**
+ * Liste aller States
+ * @type {{connection: String, command: String}}
+ */
+const subscribedStates = {};
+
+/**
+ * Namen der einzelnen States individualisieren
+ * @type {{{name: string, id: string}}}
+ */
+const stateNames = {
+    on            : '.on',
+    mode          : '.mode',
+    bri           : '.bri',
+    name          : '.name',
+    mqtt          : '.mqtt',
+    timer         : '.timer',
+    reset         : '.reset',
+    // movieConfig   : '.movieConfig',
+    // networkStatus : '.networkStatus',
+    details       : '.details',
+    firmware      : '.firmware'
+};
+
+/**
+ * Anzulegende States
+ * @type {[]}
+ */
+const statesConfig = [
+    stateNames.on,
+    stateNames.mode,
+    stateNames.bri,
+    stateNames.name,
+    stateNames.reset
+];
+
+const LIGHT_MODES = {
+    value: {
+        rt       : 'rt',
+        on       : 'movie',
+        off      : 'off',
+        playlist : 'playlist',
+        demo     : 'demo',
+        effect   : 'effect'
+    },
+    text : {
+        rt       : 'Real Time',
+        movie    : 'Eingeschaltet',
+        off      : 'Ausgeschaltet',
+        playlist : 'Playlist',
+        demo     : 'Demo',
+        effect   : 'Effect'
+    }
+};
+
 
 /**
  * Starts the adapter instance
@@ -39,17 +93,14 @@ function startAdapter(options) {
     return adapter = utils.adapter(Object.assign({}, options, {
         name: 'twinkly',
 
-        // The ready callback is called when databases are connected and adapter received configuration.
-        // start here!
-        ready: main, // Main method defined below for readability
-
-        // is called when adapter shuts down - callback has to be called under any circumstances!
+        ready: main,
         unload: (callback) => {
             try {
-                // Here you must clear all timeouts or intervals that may still be active
-
                 // Interval abbrechen
-                clearInterval(pollingInterval);
+                if (pollingInterval) {
+                    clearTimeout(pollingInterval);
+                    pollingInterval = null;
+                }
 
                 // Alle Verbindungen abmelden...
                 for (const connection of Object.keys(connections))
@@ -63,23 +114,70 @@ function startAdapter(options) {
             }
         },
 
-        // If you need to react to object changes, uncomment the following method.
-        // You also need to subscribe to the objects with `adapter.subscribeObjects`, similar to `adapter.subscribeStates`.
-        // objectChange: (id, obj) => {
-        //     if (obj) {
-        //         // The object was changed
-        //         adapter.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-        //     } else {
-        //         // The object was deleted
-        //         adapter.log.info(`object ${id} deleted`);
-        //     }
-        // },
-
         // is called if a subscribed state changes
-        stateChange: (id, state) => {
+        stateChange: async (id, state) => {
             if (state) {
                 // The state was changed
                 adapter.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+
+                // Ist der state bekannt?
+                if (!Object.keys(subscribedStates).includes(id)) {
+                    adapter.log.warn(`${id} wird nicht verarbeitet!`);
+                    return;
+                }
+
+                const
+                    connection = subscribedStates[id].connection,
+                    command    = subscribedStates[id].command;
+
+                // Nur ausführen, wenn Gerät verbunden ist!
+                if (connections[connection].checkConnected && !connections[connection].connected) {
+                    adapter.log.debug(`${subscribedStates[id].device} ist nicht verfügbar!`);
+                    return;
+                }
+
+                // Doppelte Ereignisse verhindern...
+                // let action = 'set:' + command + ':' + obj.state.val;
+                // if (devices[device].lastAction == action) return;
+                // devices[device].lastAction = action;
+
+
+                // Gerät ein-/ausschalten
+                if (command === stateNames.on) {
+                    connections[connection].twinkly.set_mode(state.val ? LIGHT_MODES.value.on : LIGHT_MODES.value.off)
+                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+
+                // Mode anpassen
+                } else if (command === stateNames.mode) {
+                    connections[connection].twinkly.set_mode(state.val)
+                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+
+                // Helligkeit anpassen
+                } else if (command === stateNames.bri) {
+                    connections[connection].twinkly.set_brightness(state.val)
+                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+
+                // Namen anpassen
+                } else if (command === stateNames.name) {
+                    connections[connection].twinkly.set_name(state.val)
+                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+
+                // MQTT anpassen
+                } else if (command === stateNames.mqtt) {
+                    connections[connection].twinkly.set_mqtt_str(state.val)
+                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+
+                // Timer anpassen
+                } else if (command === stateNames.timer) {
+                    connections[connection].twinkly.set_mqtt_str(state.val)
+                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+
+                // Reset
+                } else if (command === stateNames.reset) {
+                    await adapter.setForeignStateChangedAsync(id, false, true);
+                    connections[connection].twinkly.reset()
+                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+                }
             } else {
                 // The state was deleted
                 adapter.log.info(`state ${id} deleted`);
@@ -105,60 +203,179 @@ function startAdapter(options) {
     }));
 }
 
-async function main() {
+async function poll() {
+    if (pollingInterval) {
+        clearTimeout(pollingInterval);
+        pollingInterval = null;
+    }
 
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // adapter.config:
+    for (const connection of Object.keys(connections)) {
+        if (connections[connection].ipAdresse === '') continue;
+
+        // Connected abfragen
+        if (connections[connection].checkConnected) {
+            connections[connection].connected = await adapter.getForeignStateAsync(connections[connection].connectedState).val;
+            await adapter.setForeignStateChangedAsync(connection + '.connected', connections[connection].connected, true);
+
+            // Nur ausführen, wenn Gerät verbunden ist!
+            if (!connections[connection].connected) {
+                adapter.log.debug(`${connection} ist nicht verfügbar!`);
+                continue;
+            }
+        }
+
+        // if (connections[connection].fetchActive) continue;
+        // // Fetch gestartet und Flag setzen
+        // connections[connection].fetchActive = true;
+
+        for (const command of statesConfig) {
+            if (command === stateNames.mode) {
+                await connections[connection].twinkly.get_mode()
+                    .then(async ({mode}) => {
+                        await adapter.setForeignStateChangedAsync(connection + command, mode !== LIGHT_MODES.value.off, true);
+                        await adapter.setForeignStateChangedAsync(connection + command, mode, true);
+                    })
+                    .catch(error => {
+                        adapter.log.error(`[${connection}${command}] ${error}`);
+                    });
+
+            } else if (command === stateNames.bri) {
+                await connections[connection].twinkly.get_brightness()
+                    .then(async ({value}) => {
+                        await adapter.setForeignStateChangedAsync(connection + command, value, true);
+                    })
+                    .catch(error => {
+                        adapter.log.error(`[${connection}${command}] ${error}`);
+                    });
+
+            } else if (command === stateNames.name) {
+                await connections[connection].twinkly.get_name()
+                    .then(async ({name}) => {
+                        await adapter.setForeignStateChangedAsync(connection + command, name, true);
+                    })
+                    .catch(error => {
+                        adapter.log.error(`[${connection}${command}] ${error}`);
+                    });
+
+            } else if (command === stateNames.mqtt) {
+                await connections[connection].twinkly.get_mqtt()
+                    .then(async ({mqtt}) => {
+                        await adapter.setForeignStateChangedAsync(connection + command, JSON.stringify(mqtt), true);
+                    })
+                    .catch(error => {
+                        adapter.log.error(`[${connection}${command}] ${error}`);
+                    });
+
+            } else if (command === stateNames.timer) {
+                await connections[connection].twinkly.get_timer()
+                    .then(async ({timer}) => {
+                        await adapter.setForeignStateChangedAsync(connection + command, JSON.stringify(timer), true);
+                    })
+                    .catch(error => {
+                        adapter.log.error(`[${connection}${command}] ${error}`);
+                    });
+
+            } else if (command === stateNames.details) {
+                await connections[connection].twinkly.get_details()
+                    .then(async ({details}) => {
+                        await adapter.setForeignStateChangedAsync(connection + command, JSON.stringify(details), true);
+                    })
+                    .catch(error => {
+                        adapter.log.error(`[${connection}${command}] ${error}`);
+                    });
+
+            } else if (command === stateNames.firmware){
+                await connections[connection].twinkly.get_firmware_version()
+                    .then(async ({version}) => {
+                        await adapter.setForeignStateChangedAsync(connection + command, version, true);
+                    })
+                    .catch(error => {
+                        adapter.log.error(`[${connection}${command}] ${error}`);
+                    });
+            }
+        }
+    }
+
+    // Fetch abgeschlossen und Flag zurücksetzen
+    // connections[connection].fetchActive = false;
+
+    pollingInterval = setTimeout(async () => {await poll();}, adapter.config.polling * 1000);
+}
+
+async function main() {
+    adapter.subscribeStates('*');
+
+    adapter.config.polling = parseInt(adapter.config.polling, 10) < 15 ? 15 : parseInt(adapter.config.polling, 10);
+
+    // Details und Firmware hinzufügen, wenn gewünscht
+    if (adapter.config.showDeviceInfo) {
+        statesConfig.push(stateNames.details);
+        statesConfig.push(stateNames.firmware);
+    }
+
+    // MQTT hinzufügen, wenn gewünscht
+    if (adapter.config.mqtt)
+        statesConfig.push(stateNames.mqtt);
+
+    // Timer hinzufügen, wenn gewünscht
+    if (adapter.config.timer)
+        statesConfig.push(stateNames.timer);
+
+
     adapter.log.info('config devices: '        + adapter.config.devices);
     adapter.log.info('config polling: '        + adapter.config.polling);
     adapter.log.info('config showDeviceInfo: ' + adapter.config.showDeviceInfo);
 
-    /*
-        For every state in the system there has to be also an object of type state
-        Here a simple template for a boolean variable named "testVariable"
-        Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-    */
-    await adapter.setObjectNotExistsAsync('testVariable', {
-        type: 'state',
-        common: {
-            name: 'testVariable',
-            type: 'boolean',
-            role: 'indicator',
-            read: true,
-            write: true,
-        },
-        native: {},
-    });
 
-    // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-    adapter.subscribeStates('testVariable');
-    // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-    // adapter.subscribeStates('lights.*');
-    // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-    // adapter.subscribeStates('*');
+    let result = true;
+    try {
+        const devices = JSON.parse(adapter.config.devices);
+        // active         : true,
+        // name           : 'Twinkly Lichterkette 2',       // Name für ioBroker
+        // host           : '192.168.178.53',               // IP-Adresse von der Twinkly-Lichterkette
+        // connectedState : 'ping.0.Twinkly_Lichterkette_2' // State mit true/false der den aktuellen Status der Lichterkette überwacht (bspw. ping, tr-064)
 
-    /*
-        setState examples
-        you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-    */
-    // the variable testVariable is set to true as command (ack=false)
-    // await adapter.setStateAsync('testVariable', true);
+        for (const device of devices) {
+            if (!device.active) {
+                adapter.log.info(`${device.name} deaktiviert...`);
+                continue;
+            }
 
-    // same thing, but the value is flagged "ack"
-    // ack should be always set to true if the value is received from or acknowledged from the target system
-    // await adapter.setStateAsync('testVariable', { val: true, ack: true });
+            // connections.push
 
-    // same thing, but the state is deleted after 30s (getState will return null afterwards)
-    // await adapter.setStateAsync('testVariable', { val: true, ack: true, expire: 30 });
 
-    // examples for the checkPassword/checkGroup functions
-    // adapter.checkPassword('admin', 'iobroker', (res) => {
-    //     adapter.log.info('check user admin pw iobroker: ' + res);
+
+        }
+
+        // Prüfung ob aktive Verbindungen verfügbar sind
+        if (result && Object.keys(connections).length === 0) {
+            result = false;
+            adapter.log.warn('Keine aktiven Verbindungen hinterlegt...');
+        }
+    } catch (e) {
+        result = false;
+    }
+
+    // TODO: Objecte/ States anlegen...
+    // await adapter.setObjectNotExistsAsync('testVariable', {
+    //     type: 'state',
+    //     common: {
+    //         name: 'testVariable',
+    //         type: 'boolean',
+    //         role: 'indicator',
+    //         read: true,
+    //         write: true,
+    //     },
+    //     native: {}
     // });
 
-    // adapter.checkGroup('admin', 'admin', (res) => {
-    //     adapter.log.info('check group user admin group admin: ' + res);
-    // });
+
+    // TODO: Test
+
+
+    // Polling starten...
+    if (result)
+        await poll();
 }
 
 // @ts-ignore parent is a valid property on module

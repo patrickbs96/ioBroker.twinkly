@@ -1,43 +1,38 @@
 const axios = require('axios').default;
 
-const MODES = {
-    rt       : 'Real Time',
-    movie    : 'Eingeschaltet',
-    off      : 'Ausgeschaltet',
-    playlist : 'Playlist',
-    demo     : 'Demo',
-    effect   : 'Effect'};
-
 const HTTPCodes = {
-    ok         : 1000,
-    invalid    : 1101,
-    error      : 1102,
-    errorValue : 1103,
-    errorJSON  : 1104,
-    invalidKey : 1105,
-    errorLogin : 1106};
-
-const HTTPCodes_TXT = {
-    1000 : 'OK',
-    1101 : 'Invalid argument value',
-    1102 : 'Error',
-    1103 : 'Error - value too long',
-    1104 : 'Error - malformed JSON on input',
-    1105 : 'Invalid argument key',
-    1106 : 'Error - Login'};
+    values : {
+        ok         : 1000,
+        invalid    : 1101,
+        error      : 1102,
+        errorValue : 1103,
+        errorJSON  : 1104,
+        invalidKey : 1105,
+        errorLogin : 1106},
+    text : {
+        1000 : 'OK',
+        1101 : 'Invalid argument value',
+        1102 : 'Error',
+        1103 : 'Error - value too long',
+        1104 : 'Error - malformed JSON on input',
+        1105 : 'Invalid argument key',
+        1106 : 'Error - Login'}
+};
 
 const INVALID_TOKEN = 'Invalid Token';
 
 class Twinkly {
 
     /**
+     * @param {ioBroker.Adapter} adapter
      * @param {string} name
      * @param {string} host
      */
-    constructor(name, host) {
+    constructor(adapter, name, host) {
+        this.adapter = adapter;
         this.name    = name;
         this.host    = host;
-        this.expires = null;
+        this.expires = 0;
         this.headers = {};
         this.details = {};
         this.token   = '';
@@ -72,7 +67,7 @@ class Twinkly {
     async _post(path, data, headers = {}) {
         if (Object.keys(headers).length === 0) headers = this.headers;
 
-        adapter.log.debug(`[${this.name}._post] <${path}>, ${JSON.stringify(data)}, ${JSON.stringify(headers)}`);
+        this.adapter.log.debug(`[${this.name}._post] <${path}>, ${JSON.stringify(data)}, ${JSON.stringify(headers)}`);
 
         let result, resultError;
         await this.ensure_token(false).catch(error => {resultError = error;});
@@ -141,7 +136,7 @@ class Twinkly {
      * @return {Promise<{}>}
      */
     async _get(path) {
-        adapter.log.debug(`[${this.name}._get] <${path}>`);
+        this.adapter.log.debug(`[${this.name}._get] <${path}>`);
 
         let result, resultError;
         await this.ensure_token(false).catch(error => {resultError = error;});
@@ -208,18 +203,18 @@ class Twinkly {
      * @return {Promise<String>}
      */
     async ensure_token(force) {
-        const TWINKLY_OBJ = this;
+        // const TWINKLY_OBJ = this;
 
         let resultError;
-        if (force || (TWINKLY_OBJ.token === '' || TWINKLY_OBJ.expires == null || TWINKLY_OBJ.expires <= Date.now())) {
-            adapter.log.debug(`[${TWINKLY_OBJ.name}.ensure_token] Authentication token expired, will refresh`);
+        if (force || (this.token === '' || this.expires <= Date.now())) {
+            this.adapter.log.debug(`[${this.name}.ensure_token] Authentication token expired, will refresh`);
 
-            await TWINKLY_OBJ.login().catch(error => {resultError = error;});
+            await this.login().catch(error => {resultError = error;});
             if (!resultError)
-                await TWINKLY_OBJ.verify_login().catch(error => {resultError = error;});
+                await this.verify_login().catch(error => {resultError = error;});
 
         } else
-            adapter.log.debug(`[${TWINKLY_OBJ.name}.ensure_token] Authentication token still valid (${new Date(TWINKLY_OBJ.expires).toLocaleString()})`);
+            this.adapter.log.debug(`[${this.name}.ensure_token] Authentication token still valid (${new Date(this.expires).toLocaleString()})`);
 
         return new Promise((resolve, reject) => {
             if (resultError)
@@ -281,7 +276,7 @@ class Twinkly {
                 reject(resultError);
             else {
                 this.token = '';
-                resolve({code: response ? response['code'] : HTTPCodes.ok});
+                resolve({code: response ? response['code'] : HTTPCodes.values.ok});
             }
         });
     }
@@ -703,8 +698,8 @@ class Twinkly {
  * @param {number} code
  */
 function translateTwinklyCode(name, mode, path, code) {
-    if (code && code !== HTTPCodes.ok)
-        return `[${name}.${mode}.${path}] ${code} (${HTTPCodes_TXT[code]})`;
+    if (code && code !== HTTPCodes.values.ok)
+        return `[${name}.${mode}.${path}] ${code} (${HTTPCodes.text[code]})`;
 }
 
 // /**
@@ -729,7 +724,7 @@ function sendGetHTTP(url, headers = {}) {
     return new Promise((resolve, reject) => {
         sendHTTP(url, '', 'GET', headers)
             .then(response => {
-                if (response) adapter.log.debug('[sendGetHTTP] ' + JSON.stringify(response));
+                if (response) this.adapter.log.debug('[sendGetHTTP] ' + JSON.stringify(response));
                 resolve(response);
             })
             .catch(error => {
@@ -748,7 +743,7 @@ function sendPostHTTP(url, body, headers = {}) {
     return new Promise((resolve, reject) => {
         sendHTTP(url, body, 'POST', headers)
             .then(response => {
-                if (response) adapter.log.debug('[sendPostHTTP] ' + JSON.stringify(response));
+                if (response) this.adapter.log.debug('[sendPostHTTP] ' + JSON.stringify(response));
                 resolve(response);
             })
             .catch(error => {
@@ -793,10 +788,10 @@ function sendHTTP(url, body, method, headers = {}) {
                 headers: headers
             })
                 .then(response => {
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.headers}`);
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.status}`);
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.statusText}`);
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.data}`);
+                    this.adapter.log.silly(`[sendHTTP.${method}] ${response.headers}`);
+                    this.adapter.log.silly(`[sendHTTP.${method}] ${response.status}`);
+                    this.adapter.log.silly(`[sendHTTP.${method}] ${response.statusText}`);
+                    this.adapter.log.silly(`[sendHTTP.${method}] ${response.data}`);
                     resolve(response);
                 })
                 .catch(error => {

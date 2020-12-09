@@ -17,27 +17,6 @@ Adapter to communicate with the Twinkly lights.
 ## Developer manual
 This section is intended for the developer. It can be deleted later
 
-### Getting started
-
-You are almost done, only a few steps left:
-1. Create a new repository on GitHub with the name `ioBroker.twinkly`
-1. Initialize the current folder as a new git repository:  
-    ```bash
-    git init
-    git add .
-    git commit -m "Initial commit"
-    ```
-1. Link your local repository with the one on GitHub:  
-    ```bash
-    git remote add origin https://github.com/patrickbs96/ioBroker.twinkly
-    ```
-
-1. Push all files to the GitHub repo:  
-    ```bash
-    git push origin master
-    ```
-1. Head over to [main.js](main.js) and start programming!
-
 ### Best Practices
 We've collected some [best practices](https://github.com/ioBroker/ioBroker.repositories#development-and-coding-best-practices) regarding ioBroker development and coding in general. If you're new to ioBroker or Node.js, you should
 check them out. If you're already experienced, you should also take a look at them - you might learn something new :)

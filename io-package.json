@@ -57,6 +57,8 @@
         "loglevel": "info",
         "mode": "daemon",
         "type": "lighting",
+        "connectionType": "local",
+        "dataSource": "poll",
         "compact": true,
         "materialize": true,
         "materializeTab": true,
@@ -71,8 +73,8 @@
                 "fr": "Twinkly",
                 "it": "Twinkly",
                 "es": "Twinkly",
-                "pl": "Błyskawicznie",
-                "zh-cn": "眨眼"
+                "pl": "Twinkly",
+                "zh-cn": "Twinkly"
             },
             "link": "",
             "fa-icon": "info"
@@ -84,9 +86,11 @@
         ]
     },
     "native": {
-        "devices": {},
+        "devices": [],
         "polling": 60,
-        "showDeviceInfo": true
+        "showDeviceInfo": false,
+        "mqtt": false,
+        "timer": false
     },
     "objects": [],
     "instanceObjects": []
