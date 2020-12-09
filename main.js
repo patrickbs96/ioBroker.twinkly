@@ -9,6 +9,7 @@
 const utils = require('@iobroker/adapter-core');
 
 const axios = require('axios').default;
+// const CircularJSON = require('circular-json');
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
@@ -226,10 +227,10 @@ async function poll() {
     adapter.log.debug(`Start polling...`);
     for (const connection of Object.keys(connections)) {
         // Ping-Test
-        await adapter.sendToAsync('ping.0', 'ping', connections[connection].twinkly.host)
-            .then(result => {
-                adapter.log.info('Polling: Ping Result=' + result);
-            });
+        // await adapter.sendToAsync('ping', 'ping', connections[connection].twinkly.host, )
+        //     .then(result => {
+        //         adapter.log.info('Polling: Ping Result=' + result);
+        //     });
 
         // Connected abfragen
         if (connections[connection].checkConnected) {
@@ -401,12 +402,10 @@ async function main() {
     // });
 
 
-    // TODO: Test
-
 
     // Polling starten...
     if (result)
-        await poll();
+        pollingInterval = setTimeout(async () => {await poll();}, 5000);
     else
         adapter.log.error('Polling wird nicht gestartet!');
 }
@@ -1132,7 +1131,7 @@ function translateTwinklyCode(name, mode, path, code) {
  */
 function sendGetHTTP(url, headers = {}) {
     return new Promise((resolve, reject) => {
-        sendHTTP(url, '', 'GET', headers)
+        sendHTTP(url, null, 'GET', headers)
             .then(response => {
                 if (response) adapter.log.debug('[sendGetHTTP] ' + JSON.stringify(response));
                 resolve(response);
@@ -1164,60 +1163,40 @@ function sendPostHTTP(url, body, headers = {}) {
 
 /**
  * @param {string} url
- * @param {string | {}} body
+ * @param {any} body
  * @param {string} method
  * @param {{}} headers
  * @return {Promise<string | {}>}
  */
 function sendHTTP(url, body, method, headers = {}) {
     return new Promise((resolve, reject) => {
-        if (url === '') {
-            reject(`invalid ${method} URL`);
-            return;
-        }
-
-        // const data = method === 'POST' ? `-d '${body && typeof body === 'object' ? JSON.stringify(body) : body}' ` : '';
-
         // Header zusammenbasteln
         if (!Object.keys(headers).includes('Content-Type'))
             headers['Content-Type'] = 'application/json';
-        // let header_str = '';
-        // for (const key of Object.keys(headers))
-        //     header_str += `-H '${key}: ${headers[key]}' `;
-        // ----------------------
-
-        // const curl = `curl ${data} ${header_str} ${url}`;
-        // adapter.log.debug(`[sendHTTP.${method}] ${curl}`);
 
         try {
-            // TODO: Check Connection https://github.com/axios/axios
-            axios({
-                method: (method === 'POST' ? 'post' : 'get'),
-                url: url,
-                data: body,
-                headers: headers
+            axios.request({
+                method  : (method === 'POST' ? 'POST' : 'GET'),
+                url     : url,
+                data    : body,
+                headers : headers
             })
                 .then(response => {
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.headers}`);
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.status}`);
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.statusText}`);
-                    adapter.log.silly(`[sendHTTP.${method}] ${response.data}`);
-                    resolve(response);
+                    // const json = CircularJSON.stringify(response);
+
+                    if (response.status !== 200)
+                        reject('HTTP Error ' + response.statusText);
+                    else
+                        resolve(response.data);
                 })
                 .catch(error => {
-                    reject(error);
+                    if (error.response.status === 401 && error.response.data.includes(INVALID_TOKEN))
+                        reject(INVALID_TOKEN);
+                    else if (error.response.status !== 200)
+                        reject('HTTP Error ' + error.response.statusText);
+                    else
+                        reject(error);
                 });
-
-            // exec(curl, async function (error, body, stderr) {
-            //     const err = error ? String(error).includes('\n') ? String(error).substring(0, String(error).indexOf('\n')).trim() : String(error) : null;
-            //
-            //     if (err)
-            //         reject(err + body ? ', ' + body : '');
-            //     else if (body.includes(INVALID_TOKEN))
-            //         reject(INVALID_TOKEN);
-            //     else
-            //         resolve(isJsonString(body) ? JSON.parse(body) : body);
-            // });
         } catch (e) {
             reject(e.message);
         }
