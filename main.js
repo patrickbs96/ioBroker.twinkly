@@ -139,40 +139,40 @@ function startAdapter(options) {
                 if (command === stateNames.on) {
                     connections[connection].twinkly.set_mode(state.val ? LIGHT_MODES.value.on : LIGHT_MODES.value.off)
                         .catch(error => {
-                            adapter.log.error(`[${connection}${command}] ${error}`);
+                            adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
                 // Mode anpassen
                 } else if (command === stateNames.mode) {
                     connections[connection].twinkly.set_mode(state.val)
                         .catch(error => {
-                            adapter.log.error(`[${connection}${command}] ${error}`);
+                            adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
                 // Helligkeit anpassen
                 } else if (command === stateNames.bri) {
                     connections[connection].twinkly.set_brightness(state.val)
-                        .catch(error => {adapter.log.error(`[${connection}${command}] ${error}`);});
+                        .catch(error => {adapter.log.error(`Could not set ${connection}.${command} ${error}`);});
 
                 // Namen anpassen
                 } else if (command === stateNames.name) {
                     connections[connection].twinkly.set_name(state.val)
                         .catch(
-                            error => {adapter.log.error(`[${connection}${command}] ${error}`);
+                            error => {adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                             });
 
                 // MQTT anpassen
                 } else if (command === stateNames.mqtt) {
                     connections[connection].twinkly.set_mqtt_str(state.val)
                         .catch(error => {
-                            adapter.log.error(`[${connection}${command}] ${error}`);
+                            adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
                 // Timer anpassen
                 } else if (command === stateNames.timer) {
                     connections[connection].twinkly.set_mqtt_str(state.val)
                         .catch(error => {
-                            adapter.log.error(`[${connection}${command}] ${error}`);
+                            adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
                 // Reset
@@ -180,12 +180,12 @@ function startAdapter(options) {
                     await adapter.setState(id, false, true);
                     connections[connection].twinkly.reset()
                         .catch(error => {
-                            adapter.log.error(`[${connection}${command}] ${error}`);
+                            adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
                 }
             } else {
                 // The state was deleted
-                adapter.log.info(`state ${id} deleted`);
+                adapter.log.debug(`state ${id} deleted`);
             }
         }
     }));
@@ -235,7 +235,7 @@ async function poll() {
                         adapter.setState(connection + '.' + stateNames.mode, mode, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}.${command}] ${error}`);
+                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                     });
 
             } else if (command === stateNames.bri) {
@@ -244,7 +244,7 @@ async function poll() {
                         await adapter.setState(connection + '.' + command, value, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}.${command}] ${error}`);
+                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                     });
 
             } else if (command === stateNames.name) {
@@ -253,7 +253,7 @@ async function poll() {
                         adapter.setState(connection + '.' + command, name, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}.${command}] ${error}`);
+                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                     });
 
             } else if (command === stateNames.mqtt) {
@@ -262,7 +262,7 @@ async function poll() {
                         adapter.setState(connection + '.' + command, JSON.stringify(mqtt), true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}.${command}] ${error}`);
+                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                     });
 
             } else if (command === stateNames.timer) {
@@ -271,7 +271,7 @@ async function poll() {
                         adapter.setState(connection + '.' + command, JSON.stringify(timer), true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}.${command}] ${error}`);
+                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                     });
 
             } else if (command === stateNames.details) {
@@ -280,7 +280,7 @@ async function poll() {
                         adapter.setState(connection + '.' + command, JSON.stringify(details), true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}.${command}] ${error}`);
+                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                     });
 
             } else if (command === stateNames.firmware){
@@ -289,7 +289,7 @@ async function poll() {
                         adapter.setState(connection + '.' + command, version, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}.${command}] ${error}`);
+                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                     });
             }
         }
@@ -300,13 +300,13 @@ async function poll() {
     // Fetch abgeschlossen und Flag zurücksetzen
     // connections[connection].fetchActive = false;
 
-    pollingInterval = setTimeout(async () => {await poll();}, adapter.config.polling * 1000);
+    pollingInterval = setTimeout(async () => {await poll();}, adapter.config.interval * 1000);
 }
 
 async function main() {
     adapter.subscribeStates('*');
 
-    adapter.config.polling = parseInt(adapter.config.polling, 10) < 15 ? 15 : parseInt(adapter.config.polling, 10);
+    adapter.config.interval = parseInt(adapter.config.interval, 10) < 15 ? 15 : parseInt(adapter.config.interval, 10);
 
     // States/Objekte anlegen...
     syncConfig()
@@ -329,7 +329,7 @@ async function main() {
 function syncConfig() {
     return new Promise((resolve, reject) => {
         // Details und Firmware hinzufügen, wenn gewünscht
-        if (adapter.config.showDeviceInfo) {
+        if (adapter.config.deviceInfo) {
             statesConfig.push(stateNames.details);
             statesConfig.push(stateNames.firmware);
         }
@@ -348,12 +348,12 @@ function syncConfig() {
 
         let result = true;
         try {
-            adapter.log.silly('config devices: '        + JSON.stringify(adapter.config.devices));
-            adapter.log.silly('config polling: '        + adapter.config.polling);
-            adapter.log.silly('config showDeviceInfo: ' + adapter.config.showDeviceInfo);
-            adapter.log.silly('config reset: '          + adapter.config.reset);
-            adapter.log.silly('config mqtt: '           + adapter.config.mqtt);
-            adapter.log.silly('config timer: '          + adapter.config.timer);
+            adapter.log.silly('config devices: '    + JSON.stringify(adapter.config.devices));
+            adapter.log.silly('config interval: '   + adapter.config.interval);
+            adapter.log.silly('config deviceInfo: ' + adapter.config.deviceInfo);
+            adapter.log.silly('config reset: '      + adapter.config.reset);
+            adapter.log.silly('config mqtt: '       + adapter.config.mqtt);
+            adapter.log.silly('config timer: '      + adapter.config.timer);
 
             if (!adapter.config.devices) {
                 result = false;
@@ -365,7 +365,7 @@ function syncConfig() {
                 for (const device of adapter.config.devices) {
                     // Verbindung aktiv?
                     if (!device.enabled) {
-                        adapter.log.info(`${device.name} deaktiviert...`);
+                        adapter.log.debug(`${device.name} deaktiviert...`);
                         continue;
                     }
 

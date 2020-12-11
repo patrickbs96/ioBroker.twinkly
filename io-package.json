@@ -89,8 +89,9 @@
   },
   "native": {
     "devices": [],
-    "polling": 60,
-    "showDeviceInfo": false,
+    "interval": 60,
+    "deviceInfo": false,
+    "reset": false,
     "mqtt": false,
     "timer": false
   },

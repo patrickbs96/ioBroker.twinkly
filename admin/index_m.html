@@ -14,80 +14,142 @@
     <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
     <!-- Load our own files -->
-    <link rel="stylesheet" type="text/css" href="style.css" />
+<!--    <link rel="stylesheet" type="text/css" href="style.css" />-->
     <script type="text/javascript" src="words.js"></script>
 
     <script type="text/javascript">
         // This will be called by the admin adapter when the settings page loads
         function load(settings, onChange) {
-            // example: select elements with id=key and class=value and insert value
             if (!settings) return;
-            $('.value').each(function () {
-                var $key = $(this);
-                var id = $key.attr('id');
-                if ($key.attr('type') === 'checkbox') {
-                    // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id])
-                        .on('change', () => onChange())
-                        ;
-                } else {
-                    // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id])
-                        .on('change', () => onChange())
-                        .on('keyup', () => onChange())
-                        ;
-                }
+
+            // Set default-values
+            if (settings.deviceInfo === undefined)
+                settings.deviceInfo = false;
+            if (settings.reset === undefined)
+                settings.reset = false;
+            if (settings.mqtt === undefined)
+                settings.mqtt = false;
+            if (settings.timer === undefined)
+                settings.timer = false;
+
+            const devices = settings.devices || [];
+
+            // Sort devices by name
+            devices.sort(function (dev1, dev2) {
+                if (dev1.name < dev2.name)
+                    return -1;
+                else if (dev1.name > dev2.name)
+                    return 1;
+                else
+                    return 0;
             });
+
+            // Set default-values
+            for (let i = 0; i < devices.length; i++) {
+                if (devices[i].enabled === undefined)
+                    devices[i].enabled = true;
+            }
+
+            for (const key in settings) {
+                if (!settings.hasOwnProperty(key)) continue;
+
+                const $value = $('#' + key + '.value');
+                if ($value.attr('type') === 'checkbox') {
+                    $value.prop('checked', settings[key]).on('change', function() {
+                        onChange();
+                    });
+                } else {
+                    $value.val(settings[key]).on('change', function() {
+                        onChange();
+                    }).keyup(function() {
+                        onChange();
+                    });
+                }
+            }
+
             onChange(false);
+            values2table('devices', devices, onChange);
+
             // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
             if (M) M.updateTextFields();
         }
-
-        // This will be called by the admin adapter when the user presses the save button
+		
         function save(callback) {
-            // example: select elements with class=value and build settings object
-            var obj = {};
+            const obj = {};
             $('.value').each(function () {
-                var $this = $(this);
+                const $this = $(this);
                 if ($this.attr('type') === 'checkbox') {
                     obj[$this.attr('id')] = $this.prop('checked');
                 } else {
                     obj[$this.attr('id')] = $this.val();
                 }
             });
+			
+            // Get edited table
+            obj.devices = table2values('devices');
+
             callback(obj);
         }
     </script>
-
+    <style>
+        .m .select-wrapper+label {
+            top: 100%;
+        }
+    </style>
 </head>
 
 <body>
-
     <div class="m adapter-container">
-
         <div class="row">
             <div class="col s12 m4 l2">
-                <img src="twinkly.png" class="logo">
+                <img src="twinkly.png" class="logo" alt="logo"/>
             </div>
         </div>
-
-        <!-- Put your content here -->
-
-        <!-- For example columns with settings: -->
         <div class="row">
-            <div class="col s6 input-field">
-                <input type="checkbox" class="value" id="option1" />
-                <label for="option1" class="translate">option1</label>
-            </div>
-
-            <div class="col s6 input-field">
-                <input type="text" class="value" id="option2" />
-                <label for="option2" class="translate">option2</label>
+            <div class="col s12" id="devices">
+                <a class="btn-floating waves-effect waves-light blue table-button-add"><i class="material-icons">add</i></a>
+                <div class="table-values-div">
+                    <table class="table-values">
+                        <thead>
+                        <tr>
+                            <th data-name="enabled"        style="width: 70px" data-style="width: 70px" data-type="checkbox" class="translate">Enabled</th>
+                            <th data-name="name"           class="translate">Name</th>
+                            <th data-name="host"           class="translate" style="width: 120px; white-space: nowrap" >IP Address</th>
+                            <th data-name="connectedState" class="translate" style="width: 120px; white-space: nowrap" >Connected State</th>
+                            <th data-buttons="delete" style="width: 120px"></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
-
+        <div class="row"style="height: 25px;">
+        </div>
+        <div class="row"style="height: 75px;">
+            <div class="col s12 m2">
+                <label class="translate" for="interval">Interval [s]</label>
+                <input class="value" id="interval" type="number"  min="5" max="1000"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m2">
+                <input class="value" id="deviceInfo" type="checkbox">
+                <span class="translate" for="deviceInfo">Device Info</span>
+            </div>
+            <div class="col s12 m1">
+                <input class="value" id="mqtt" type="checkbox">
+                <span class="translate" for="mqtt">MQTT</span>
+            </div>
+            <div class="col s12 m1">
+                <input class="value" id="timer" type="checkbox">
+                <span class="translate" for="timer">Timer</span>
+            </div>
+            <div class="col s12 m1">
+                <input class="value" id="reset" type="checkbox">
+                <span class="translate" for="reset">Reset</span>
+            </div>
+        </div>
     </div>
-
 </body>
 
 </html>
