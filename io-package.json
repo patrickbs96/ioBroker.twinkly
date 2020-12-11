@@ -3,6 +3,9 @@
     "name": "twinkly",
     "version": "0.0.3",
     "news": {
+      "0.0.3": {
+        "en": "finalized Admin and Coding"
+      },
       "0.0.1": {
         "en": "initial release",
         "de": "Erstveröffentlichung",
