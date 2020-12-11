@@ -16,7 +16,7 @@ Adapter to communicate with the Twinkly lights.
 
 ## Changelog
 
-### 0.0.2
+### 0.0.3
 * (patrickbs96) finalized Admin and Coding
 
 ### 0.0.1
