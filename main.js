@@ -676,8 +676,8 @@ function prepareTasks(preparedObjects, old_objects) {
  * @returns {boolean}
  */
 function areDevicesEqual(rhs, lhs) {
-    return (rhs.common.name === lhs.common.name)
-        && (rhs.native.host === lhs.native.host);
+    return areObjectsEqual(rhs.common, lhs.common) &&
+           areObjectsEqual(rhs.native, lhs.native);
 }
 
 /**
@@ -687,43 +687,32 @@ function areDevicesEqual(rhs, lhs) {
  * @returns {boolean}
  */
 function areStatesEqual(rhs, lhs) {
-    return (rhs.common.name    === lhs.common.name)
-        && (rhs.common.def     === lhs.common.def)
-        && (rhs.common.min     === lhs.common.min)
-        && (rhs.common.max     === lhs.common.max)
-        && (rhs.common.type    === lhs.common.type)
-        && (rhs.common.unit    === lhs.common.unit)
-        && (rhs.common.read    === lhs.common.read)
-        && (rhs.common.write   === lhs.common.write)
-        && (rhs.common.role    === lhs.common.role)
-        && areObjectsEqual(rhs.common.states, lhs.common.states);
+    return areObjectsEqual(rhs.common, lhs.common);
 }
 
 /**
  * areObjectsEqual
- * @param rhs
- * @param lhs
+ * @param aObj
+ * @param bObj
  * @returns {boolean}
  */
-function areObjectsEqual(rhs, lhs) {
-    let result = true;
+function areObjectsEqual(aObj, bObj) {
+    function doCheck(aObj, bObj) {
+        let result = typeof aObj !== 'undefined' && typeof bObj !== 'undefined';
 
-    // check rhs
-    for (const key of Object.keys(rhs))
-        if (!Object.keys(lhs).includes((key)) || rhs[key] !== lhs[key]) {
-            result = false;
-            break;
-        }
-
-    // check lhs
-    if (result)
-        for (const key of Object.keys(lhs))
-            if (!Object.keys(rhs).includes((key)) || lhs[key] !== rhs[key]) {
-                result = false;
-                break;
+        if (result)
+            for (const key of Object.keys(aObj)) {
+                if (!Object.keys(bObj).includes((key)) ||
+                    (typeof aObj[key] === 'object' && typeof bObj[key] === 'object' && !areObjectsEqual(aObj[key], bObj[key])) || aObj[key] !== bObj[key]) {
+                    result = false;
+                    break;
+                }
             }
 
-    return result;
+        return result;
+    }
+
+    return doCheck(aObj, bObj) && doCheck(bObj, aObj);
 }
 
 /**
@@ -748,11 +737,10 @@ function processTasks(tasks) {
         if (!tasks || !tasks.length || tasks.length === 0) {
             reject('Tasks nicht gefüllt!');
         } else {
-            let result = true;
             while (tasks.length > 0) {
                 const task = tasks.shift(),
                     id = buildId(task.id);
-                adapter.log.debug('Task: ' + JSON.stringify(task), 'ID: ' + id);
+                adapter.log.debug('Task: ' + JSON.stringify(task) + ', ID: ' + id);
 
                 if (task.type === 'create_device') {
                     adapter.log.debug('Create device id=' + id);
@@ -800,7 +788,7 @@ function processTasks(tasks) {
                     adapter.log.error('Unknown task type: ' + JSON.stringify(task));
             }
 
-            resolve(result);
+            resolve(true);
         }
     });
 }
