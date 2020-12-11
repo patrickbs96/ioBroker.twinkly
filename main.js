@@ -1,18 +1,7 @@
 'use strict';
 
-/*
- * Created with @iobroker/create-adapter v1.26.3
- */
-
-// The adapter-core module gives you access to the core ioBroker functions
-// you need to create an adapter
 const utils = require('@iobroker/adapter-core');
-
 const axios = require('axios').default;
-// const CircularJSON = require('circular-json');
-
-// Load your modules here, e.g.:
-// const fs = require("fs");
 
 /**
  * The adapter instance
