@@ -499,7 +499,7 @@ function prepareObjectsByConfig() {
                     read : true,
                     write: true,
                     type : 'string',
-                    role : 'state',
+                    role : 'info.name',
                     def: ''}
             });
 
@@ -523,7 +523,7 @@ function prepareObjectsByConfig() {
                     read : true,
                     write: true,
                     type : 'string',
-                    role : 'state',
+                    role : 'json',
                     def  : '{}'}
             });
 
@@ -547,7 +547,7 @@ function prepareObjectsByConfig() {
                     read : true,
                     write: false,
                     type : 'string',
-                    role : 'state',
+                    role : 'json',
                     def  : '{}'}
             });
 

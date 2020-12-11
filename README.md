@@ -12,7 +12,7 @@
 
 ## twinkly adapter for ioBroker
 
-Adapter to communicate with the Twinkly lights.
+Adapter to communicate with the [Twinkly lights](https://www.twinkly.com/).
 
 ## Changelog
 
