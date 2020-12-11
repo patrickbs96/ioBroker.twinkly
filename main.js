@@ -362,46 +362,53 @@ function syncConfig() {
             adapter.log.silly('config devices: '        + JSON.stringify(adapter.config.devices));
             adapter.log.silly('config polling: '        + adapter.config.polling);
             adapter.log.silly('config showDeviceInfo: ' + adapter.config.showDeviceInfo);
+            adapter.log.silly('config reset: '          + adapter.config.reset);
             adapter.log.silly('config mqtt: '           + adapter.config.mqtt);
             adapter.log.silly('config timer: '          + adapter.config.timer);
 
-            // Verbindungen auslesen und erstellen
-            for (const device of adapter.config.devices) {
-                // Verbindung aktiv?
-                if (!device.enabled) {
-                    adapter.log.info(`${device.name} deaktiviert...`);
-                    continue;
-                }
-
-                // Host gefüllt
-                if (device.host === '') {
-                    adapter.log.warn(`${device.name}: Host nicht gefüllt!`);
-                    continue;
-                }
-
-                // Verbindung anlegen
-                const deviceName = device.name.replace(/[\][*,;'"`<>\\?]/g, '_').replace(/[.\s]+/g, '_');
-                connections[deviceName] = {
-                    enabled        : device.enabled,
-                    name           : device.name,
-                    host           : device.host,
-                    twinkly        : new Twinkly(device.name, device.host),
-                    connectedState : device.connectedState,
-                    checkConnected : adapter.getState,
-                    connected      : false
-                };
-
-                // Prüfen ob State existiert
-                if (typeof connections[deviceName].connectedState !== 'undefined')
-                    adapter.getForeignObject(connections[deviceName].connectedState, (err, obj) => {
-                        connections[deviceName].checkConnected = !err && obj != null;
-                    });
+            if (!adapter.config.devices) {
+                result = false;
+                adapter.log.warn('no connections added...');
             }
+
+            // Verbindungen auslesen und erstellen
+            if (result)
+                for (const device of adapter.config.devices) {
+                    // Verbindung aktiv?
+                    if (!device.enabled) {
+                        adapter.log.info(`${device.name} deaktiviert...`);
+                        continue;
+                    }
+
+                    // Host gefüllt
+                    if (device.host === '') {
+                        adapter.log.warn(`${device.name}: Host nicht gefüllt!`);
+                        continue;
+                    }
+
+                    // Verbindung anlegen
+                    const deviceName = device.name.replace(/[\][*,;'"`<>\\?]/g, '_').replace(/[.\s]+/g, '_');
+                    connections[deviceName] = {
+                        enabled        : device.enabled,
+                        name           : device.name,
+                        host           : device.host,
+                        twinkly        : new Twinkly(device.name, device.host),
+                        connectedState : device.connectedState,
+                        checkConnected : adapter.getState,
+                        connected      : false
+                    };
+
+                    // Prüfen ob State existiert
+                    if (typeof connections[deviceName].connectedState !== 'undefined')
+                        adapter.getForeignObject(connections[deviceName].connectedState, (err, obj) => {
+                            connections[deviceName].checkConnected = !err && obj != null;
+                        });
+                }
 
             // Prüfung ob aktive Verbindungen verfügbar sind
             if (result && Object.keys(connections).length === 0) {
                 result = false;
-                adapter.log.warn('Keine aktiven Verbindungen hinterlegt...');
+                adapter.log.warn('no enabled connections added...');
             }
         } catch (e) {
             result = false;
@@ -702,8 +709,15 @@ function areObjectsEqual(aObj, bObj) {
 
         if (result)
             for (const key of Object.keys(aObj)) {
-                if (!Object.keys(bObj).includes((key)) ||
-                    (typeof aObj[key] === 'object' && typeof bObj[key] === 'object' && !areObjectsEqual(aObj[key], bObj[key])) || aObj[key] !== bObj[key]) {
+                let equal = Object.keys(bObj).includes(key);
+                if (equal) {
+                    if (typeof aObj[key] === 'object' && typeof bObj[key] === 'object')
+                        equal = areObjectsEqual(aObj[key], bObj[key]);
+                    else
+                        equal = aObj[key] === bObj[key];
+                }
+
+                if (!equal) {
                     result = false;
                     break;
                 }
