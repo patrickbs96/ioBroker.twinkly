@@ -63,8 +63,7 @@ const statesConfig = [
     stateNames.on,
     stateNames.mode,
     stateNames.bri,
-    stateNames.name,
-    stateNames.reset
+    stateNames.name
 ];
 
 const LIGHT_MODES = {
@@ -124,7 +123,6 @@ function startAdapter(options) {
 
                 // The state was changed
                 adapter.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-
 
                 // Ist der state bekannt?
                 if (!Object.keys(subscribedStates).includes(id)) {
@@ -200,24 +198,7 @@ function startAdapter(options) {
                 // The state was deleted
                 adapter.log.info(`state ${id} deleted`);
             }
-        },
-
-        // If you need to accept messages in your adapter, uncomment the following block.
-        // /**
-        //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-        //  * Using this method requires "common.message" property to be set to true in io-package.json
-        //  */
-        // message: (obj) => {
-        //     if (typeof obj === 'object' && obj.message) {
-        //         if (obj.command === 'send') {
-        //             // e.g. send email or pushover or whatever
-        //             adapter.log.info('send command');
-
-        //             // Send response in callback if required
-        //             if (obj.callback) adapter.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-        //         }
-        //     }
-        // },
+        }
     }));
 }
 
@@ -363,6 +344,10 @@ function syncConfig() {
             statesConfig.push(stateNames.details);
             statesConfig.push(stateNames.firmware);
         }
+
+        // Reset hinzufügen, wenn gewünscht
+        if (adapter.config.reset)
+            statesConfig.push(stateNames.reset);
 
         // MQTT hinzufügen, wenn gewünscht
         if (adapter.config.mqtt)
@@ -721,8 +706,24 @@ function areStatesEqual(rhs, lhs) {
  * @returns {boolean}
  */
 function areObjectsEqual(rhs, lhs) {
-    // TODO:
-    return true;
+    let result = true;
+
+    // check rhs
+    for (const key of Object.keys(rhs))
+        if (!Object.keys(lhs).includes((key)) || rhs[key] !== lhs[key]) {
+            result = false;
+            break;
+        }
+
+    // check lhs
+    if (result)
+        for (const key of Object.keys(lhs))
+            if (!Object.keys(rhs).includes((key)) || lhs[key] !== rhs[key]) {
+                result = false;
+                break;
+            }
+
+    return result;
 }
 
 /**
