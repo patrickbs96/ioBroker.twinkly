@@ -9,7 +9,8 @@
   "homepage": "https://github.com/patrickbs96/ioBroker.twinkly",
   "license": "MIT",
   "keywords": [
-    "template"
+    "control",
+    "lights"
   ],
   "repository": {
     "type": "git",

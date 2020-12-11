@@ -27,7 +27,7 @@ let pollingInterval = null;
 
 /**
  * Twinkly-Verbindungen
- * @type {{{twinkly: Twinkly, connectedState: String, checkConnected: Boolean, connected: Boolean}}}
+ * @type {{{name: String, host: String, twinkly: Twinkly, connectedState: String, checkConnected: Boolean, connected: Boolean}}}
  */
 const connections = {};
 
@@ -42,17 +42,17 @@ const subscribedStates = {};
  * @type {{{name: string, id: string}}}
  */
 const stateNames = {
-    on            : '.on',
-    mode          : '.mode',
-    bri           : '.bri',
-    name          : '.name',
-    mqtt          : '.mqtt',
-    timer         : '.timer',
-    reset         : '.reset',
-    // movieConfig   : '.movieConfig',
-    // networkStatus : '.networkStatus',
-    details       : '.details',
-    firmware      : '.firmware'
+    on            : 'on',
+    mode          : 'mode',
+    bri           : 'bri',
+    name          : 'name',
+    mqtt          : 'mqtt',
+    timer         : 'timer',
+    reset         : 'reset',
+    // movieConfig   : 'movieConfig',
+    // networkStatus : 'networkStatus',
+    details       : 'details',
+    firmware      : 'firmware'
 };
 
 /**
@@ -120,8 +120,11 @@ function startAdapter(options) {
         // is called if a subscribed state changes
         stateChange: async (id, state) => {
             if (state) {
+                if (state.ack) return;
+
                 // The state was changed
-                adapter.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                adapter.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+
 
                 // Ist der state bekannt?
                 if (!Object.keys(subscribedStates).includes(id)) {
@@ -135,7 +138,7 @@ function startAdapter(options) {
 
                 // Nur ausführen, wenn Gerät verbunden ist!
                 if (connections[connection].checkConnected && !connections[connection].connected) {
-                    adapter.log.debug(`${subscribedStates[id].device} ist nicht verfügbar!`);
+                    adapter.log.debug(`${connections[connection].name} ist nicht verfügbar!`);
                     return;
                 }
 
@@ -187,7 +190,7 @@ function startAdapter(options) {
 
                 // Reset
                 } else if (command === stateNames.reset) {
-                    await adapter.setForeignStateChangedAsync(id, false, true);
+                    await adapter.setState(id, false, true);
                     connections[connection].twinkly.reset()
                         .catch(error => {
                             adapter.log.error(`[${connection}${command}] ${error}`);
@@ -234,8 +237,12 @@ async function poll() {
 
         // Connected abfragen
         if (connections[connection].checkConnected) {
-            connections[connection].connected = await adapter.getForeignStateAsync(connections[connection].connectedState).val;
-            await adapter.setForeignStateChangedAsync(connection + '.connected', connections[connection].connected, true);
+            await adapter.getForeignStateAsync(connections[connection].connectedState)
+                .then((state) => {
+                    connections[connection].connected = state ? state.val : false;
+                });
+
+            adapter.setState(connection + '.connected', connections[connection].connected, true);
 
             // Nur ausführen, wenn Gerät verbunden ist!
             if (!connections[connection].connected) {
@@ -249,70 +256,70 @@ async function poll() {
         // connections[connection].fetchActive = true;
 
         for (const command of statesConfig) {
-            adapter.log.debug(`Polling ${connection}${command}`);
+            adapter.log.debug(`Polling ${connection}.${command}`);
 
             if (command === stateNames.mode) {
                 await connections[connection].twinkly.get_mode()
                     .then(async ({mode}) => {
-                        await adapter.setForeignStateChangedAsync(connection + command, mode !== LIGHT_MODES.value.off, true);
-                        await adapter.setForeignStateChangedAsync(connection + command, mode, true);
+                        adapter.setState(connection + '.' + stateNames.on, mode !== LIGHT_MODES.value.off, true);
+                        adapter.setState(connection + '.' + stateNames.mode, mode, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}${command}] ${error}`);
+                        adapter.log.error(`[${connection}.${command}] ${error}`);
                     });
 
             } else if (command === stateNames.bri) {
                 await connections[connection].twinkly.get_brightness()
                     .then(async ({value}) => {
-                        await adapter.setForeignStateChangedAsync(connection + command, value, true);
+                        await adapter.setState(connection + '.' + command, value, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}${command}] ${error}`);
+                        adapter.log.error(`[${connection}.${command}] ${error}`);
                     });
 
             } else if (command === stateNames.name) {
                 await connections[connection].twinkly.get_name()
                     .then(async ({name}) => {
-                        await adapter.setForeignStateChangedAsync(connection + command, name, true);
+                        adapter.setState(connection + '.' + command, name, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}${command}] ${error}`);
+                        adapter.log.error(`[${connection}.${command}] ${error}`);
                     });
 
             } else if (command === stateNames.mqtt) {
                 await connections[connection].twinkly.get_mqtt()
                     .then(async ({mqtt}) => {
-                        await adapter.setForeignStateChangedAsync(connection + command, JSON.stringify(mqtt), true);
+                        adapter.setState(connection + '.' + command, JSON.stringify(mqtt), true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}${command}] ${error}`);
+                        adapter.log.error(`[${connection}.${command}] ${error}`);
                     });
 
             } else if (command === stateNames.timer) {
                 await connections[connection].twinkly.get_timer()
                     .then(async ({timer}) => {
-                        await adapter.setForeignStateChangedAsync(connection + command, JSON.stringify(timer), true);
+                        adapter.setState(connection + '.' + command, JSON.stringify(timer), true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}${command}] ${error}`);
+                        adapter.log.error(`[${connection}.${command}] ${error}`);
                     });
 
             } else if (command === stateNames.details) {
                 await connections[connection].twinkly.get_details()
                     .then(async ({details}) => {
-                        await adapter.setForeignStateChangedAsync(connection + command, JSON.stringify(details), true);
+                        adapter.setState(connection + '.' + command, JSON.stringify(details), true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}${command}] ${error}`);
+                        adapter.log.error(`[${connection}.${command}] ${error}`);
                     });
 
             } else if (command === stateNames.firmware){
                 await connections[connection].twinkly.get_firmware_version()
                     .then(async ({version}) => {
-                        await adapter.setForeignStateChangedAsync(connection + command, version, true);
+                        adapter.setState(connection + '.' + command, version, true);
                     })
                     .catch(error => {
-                        adapter.log.error(`[${connection}${command}] ${error}`);
+                        adapter.log.error(`[${connection}.${command}] ${error}`);
                     });
             }
         }
@@ -331,85 +338,471 @@ async function main() {
 
     adapter.config.polling = parseInt(adapter.config.polling, 10) < 15 ? 15 : parseInt(adapter.config.polling, 10);
 
-    // Details und Firmware hinzufügen, wenn gewünscht
-    if (adapter.config.showDeviceInfo) {
-        statesConfig.push(stateNames.details);
-        statesConfig.push(stateNames.firmware);
-    }
-
-    // MQTT hinzufügen, wenn gewünscht
-    if (adapter.config.mqtt)
-        statesConfig.push(stateNames.mqtt);
-
-    // Timer hinzufügen, wenn gewünscht
-    if (adapter.config.timer)
-        statesConfig.push(stateNames.timer);
-
-    let result = true;
-    try {
-        adapter.log.info('config devices: '        + JSON.stringify(adapter.config.devices));
-        adapter.log.info('config polling: '        + adapter.config.polling);
-        adapter.log.info('config showDeviceInfo: ' + adapter.config.showDeviceInfo);
-        // adapter.log.info('config showDeviceInfo: ' + adapter.config.showDeviceInfo);
-        // adapter.log.info('config showDeviceInfo: ' + adapter.config.showDeviceInfo);
-
-        for (const device of adapter.config.devices) {
-            // Verbindung aktiv?
-            if (!device.active) {
-                adapter.log.info(`${device.name} deaktiviert...`);
-                continue;
-            }
-
-            // Host gefüllt
-            if (device.host === '') {
-                adapter.log.warn(`${device.name}: Host nicht gefüllt!`);
-                continue;
-            }
-
-            // Verbindung anlegen
-            connections[device.name.replace(/[\][*,;'"`<>\\?]/g, '_').replace(/[.\s]+/g, '_')] = {
-                active         : device.active,
-                twinkly        : new Twinkly(device.name, device.host),
-                connectedState : device.connectedState,
-                checkConnected : false,
-                connected      : false
-            };
-
-
-
-        }
-
-        // Prüfung ob aktive Verbindungen verfügbar sind
-        if (result && Object.keys(connections).length === 0) {
-            result = false;
-            adapter.log.warn('Keine aktiven Verbindungen hinterlegt...');
-        }
-    } catch (e) {
-        result = false;
-    }
-
-    // TODO: Objecte/ States anlegen...
-    // await adapter.setObjectNotExistsAsync('testVariable', {
-    //     type: 'state',
-    //     common: {
-    //         name: 'testVariable',
-    //         type: 'boolean',
-    //         role: 'indicator',
-    //         read: true,
-    //         write: true,
-    //     },
-    //     native: {}
-    // });
-
-
-
-    // Polling starten...
-    if (result)
-        pollingInterval = setTimeout(async () => {await poll();}, 5000);
-    else
-        adapter.log.error('Polling wird nicht gestartet!');
+    // States/Objekte anlegen...
+    syncConfig()
+        .then(result => {
+            if (result)
+                // Polling starten...
+                pollingInterval = setTimeout(async () => {await poll();}, 5000);
+            else
+                adapter.log.error('Polling wird nicht gestartet!');
+        })
+        .catch(error => {
+            adapter.log.error(error);
+        });
 }
 
+/**
+ * Konfiguration auslesen und verarbeiten
+ * @return Promise<Boolean>
+ */
+function syncConfig() {
+    return new Promise((resolve, reject) => {
+        // Details und Firmware hinzufügen, wenn gewünscht
+        if (adapter.config.showDeviceInfo) {
+            statesConfig.push(stateNames.details);
+            statesConfig.push(stateNames.firmware);
+        }
+
+        // MQTT hinzufügen, wenn gewünscht
+        if (adapter.config.mqtt)
+            statesConfig.push(stateNames.mqtt);
+
+        // Timer hinzufügen, wenn gewünscht
+        if (adapter.config.timer)
+            statesConfig.push(stateNames.timer);
+
+        let result = true;
+        try {
+            adapter.log.silly('config devices: '        + JSON.stringify(adapter.config.devices));
+            adapter.log.silly('config polling: '        + adapter.config.polling);
+            adapter.log.silly('config showDeviceInfo: ' + adapter.config.showDeviceInfo);
+            adapter.log.silly('config mqtt: '           + adapter.config.mqtt);
+            adapter.log.silly('config timer: '          + adapter.config.timer);
+
+            // Verbindungen auslesen und erstellen
+            for (const device of adapter.config.devices) {
+                // Verbindung aktiv?
+                if (!device.enabled) {
+                    adapter.log.info(`${device.name} deaktiviert...`);
+                    continue;
+                }
+
+                // Host gefüllt
+                if (device.host === '') {
+                    adapter.log.warn(`${device.name}: Host nicht gefüllt!`);
+                    continue;
+                }
+
+                // Verbindung anlegen
+                const deviceName = device.name.replace(/[\][*,;'"`<>\\?]/g, '_').replace(/[.\s]+/g, '_');
+                connections[deviceName] = {
+                    enabled        : device.enabled,
+                    name           : device.name,
+                    host           : device.host,
+                    twinkly        : new Twinkly(device.name, device.host),
+                    connectedState : device.connectedState,
+                    checkConnected : adapter.getState,
+                    connected      : false
+                };
+
+                // Prüfen ob State existiert
+                if (typeof connections[deviceName].connectedState !== 'undefined')
+                    adapter.getForeignObject(connections[deviceName].connectedState, (err, obj) => {
+                        connections[deviceName].checkConnected = !err && obj != null;
+                    });
+            }
+
+            // Prüfung ob aktive Verbindungen verfügbar sind
+            if (result && Object.keys(connections).length === 0) {
+                result = false;
+                adapter.log.warn('Keine aktiven Verbindungen hinterlegt...');
+            }
+        } catch (e) {
+            result = false;
+        }
+
+        if (result) {
+            adapter.log.debug('Prepare objects');
+            const preparedObjects = prepareObjectsByConfig();
+            adapter.log.debug('Get existing objects');
+
+            adapter.getAdapterObjects(_objects => {
+                adapter.log.debug('Prepare tasks of objects update');
+                const tasks = prepareTasks(preparedObjects, _objects);
+
+                adapter.log.debug('Start tasks of objects update');
+                processTasks(tasks)
+                    .then(response => {
+                        result = response;
+                        adapter.log.debug('Finished tasks of objects update');
+                    })
+                    .catch(error => {
+                        result = false;
+                        reject(error);
+                    });
+            });
+        }
+
+        resolve(result);
+    });
+}
+
+/**
+ * prepareObjectsByConfig
+ * @returns {{}}
+ */
+function prepareObjectsByConfig() {
+    const result = [];
+    for (const connection of Object.keys(connections)) {
+        const config = {
+            device: {
+                id: {
+                    device: connection
+                },
+                common: {
+                    name: connections[connection].name
+                },
+                native: {
+                    host: connections[connection].twinkly.host
+                }
+            },
+            states: []
+        };
+
+        if (statesConfig.includes(stateNames.on))
+            config.states.push({
+                id: {device: connection, state: stateNames.on},
+                common: {
+                    name : config.device.common.name + ' eingeschaltet',
+                    read : true,
+                    write: true,
+                    type : 'boolean',
+                    role : 'switch',
+                    def  : false
+                }
+            });
+
+        if (statesConfig.includes(stateNames.mode))
+            config.states.push({
+                id: {device: connection, state: stateNames.mode},
+                common: {
+                    name  : config.device.common.name + ' Mode',
+                    read  : true,
+                    write : true,
+                    type  : 'string',
+                    role  : 'state',
+                    def   : LIGHT_MODES.value.off,
+                    states: LIGHT_MODES.text}
+            });
+
+        if (statesConfig.includes(stateNames.bri))
+            config.states.push({
+                id: {device: connection, state: stateNames.bri},
+                common: {
+                    name : config.device.common.name + ' Brightness',
+                    read : true,
+                    write: true,
+                    type : 'number',
+                    role : 'level.dimmer',
+                    min  : 0,
+                    max  : 100,
+                    def  : 0}
+            });
+
+        if (statesConfig.includes(stateNames.name))
+            config.states.push({
+                id: {device: connection, state: stateNames.name},
+                common: {
+                    name : config.device.common.name + ' Name',
+                    read : true,
+                    write: true,
+                    type : 'string',
+                    role : 'state',
+                    def: ''}
+            });
+
+        if (statesConfig.includes(stateNames.mqtt))
+            config.states.push({
+                id: {device: connection, state: stateNames.mqtt},
+                common: {
+                    name : config.device.common.name + ' MQTT',
+                    read : true,
+                    write: true,
+                    type : 'string',
+                    role : 'state',
+                    def  : '{}'}
+            });
+
+        if (statesConfig.includes(stateNames.timer))
+            config.states.push({
+                id: {device: connection, state: stateNames.timer},
+                common: {
+                    name : config.device.common.name + ' Timer',
+                    read : true,
+                    write: true,
+                    type : 'string',
+                    role : 'state',
+                    def  : '{}'}
+            });
+
+        if (statesConfig.includes(stateNames.reset))
+            config.states.push({
+                id: {device: connection, state: stateNames.reset},
+                common: {
+                    name : config.device.common.name + ' Reset',
+                    read : true,
+                    write: true,
+                    type : 'boolean',
+                    role : 'button',
+                    def  : false}
+            });
+
+        if (statesConfig.includes(stateNames.details))
+            config.states.push({
+                id: {device: connection, state: stateNames.details},
+                common: {
+                    name : config.device.common.name + ' Details',
+                    read : true,
+                    write: false,
+                    type : 'string',
+                    role : 'state',
+                    def  : '{}'}
+            });
+
+        if (statesConfig.includes(stateNames.firmware))
+            config.states.push({
+                id: {device: connection, state: stateNames.firmware},
+                common: {
+                    name : config.device.common.name + ' Firmware',
+                    read : true,
+                    write: false,
+                    type : 'string',
+                    role : 'state',
+                    def  : ''}
+            });
+
+        config.states.push({
+            id: {device: connection, state: 'connected'},
+            common: {
+                name : config.device.common.name + ' Connected',
+                read : true,
+                write: false,
+                type : 'boolean',
+                role : 'indicator.connected',
+                def  : false}
+        });
+
+        result.push(config);
+    }
+
+    return result;
+}
+
+/**
+ * prepareTasks
+ * @param preparedObjects
+ * @param old_objects
+ * @returns {{id: string, type: string}[]}
+ */
+function prepareTasks(preparedObjects, old_objects) {
+    const devicesToUpdate = [];
+    const statesToUpdate  = [];
+
+    try {
+        for (const group of preparedObjects) {
+            // Device prüfen
+            if (group.device) {
+                const fullID = buildId(group.device.id);
+                const oldObj = old_objects[fullID];
+
+                if (oldObj && oldObj.type === 'device') {
+                    if (!areDevicesEqual(oldObj, group.device)) {
+                        devicesToUpdate.push({
+                            type: 'update_device',
+                            id: group.device.id,
+                            data: {
+                                common: group.device.common,
+                                native: group.device.native
+                            }
+                        });
+                    }
+                    old_objects[fullID] = undefined;
+                } else {
+                    devicesToUpdate.push({
+                        type: 'create_device',
+                        id: group.device.id,
+                        data: {
+                            common: group.device.common,
+                            native: group.device.native
+                        }
+                    });
+                }
+            }
+
+            // States prüfen
+            for (const state of group.states) {
+                const fullID = buildId(state.id);
+                const oldObj = old_objects[fullID];
+
+                // Nur wenn der State bearbeitet werden darf hinzufügen
+                if (state.common.write)
+                    subscribedStates[fullID] = {connection: state.id.device, command: state.id.state};
+
+                if (oldObj && oldObj.type === 'state') {
+                    if (!areStatesEqual(oldObj, state)) {
+                        statesToUpdate.push({
+                            type: 'update_state',
+                            id: state.id,
+                            data: {
+                                common: state.common,
+                                native: state.native
+                            }
+                        });
+                    }
+                    old_objects[fullID] = undefined;
+                } else {
+                    statesToUpdate.push({
+                        type: 'create_state',
+                        id: state.id,
+                        data: {
+                            common: state.common,
+                            native: state.native
+                        }
+                    });
+                }
+            }
+        }
+    } catch (e) {
+        adapter.log.error(e.name + ': ' + e.message);
+    }
+
+    const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
+    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device').map(([id, object]) => ({ type: 'delete_device', id: id }));
+    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state') .map(([id, object]) => ({ type: 'delete_state',  id: id }));
+
+    return stateToDelete.concat(devicesToDelete, devicesToUpdate, statesToUpdate);
+}
+
+/**
+ * areDevicesEqual
+ * @param rhs
+ * @param lhs
+ * @returns {boolean}
+ */
+function areDevicesEqual(rhs, lhs) {
+    return (rhs.common.name === lhs.common.name)
+        && (rhs.native.host === lhs.native.host);
+}
+
+/**
+ * areStatesEqual
+ * @param rhs
+ * @param lhs
+ * @returns {boolean}
+ */
+function areStatesEqual(rhs, lhs) {
+    return (rhs.common.name    === lhs.common.name)
+        && (rhs.common.def     === lhs.common.def)
+        && (rhs.common.min     === lhs.common.min)
+        && (rhs.common.max     === lhs.common.max)
+        && (rhs.common.type    === lhs.common.type)
+        && (rhs.common.unit    === lhs.common.unit)
+        && (rhs.common.read    === lhs.common.read)
+        && (rhs.common.write   === lhs.common.write)
+        && (rhs.common.role    === lhs.common.role)
+        && areObjectsEqual(rhs.common.states, lhs.common.states);
+}
+
+/**
+ * areObjectsEqual
+ * @param rhs
+ * @param lhs
+ * @returns {boolean}
+ */
+function areObjectsEqual(rhs, lhs) {
+    // TODO:
+    return true;
+}
+
+/**
+ * buildId
+ * @param id
+ * @returns {string}
+ */
+function buildId(id) {
+    if (typeof id === 'object')
+        return adapter.namespace + (id.device ? '.' + id.device : '') + (id.state ? '.' + id.state : '');
+    else
+        return id;
+}
+
+/**
+ * processTasks
+ * @param tasks
+ * @return Promise<Boolean>
+ */
+function processTasks(tasks) {
+    return new Promise((resolve, reject) => {
+        if (!tasks || !tasks.length || tasks.length === 0) {
+            reject('Tasks nicht gefüllt!');
+        } else {
+            let result = true;
+            while (tasks.length > 0) {
+                const task = tasks.shift(),
+                    id = buildId(task.id);
+                adapter.log.debug('Task: ' + JSON.stringify(task), 'ID: ' + id);
+
+                if (task.type === 'create_device') {
+                    adapter.log.debug('Create device id=' + id);
+                    try {
+                        adapter.createDevice(task.id.device, task.data.common, task.data.native, err => {
+                            if (err) adapter.log.error('Cannot create device: ' + id + ' Error: ' + err);
+                        });
+                    } catch (err) {
+                        adapter.log.error('Cannot create device: ' + id + ' Error: ' + err);
+                    }
+                } else if (task.type === 'update_device') {
+                    adapter.log.debug('Update device id=' + id);
+                    adapter.extendObject(id, task.data, err => {
+                        if (err) adapter.log.error('Cannot update device: ' + id + ' Error: ' + err);
+                    });
+                } else if (task.type === 'delete_device') {
+                    adapter.log.debug('Delete device id=' + id);
+
+                    adapter.delObject(id, err => {
+                        if (err) adapter.log.error('Cannot delete device : ' + id + ' Error: ' + err);
+                    });
+                } else if (task.type === 'create_state') {
+                    adapter.log.debug('Create state id=' + id);
+
+                    try {
+                        adapter.createState(task.id.device, null, task.id.state, task.data.common, task.data.native, err => {
+                            if (err) adapter.log.error('Cannot create state : ' + id + ' Error: ' + err);
+                        });
+                    } catch (err) {
+                        adapter.log.error('Cannot create state : ' + id+ ' Error: ' + err);
+                    }
+                } else if (task.type === 'update_state') {
+                    adapter.log.debug('Update state id=' + id);
+
+                    adapter.extendObject(id, task.data, err => {
+                        if (err) adapter.log.error('Cannot update state : ' + id + ' Error: ' + err);
+                    });
+                } else if (task.type === 'delete_state') {
+                    adapter.log.debug('Delete state id=' + id);
+
+                    adapter.delObject(id, err => {
+                        if (err) adapter.log.error('Cannot delete state : ' + id + ' Error: ' + err);
+                    });
+                } else
+                    adapter.log.error('Unknown task type: ' + JSON.stringify(task));
+            }
+
+            resolve(result);
+        }
+    });
+}
 
 const HTTPCodes = {
     values : {
@@ -1190,9 +1583,9 @@ function sendHTTP(url, body, method, headers = {}) {
                         resolve(response.data);
                 })
                 .catch(error => {
-                    if (error.response.status === 401 && error.response.data.includes(INVALID_TOKEN))
+                    if (error.response && error.response.status === 401 && error.response.data && error.response.data.includes(INVALID_TOKEN))
                         reject(INVALID_TOKEN);
-                    else if (error.response.status !== 200)
+                    else if (error.response && error.response.status !== 200)
                         reject('HTTP Error ' + error.response.statusText);
                     else
                         reject(error);

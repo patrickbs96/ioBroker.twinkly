@@ -26,8 +26,8 @@
       "fr": "Twinkly",
       "it": "Twinkly",
       "es": "Twinkly",
-      "pl": "Błyskawicznie",
-      "zh-cn": "眨眼"
+      "pl": "Twinkly",
+      "zh-cn": "Twinkly"
     },
     "desc": {
       "en": "Adapter to communicate with the Twinkly lights.",
@@ -45,7 +45,8 @@
       "patrickbs96 <patrickbsimon96@gmail.com>"
     ],
     "keywords": [
-      "template"
+      "control",
+      "lights"
     ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
