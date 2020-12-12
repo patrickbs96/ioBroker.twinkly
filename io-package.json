@@ -4,7 +4,16 @@
     "version": "0.0.3",
     "news": {
       "0.0.3": {
-        "en": "finalized Admin and Coding"
+        "en": "finalized Admin and Coding",
+        "de": "finalisiert Admin und Codierung",
+        "ru": "доработаны Админ и кодирование",
+        "pt": "Admin e codificação finalizados",
+        "nl": "voltooide beheer en codering",
+        "fr": "Administration et codage finalisés",
+        "it": "Admin e codifica finalizzati",
+        "es": "Administración y codificación finalizadas",
+        "pl": "zakończone zarządzanie i kodowanie",
+        "zh-cn": "最终的管理和编码"
       },
       "0.0.1": {
         "en": "initial release",
