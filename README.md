@@ -15,6 +15,24 @@
 
 Adapter to communicate with the [Twinkly lights](https://www.twinkly.com/).
 
+##Settings
+The following Settings are available:
+![admin.png](img/admin.png)
+
+In the table you can add all the Twinkly lights you want to control. 
+`Connected State` is an additional feature here to check if the device is actually connected to the network or not. 
+It can be used by adding a boolean State from e.g. the ping or tr-064 adapter. 
+
+The following additionals States are created per device when checked:
+* Device Info (read)
+* MQTT (read/write)
+* Timer (read/write)
+* Reset (write)
+
+
+## TODO
+* Details, MQTT, Timer expand into multiple States
+
 ## Changelog
 
 ### 0.0.3

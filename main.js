@@ -334,10 +334,6 @@ function syncConfig() {
             statesConfig.push(stateNames.firmware);
         }
 
-        // Reset hinzufügen, wenn gewünscht
-        if (adapter.config.reset)
-            statesConfig.push(stateNames.reset);
-
         // MQTT hinzufügen, wenn gewünscht
         if (adapter.config.mqtt)
             statesConfig.push(stateNames.mqtt);
@@ -346,18 +342,22 @@ function syncConfig() {
         if (adapter.config.timer)
             statesConfig.push(stateNames.timer);
 
+        // Reset hinzufügen, wenn gewünscht
+        if (adapter.config.reset)
+            statesConfig.push(stateNames.reset);
+
         let result = true;
         try {
             adapter.log.silly('config devices: '    + JSON.stringify(adapter.config.devices));
             adapter.log.silly('config interval: '   + adapter.config.interval);
             adapter.log.silly('config deviceInfo: ' + adapter.config.deviceInfo);
-            adapter.log.silly('config reset: '      + adapter.config.reset);
             adapter.log.silly('config mqtt: '       + adapter.config.mqtt);
             adapter.log.silly('config timer: '      + adapter.config.timer);
+            adapter.log.silly('config reset: '      + adapter.config.reset);
 
             if (!adapter.config.devices) {
-                result = false;
                 adapter.log.warn('no connections added...');
+                result = false;
             }
 
             // Verbindungen auslesen und erstellen
