@@ -129,12 +129,6 @@ function startAdapter(options) {
                     return;
                 }
 
-                // Doppelte Ereignisse verhindern...
-                // let action = 'set:' + command + ':' + obj.state.val;
-                // if (devices[device].lastAction == action) return;
-                // devices[device].lastAction = action;
-
-
                 // Gerät ein-/ausschalten
                 if (command === stateNames.on) {
                     connections[connection].twinkly.set_mode(state.val ? LIGHT_MODES.value.on : LIGHT_MODES.value.off)
@@ -221,10 +215,6 @@ async function poll() {
             }
         }
 
-        // if (connections[connection].fetchActive) continue;
-        // // Fetch gestartet und Flag setzen
-        // connections[connection].fetchActive = true;
-
         for (const command of statesConfig) {
             adapter.log.debug(`Polling ${connection}.${command}`);
 
@@ -296,9 +286,6 @@ async function poll() {
     }
 
     adapter.log.debug(`Finished polling...`);
-
-    // Fetch abgeschlossen und Flag zurücksetzen
-    // connections[connection].fetchActive = false;
 
     pollingInterval = setTimeout(async () => {await poll();}, adapter.config.interval * 1000);
 }
@@ -377,15 +364,18 @@ function syncConfig() {
 
                     // Verbindung anlegen
                     const deviceName = device.name.replace(/[\][*,;'"`<>\\?]/g, '_').replace(/[.\s]+/g, '_');
-                    connections[deviceName] = {
-                        enabled        : device.enabled,
-                        name           : device.name,
-                        host           : device.host,
-                        twinkly        : new Twinkly(device.name, device.host),
-                        connectedState : device.connectedState,
-                        checkConnected : adapter.getState,
-                        connected      : false
-                    };
+                    if (Object.keys(connections).includes(deviceName))
+                        adapter.log.warn(`Objects with same id = ${buildId({device: deviceName})} created for two connections ${JSON.stringify(device)}`);
+                    else
+                        connections[deviceName] = {
+                            enabled        : device.enabled,
+                            name           : device.name,
+                            host           : device.host,
+                            twinkly        : new Twinkly(device.name, device.host),
+                            connectedState : device.connectedState,
+                            checkConnected : adapter.getState,
+                            connected      : false
+                        };
 
                     // Prüfen ob State existiert
                     if (typeof connections[deviceName].connectedState !== 'undefined')
@@ -503,7 +493,8 @@ function prepareObjectsByConfig() {
                     def: ''}
             });
 
-        if (statesConfig.includes(stateNames.mqtt))
+        if (statesConfig.includes(stateNames.mqtt)) {
+            // TODO: Extend
             config.states.push({
                 id: {device: connection, state: stateNames.mqtt},
                 common: {
@@ -511,21 +502,25 @@ function prepareObjectsByConfig() {
                     read : true,
                     write: true,
                     type : 'string',
-                    role : 'state',
-                    def  : '{}'}
-            });
-
-        if (statesConfig.includes(stateNames.timer))
-            config.states.push({
-                id: {device: connection, state: stateNames.timer},
-                common: {
-                    name : config.device.common.name + ' Timer',
-                    read : true,
-                    write: true,
-                    type : 'string',
                     role : 'json',
                     def  : '{}'}
             });
+        }
+
+        if (statesConfig.includes(stateNames.timer)) {
+            // TODO: Extend
+            config.states.push({
+                id: {device: connection, state: stateNames.timer},
+                common: {
+                    name: config.device.common.name + ' Timer',
+                    read: true,
+                    write: true,
+                    type: 'string',
+                    role: 'json',
+                    def: '{}'
+                }
+            });
+        }
 
         if (statesConfig.includes(stateNames.reset))
             config.states.push({
@@ -539,17 +534,20 @@ function prepareObjectsByConfig() {
                     def  : false}
             });
 
-        if (statesConfig.includes(stateNames.details))
+        if (statesConfig.includes(stateNames.details)) {
+            // TODO: Extend
             config.states.push({
                 id: {device: connection, state: stateNames.details},
                 common: {
-                    name : config.device.common.name + ' Details',
-                    read : true,
+                    name: config.device.common.name + ' Details',
+                    read: true,
                     write: false,
-                    type : 'string',
-                    role : 'json',
-                    def  : '{}'}
+                    type: 'string',
+                    role: 'json',
+                    def: '{}'
+                }
             });
+        }
 
         if (statesConfig.includes(stateNames.firmware))
             config.states.push({
@@ -587,8 +585,9 @@ function prepareObjectsByConfig() {
  * @returns {{id: string, type: string}[]}
  */
 function prepareTasks(preparedObjects, old_objects) {
-    const devicesToUpdate = [];
-    const statesToUpdate  = [];
+    const devicesToUpdate  = [];
+    const channelsToUpdate = [];
+    const statesToUpdate   = [];
 
     try {
         for (const group of preparedObjects) {
@@ -598,82 +597,107 @@ function prepareTasks(preparedObjects, old_objects) {
                 const oldObj = old_objects[fullID];
 
                 if (oldObj && oldObj.type === 'device') {
-                    if (!areDevicesEqual(oldObj, group.device)) {
+                    if (!areStatesEqual(oldObj, group.device)) {
                         devicesToUpdate.push({
-                            type: 'update_device',
-                            id: group.device.id,
-                            data: {
-                                common: group.device.common,
-                                native: group.device.native
+                            type : 'update_device',
+                            id   : group.device.id,
+                            data : {
+                                common : group.device.common,
+                                native : group.device.native
                             }
                         });
                     }
                     old_objects[fullID] = undefined;
                 } else {
                     devicesToUpdate.push({
-                        type: 'create_device',
-                        id: group.device.id,
-                        data: {
-                            common: group.device.common,
-                            native: group.device.native
+                        type : 'create_device',
+                        id   : group.device.id,
+                        data : {
+                            common : group.device.common,
+                            native : group.device.native
                         }
                     });
                 }
             }
 
-            // States prüfen
-            for (const state of group.states) {
-                const fullID = buildId(state.id);
-                const oldObj = old_objects[fullID];
+            // Channels prüfen
+            if (group.channels)
+                for (const channel of group.channels) {
+                    const fullID = buildId(channel.id);
+                    const oldObj = old_objects[fullID];
 
-                // Nur wenn der State bearbeitet werden darf hinzufügen
-                if (state.common.write)
-                    subscribedStates[fullID] = {connection: state.id.device, command: state.id.state};
-
-                if (oldObj && oldObj.type === 'state') {
-                    if (!areStatesEqual(oldObj, state)) {
-                        statesToUpdate.push({
-                            type: 'update_state',
-                            id: state.id,
-                            data: {
-                                common: state.common,
-                                native: state.native
+                    if (oldObj && oldObj.type === 'channel') {
+                        if (!areStatesEqual(oldObj, channel)) {
+                            channelsToUpdate.push({
+                                type : 'update_channel',
+                                id   : channel.id,
+                                data : {
+                                    common : channel.common,
+                                    native : channel.native
+                                }
+                            });
+                        }
+                        old_objects[fullID] = undefined;
+                    } else {
+                        channelsToUpdate.push({
+                            type : 'create_channel',
+                            id   : channel.id,
+                            data : {
+                                common : channel.common,
+                                native : channel.native
                             }
                         });
                     }
-                    old_objects[fullID] = undefined;
-                } else {
-                    statesToUpdate.push({
-                        type: 'create_state',
-                        id: state.id,
-                        data: {
-                            common: state.common,
-                            native: state.native
-                        }
-                    });
                 }
-            }
+
+            // States prüfen
+            if (group.states)
+                for (const state of group.states) {
+                    const fullID = buildId(state.id);
+                    const oldObj = old_objects[fullID];
+
+                    // Nur wenn der State bearbeitet werden darf hinzufügen
+                    if (state.common.write)
+                        subscribedStates[fullID] = {connection: state.id.device, command: state.id.state};
+
+                    if (oldObj && oldObj.type === 'state') {
+                        if (!areStatesEqual(oldObj, state)) {
+                            statesToUpdate.push({
+                                type : 'update_state',
+                                id   : state.id,
+                                data : {
+                                    common : state.common,
+                                    native : state.native
+                                }
+                            });
+                        }
+                        old_objects[fullID] = undefined;
+                    } else {
+                        statesToUpdate.push({
+                            type : 'create_state',
+                            id   : state.id,
+                            data : {
+                                common : state.common,
+                                native : state.native
+                            }
+                        });
+                    }
+                }
         }
     } catch (e) {
         adapter.log.error(e.name + ': ' + e.message);
     }
 
+    // eslint-disable-next-line no-unused-vars
     const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
-    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device').map(([id, object]) => ({ type: 'delete_device', id: id }));
-    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state') .map(([id, object]) => ({ type: 'delete_state',  id: id }));
+    // eslint-disable-next-line no-unused-vars
+    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device') .map(([id, object]) => ({ type: 'delete_device', id: id }));
+    // eslint-disable-next-line no-unused-vars
+    const channelsToDelete = oldEntries.filter(([id, object]) => object.type === 'channel').map(([id, object]) => ({ type: 'delete_channel', id: id }));
+    // eslint-disable-next-line no-unused-vars
+    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id, object]) => ({ type: 'delete_state',  id: id }));
 
-    return stateToDelete.concat(devicesToDelete, devicesToUpdate, statesToUpdate);
-}
-
-/**
- * areDevicesEqual
- * @param rhs
- * @param lhs
- * @returns {boolean}
- */
-function areDevicesEqual(rhs, lhs) {
-    return areObjectsEqual(rhs.common, lhs.common) &&
-           areObjectsEqual(rhs.native, lhs.native);
+    return stateToDelete.concat(devicesToUpdate, devicesToDelete, channelsToUpdate, channelsToDelete, statesToUpdate);
 }
 
 /**
@@ -683,11 +707,12 @@ function areDevicesEqual(rhs, lhs) {
  * @returns {boolean}
  */
 function areStatesEqual(rhs, lhs) {
-    return areObjectsEqual(rhs.common, lhs.common);
+    return areObjectsEqual(rhs.common, lhs.common) &&
+           areObjectsEqual(rhs.native, lhs.native);
 }
 
 /**
- * areObjectsEqual
+ * Check if two Objects are identical
  * @param aObj
  * @param bObj
  * @returns {boolean}
@@ -725,7 +750,7 @@ function areObjectsEqual(aObj, bObj) {
  */
 function buildId(id) {
     if (typeof id === 'object')
-        return adapter.namespace + (id.device ? '.' + id.device : '') + (id.state ? '.' + id.state : '');
+        return adapter.namespace + (id.device ? '.' + id.device : '') + (id.channel ? '.' + id.channel : '') + (id.state ? '.' + id.state : '');
     else
         return id;
 }
@@ -765,11 +790,35 @@ function processTasks(tasks) {
                     adapter.delObject(id, err => {
                         if (err) adapter.log.error('Cannot delete device : ' + id + ' Error: ' + err);
                     });
+
+                } else if (task.type === 'create_channel') {
+                    adapter.log.debug('Create channel id=' + id);
+
+                    try {
+                        adapter.createChannel(task.id.device, task.id.channel, task.data.common, task.data.native, err => {
+                            err && adapter.log.error('Cannot create channel : ' + id + ' Error: ' + err);
+                        });
+                    } catch (err) {
+                        adapter.log.error('Cannot create channel : ' + id + ' Error: ' + err);
+                    }
+                } else if (task.type === 'update_channel') {
+                    adapter.log.debug('Update channel id=' + id);
+
+                    adapter.extendObject(id, task.data, err => {
+                        err && adapter.log.error('Cannot update channel : ' + id + ' Error: ' + err);
+                    });
+                } else if (task.type === 'delete_channel') {
+                    adapter.log.debug('Delete channel id=' + id);
+
+                    adapter.delObject(id, err => {
+                        err && adapter.log.error('Cannot delete channel : ' + id + ' Error: ' + err);
+                    });
+
                 } else if (task.type === 'create_state') {
                     adapter.log.debug('Create state id=' + id);
 
                     try {
-                        adapter.createState(task.id.device, null, task.id.state, task.data.common, task.data.native, err => {
+                        adapter.createState(task.id.device, task.id.channel, task.id.state, task.data.common, task.data.native, err => {
                             if (err) adapter.log.error('Cannot create state : ' + id + ' Error: ' + err);
                         });
                     } catch (err) {
@@ -805,6 +854,7 @@ const HTTPCodes = {
         errorJSON  : 1104,
         invalidKey : 1105,
         errorLogin : 1106},
+
     text : {
         1000 : 'OK',
         1101 : 'Invalid argument value',
@@ -812,10 +862,10 @@ const HTTPCodes = {
         1103 : 'Error - value too long',
         1104 : 'Error - malformed JSON on input',
         1105 : 'Invalid argument key',
-        1106 : 'Error - Login'}
-};
+        1106 : 'Error - Login'},
 
-const INVALID_TOKEN = 'Invalid Token';
+    INVALID_TOKEN : 'Invalid Token'
+};
 
 class Twinkly {
 
@@ -859,7 +909,7 @@ class Twinkly {
      * @return {Promise<{}>}
      */
     async _post(path, data, headers = {}) {
-        if (Object.keys(headers).length === 0) headers = this.headers;
+        if (!headers || Object.keys(headers).length === 0) headers = this.headers;
 
         adapter.log.debug(`[${this.name}._post] <${path}>, ${JSON.stringify(data)}, ${JSON.stringify(headers)}`);
 
@@ -870,7 +920,7 @@ class Twinkly {
             // POST ausführen...
             await this._doPOST(path, data, headers).then(response => {result = response;}).catch(error => {resultError = error;});
 
-            if (resultError && resultError === INVALID_TOKEN) {
+            if (resultError && resultError === HTTPCodes.INVALID_TOKEN) {
                 resultError = null;
 
                 // Token erneuern
@@ -881,7 +931,7 @@ class Twinkly {
                     await this._doPOST(path, data, headers).then(response => {result = response;}).catch(error => {resultError = error;});
 
                     // Wenn wieder fehlerhaft, dann Pech gehabt. Token wird gelöscht...
-                    if (resultError && resultError === INVALID_TOKEN)
+                    if (resultError && resultError === HTTPCodes.INVALID_TOKEN)
                         this.token = '';
                 }
             }
@@ -939,7 +989,7 @@ class Twinkly {
             // GET ausführen...
             await this._doGET(path).then(response => {result = response;}).catch(error => {resultError = error;});
 
-            if (resultError && resultError === INVALID_TOKEN) {
+            if (resultError && resultError === HTTPCodes.INVALID_TOKEN) {
                 resultError = null;
 
                 // Token erneuern
@@ -950,7 +1000,7 @@ class Twinkly {
                     await this._doGET(path).then(response => {result = response;}).catch(error => {resultError = error;});
 
                     // Wenn wieder fehlerhaft, dann Pech gehabt. Token wird gelöscht...
-                    if (resultError && resultError === INVALID_TOKEN)
+                    if (resultError && resultError === HTTPCodes.INVALID_TOKEN)
                         this.token = '';
                 }
             }
@@ -1361,7 +1411,8 @@ class Twinkly {
      */
     async set_mqtt(broker_host, broker_port, client_id, user, encryption_key, keep_alive_interval) {
         let resultError;
-        const response = await this._post('mqtt/config', {broker_host         : broker_host,
+        const response = await this._post('mqtt/config', {
+            broker_host         : broker_host,
             broker_port         : broker_port,
             client_id           : client_id,
             user                : user,
@@ -1384,7 +1435,8 @@ class Twinkly {
             const json = JSON.parse(data);
 
             let resultError;
-            const response = await this.set_mqtt(json.broker_host,
+            const response = await this.set_mqtt(
+                json.broker_host,
                 json.broker_port,
                 json.client_id,
                 json.user,
@@ -1430,7 +1482,7 @@ class Twinkly {
             if (resultError)
                 reject(resultError);
             else
-                resolve({response, code: response['code']}); // TODO:
+                resolve({response, code: response['code']}); // TODO: Movie-Config
         });
     }
 
@@ -1442,7 +1494,7 @@ class Twinkly {
      */
     async set_movie_config(frame_delay, leds_number, frames_number) {
         let resultError;
-        const response = await this._post('led/movie/config', {frame_delay   : frame_delay,
+        const response = await this._post('led/movie/config', {frame_delay : frame_delay,
             leds_number   : leds_number,
             frames_number : frames_number}).catch(error => {resultError = error;});
 
@@ -1496,19 +1548,6 @@ function translateTwinklyCode(name, mode, path, code) {
         return `[${name}.${mode}.${path}] ${code} (${HTTPCodes.text[code]})`;
 }
 
-// /**
-//  * Checks if String is a JSON-Object
-//  * @param {string} str
-//  */
-// function isJsonString(str) {
-//     try {
-//         const json = JSON.parse(str);
-//         return (typeof json === 'object');
-//     } catch (e) {
-//         return false;
-//     }
-// }
-
 /**
  * @param {string} url
  * @param {{}} headers
@@ -1555,7 +1594,7 @@ function sendPostHTTP(url, body, headers = {}) {
  */
 function sendHTTP(url, body, method, headers = {}) {
     return new Promise((resolve, reject) => {
-        // Header zusammenbasteln
+        // Content-Type ergänzen falls nicht vorhanden
         if (!Object.keys(headers).includes('Content-Type'))
             headers['Content-Type'] = 'application/json';
 
@@ -1575,8 +1614,9 @@ function sendHTTP(url, body, method, headers = {}) {
                         resolve(response.data);
                 })
                 .catch(error => {
-                    if (error.response && error.response.status === 401 && error.response.data && error.response.data.includes(INVALID_TOKEN))
-                        reject(INVALID_TOKEN);
+                    if (error.response      && error.response.status === 401 &&
+                        error.response.data && error.response.data.includes(HTTPCodes.INVALID_TOKEN))
+                        reject(HTTPCodes.INVALID_TOKEN);
                     else if (error.response && error.response.status !== 200)
                         reject('HTTP Error ' + error.response.statusText);
                     else

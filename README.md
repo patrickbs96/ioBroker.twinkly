@@ -32,6 +32,7 @@ The following additionals States are created per device when checked:
 
 ## TODO
 * Details, MQTT, Timer expand into multiple States
+* Network-Status
 
 ## Changelog
 
