@@ -348,12 +348,12 @@ function syncConfig() {
 
         let result = true;
         try {
-            adapter.log.silly('config devices: '    + JSON.stringify(adapter.config.devices));
-            adapter.log.silly('config interval: '   + adapter.config.interval);
-            adapter.log.silly('config deviceInfo: ' + adapter.config.deviceInfo);
-            adapter.log.silly('config mqtt: '       + adapter.config.mqtt);
-            adapter.log.silly('config timer: '      + adapter.config.timer);
-            adapter.log.silly('config reset: '      + adapter.config.reset);
+            adapter.log.debug('config devices: '    + JSON.stringify(adapter.config.devices));
+            adapter.log.debug('config interval: '   + adapter.config.interval);
+            adapter.log.debug('config deviceInfo: ' + adapter.config.deviceInfo);
+            adapter.log.debug('config mqtt: '       + adapter.config.mqtt);
+            adapter.log.debug('config timer: '      + adapter.config.timer);
+            adapter.log.debug('config reset: '      + adapter.config.reset);
 
             if (!adapter.config.devices) {
                 adapter.log.warn('no connections added...');
