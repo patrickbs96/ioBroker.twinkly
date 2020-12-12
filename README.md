@@ -17,6 +17,8 @@ Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/patrick
 
 Adapter to communicate with the [Twinkly lights](https://www.twinkly.com/).
 
+**This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
+
 ## Settings
 The following Settings are available:
 ![admin.png](img/admin.png)

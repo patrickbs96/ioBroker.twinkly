@@ -24,12 +24,12 @@
             // Set default-values
             if (settings.deviceInfo === undefined)
                 settings.deviceInfo = false;
-            if (settings.reset === undefined)
-                settings.reset = false;
             if (settings.mqtt === undefined)
                 settings.mqtt = false;
             if (settings.timer === undefined)
                 settings.timer = false;
+            if (settings.reset === undefined)
+                settings.reset = false;
 
             const devices = settings.devices || [];
 
@@ -68,9 +68,6 @@
 
             onChange(false);
             values2table('devices', devices, onChange);
-
-            // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-            if (M) M.updateTextFields();
         }
 		
         function save(callback) {
