@@ -24,15 +24,18 @@ The following Settings are available:
 ![admin.png](img/admin.png)
 
 In the table you can add all the Twinkly lights you want to control. 
-`Connected State` is an additional feature here to check if the device is actually connected to the network or not. 
-It can be used by adding a boolean State from e.g. the ping or tr-064 adapter. 
+
+| Column       | Description                        |
+| ------------ | ---------------------------------- |
+| `Enabled`    | Shall this connection be accessed  |
+| `Name`       | Name of the connection in ioBroker |
+| `IP Address` | IP-Address to the Twinkly Lights   |
 
 The following additionals States are created per device when checked:
 * Device Info (read)
 * MQTT (read/write)
 * Timer (read/write)
 * Reset (write)
-
 
 ## TODO
 * Details, MQTT, Timer expand into multiple States
@@ -41,7 +44,7 @@ The following additionals States are created per device when checked:
 ## Changelog
 
 ### 0.0.6
-* (patrickbs96) Implemented Ping to check if Twinkly is connected
+* (patrickbs96) Implemented Ping to check if Twinkly is connected. `Connected State` is no longer needed.
 
 ### 0.0.3
 * (patrickbs96) finalized Admin and Coding
