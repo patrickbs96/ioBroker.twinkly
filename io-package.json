@@ -3,6 +3,18 @@
     "name": "twinkly",
     "version": "0.0.3",
     "news": {
+      "0.0.4": {
+      "en": "Translations",
+      "de": "Übersetzungen",
+      "ru": "Переводы",
+      "pt": "Traduções",
+      "nl": "Vertalingen",
+      "fr": "Traductions",
+      "it": "Traduzioni",
+      "es": "Traducciones",
+      "pl": "Tłumaczenia",
+      "zh-cn": "翻译"
+    },
       "0.0.3": {
         "en": "finalized Admin and Coding",
         "de": "finalisiert Admin und Codierung",
@@ -100,7 +112,7 @@
   },
   "native": {
     "devices": [],
-    "interval": 60,
+    "interval": "60",
     "deviceInfo": false,
     "reset": false,
     "mqtt": false,

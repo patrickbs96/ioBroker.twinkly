@@ -16,7 +16,7 @@ systemDictionary = {
     },
     'Enabled': {
         'en': 'Enabled',
-        'de': 'aktiviert',
+        'de': 'Aktiviert',
         'ru': 'Включено',
         'pt': 'ativado',
         'nl': 'Ingeschakeld',
