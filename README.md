@@ -15,7 +15,7 @@
 
 Adapter to communicate with the [Twinkly lights](https://www.twinkly.com/).
 
-##Settings
+## Settings
 The following Settings are available:
 ![admin.png](img/admin.png)
 
