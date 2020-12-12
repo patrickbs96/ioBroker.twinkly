@@ -38,8 +38,12 @@ The following additionals States are created per device when checked:
 * Reset (write)
 
 ## TODO
-* Details, MQTT, Timer expand into multiple States
+* Reduce Update-States after start
+* State On: Checkbox for which ON-Mode Playlist/Movie 
+* Details, MQTT, Timer expand JSON into multiple States
 * Network-Status
+
+[Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
 
 ## Changelog
 

@@ -193,93 +193,97 @@ async function poll() {
     }
 
     adapter.log.debug(`Start polling...`);
-    for (const connection of Object.keys(connections)) {
-        // Ping-Check
-        await ping.probe(connections[connection].host, {log: adapter.log.debug})
-            .then(({host, alive, ms}) => {
-                adapter.log.debug('Ping result for ' + host + ': ' + alive + ' in ' + (ms === null ? '-' : ms) + 'ms');
+    try {
+        for (const connection of Object.keys(connections)) {
+            // Ping-Check
+            await ping.probe(connections[connection].host, {log: adapter.log.debug})
+                .then(({host, alive, ms}) => {
+                    adapter.log.debug('Ping result for ' + host + ': ' + alive + ' in ' + (ms === null ? '-' : ms) + 'ms');
 
-                connections[connection].connected = alive;
-                adapter.setState(connection + '.connected', connections[connection].connected, true);
-            })
-            .catch(error => {
-                adapter.log.error(connection + ': ' + error);
-            });
+                    connections[connection].connected = alive;
+                    adapter.setState(connection + '.connected', connections[connection].connected, true);
+                })
+                .catch(error => {
+                    adapter.log.error(connection + ': ' + error);
+                });
 
-        // Nur ausführen, wenn Gerät verbunden ist!
-        if (!connections[connection].connected) {
-            adapter.log.debug(`${connection} ist nicht verfügbar!`);
-            continue;
-        }
+            // Nur ausführen, wenn Gerät verbunden ist!
+            if (!connections[connection].connected) {
+                adapter.log.debug(`${connection} ist nicht verfügbar!`);
+                continue;
+            }
 
-        for (const command of statesConfig) {
-            adapter.log.debug(`Polling ${connection}.${command}`);
+            for (const command of statesConfig) {
+                adapter.log.debug(`Polling ${connection}.${command}`);
 
-            if (command === stateNames.mode) {
-                await connections[connection].twinkly.get_mode()
-                    .then(async ({mode}) => {
-                        adapter.setState(connection + '.' + stateNames.on, mode !== LIGHT_MODES.value.off, true);
-                        adapter.setState(connection + '.' + stateNames.mode, mode, true);
-                    })
-                    .catch(error => {
-                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
-                    });
+                if (command === stateNames.mode) {
+                    await connections[connection].twinkly.get_mode()
+                        .then(async ({mode}) => {
+                            adapter.setState(connection + '.' + stateNames.on, mode !== LIGHT_MODES.value.off, true);
+                            adapter.setState(connection + '.' + stateNames.mode, mode, true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
 
-            } else if (command === stateNames.bri) {
-                await connections[connection].twinkly.get_brightness()
-                    .then(async ({value}) => {
-                        await adapter.setState(connection + '.' + command, value, true);
-                    })
-                    .catch(error => {
-                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
-                    });
+                } else if (command === stateNames.bri) {
+                    await connections[connection].twinkly.get_brightness()
+                        .then(async ({value}) => {
+                            await adapter.setState(connection + '.' + command, value, true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
 
-            } else if (command === stateNames.name) {
-                await connections[connection].twinkly.get_name()
-                    .then(async ({name}) => {
-                        adapter.setState(connection + '.' + command, name, true);
-                    })
-                    .catch(error => {
-                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
-                    });
+                } else if (command === stateNames.name) {
+                    await connections[connection].twinkly.get_name()
+                        .then(async ({name}) => {
+                            adapter.setState(connection + '.' + command, name, true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
 
-            } else if (command === stateNames.mqtt) {
-                await connections[connection].twinkly.get_mqtt()
-                    .then(async ({mqtt}) => {
-                        adapter.setState(connection + '.' + command, JSON.stringify(mqtt), true);
-                    })
-                    .catch(error => {
-                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
-                    });
+                } else if (command === stateNames.mqtt) {
+                    await connections[connection].twinkly.get_mqtt()
+                        .then(async ({mqtt}) => {
+                            adapter.setState(connection + '.' + command, JSON.stringify(mqtt), true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
 
-            } else if (command === stateNames.timer) {
-                await connections[connection].twinkly.get_timer()
-                    .then(async ({timer}) => {
-                        adapter.setState(connection + '.' + command, JSON.stringify(timer), true);
-                    })
-                    .catch(error => {
-                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
-                    });
+                } else if (command === stateNames.timer) {
+                    await connections[connection].twinkly.get_timer()
+                        .then(async ({timer}) => {
+                            adapter.setState(connection + '.' + command, JSON.stringify(timer), true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
 
-            } else if (command === stateNames.details) {
-                await connections[connection].twinkly.get_details()
-                    .then(async ({details}) => {
-                        adapter.setState(connection + '.' + command, JSON.stringify(details), true);
-                    })
-                    .catch(error => {
-                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
-                    });
+                } else if (command === stateNames.details) {
+                    await connections[connection].twinkly.get_details()
+                        .then(async ({details}) => {
+                            adapter.setState(connection + '.' + command, JSON.stringify(details), true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
 
-            } else if (command === stateNames.firmware){
-                await connections[connection].twinkly.get_firmware_version()
-                    .then(async ({version}) => {
-                        adapter.setState(connection + '.' + command, version, true);
-                    })
-                    .catch(error => {
-                        adapter.log.error(`Could not get ${connection}.${command} ${error}`);
-                    });
+                } else if (command === stateNames.firmware) {
+                    await connections[connection].twinkly.get_firmware_version()
+                        .then(async ({version}) => {
+                            adapter.setState(connection + '.' + command, version, true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
+                }
             }
         }
+    } catch (e) {
+        adapter.log.error(e);
     }
 
     adapter.log.debug(`Finished polling...`);
@@ -1300,7 +1304,7 @@ class Twinkly {
     }
 
     /**
-     * @return {Promise<{mode: String, code: Number}>}
+     * @return {Promise<{mode: String, mode: Number, code: Number}>}
      */
     async get_mode() {
         let resultError;
@@ -1310,7 +1314,7 @@ class Twinkly {
             if (resultError)
                 reject(resultError);
             else
-                resolve({mode: response['mode'], code: response['code']});
+                resolve({mode: response['mode'], shop_mode: response['shop_mode'], code: response['code']});
         });
     }
 
