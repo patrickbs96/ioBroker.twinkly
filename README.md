@@ -40,6 +40,9 @@ The following additionals States are created per device when checked:
 
 ## Changelog
 
+### 0.0.6
+* (patrickbs96) Implemented Ping to check if Twinkly is connected
+
 ### 0.0.3
 * (patrickbs96) finalized Admin and Coding
 

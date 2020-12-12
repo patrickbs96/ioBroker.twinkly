@@ -50,18 +50,6 @@ systemDictionary = {
         'pl': 'Adres IP',
         'zh-cn': 'IP地址'
     },
-    'Connected State': {
-        'en': 'Connected State',
-        'de': 'State verbunden',
-        'ru': 'Подключенное состояние',
-        'pt': 'Estado conectado',
-        'nl': 'Verbonden staat',
-        'fr': 'État connecté',
-        'it': 'Stato connesso',
-        'es': 'Estado conectado',
-        'pl': 'Połączony stan',
-        'zh-cn': '连接状态',
-    },
     'Interval [s]': {
         'en': 'Interval [s]',
         'de': 'Intervall [s]',

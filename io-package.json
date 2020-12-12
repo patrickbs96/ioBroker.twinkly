@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "news": {
+      "0.0.6": {
+        "en": "Implemented Ping to check if Twinkly is connected",
+        "de": "Ping implementiert, um zu überprüfen, ob Twinkly verbunden ist",
+        "ru": "Реализован Ping, чтобы проверить, подключен ли Twinkly",
+        "pt": "Ping implementado para verificar se Twinkly está conectado",
+        "nl": "Ping geïmplementeerd om te controleren of Twinkly is verbonden",
+        "fr": "Ping implémenté pour vérifier si Twinkly est connecté",
+        "it": "Ping implementato per verificare se Twinkly è connesso",
+        "es": "Ping implementado para verificar si Twinkly está conectado",
+        "pl": "Zaimplementowano ping, aby sprawdzić, czy Twinkly jest połączony",
+        "zh-cn": "实施Ping检查Twinkly是否已连接"
+      },
       "0.0.4": {
       "en": "Translations",
       "de": "Übersetzungen",
@@ -14,7 +26,7 @@
       "es": "Traducciones",
       "pl": "Tłumaczenia",
       "zh-cn": "翻译"
-    },
+      },
       "0.0.3": {
         "en": "finalized Admin and Coding",
         "de": "finalisiert Admin und Codierung",

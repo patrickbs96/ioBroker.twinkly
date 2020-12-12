@@ -2,6 +2,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios').default;
+const ping  = require('./lib/ping');
 
 /**
  * The adapter instance
@@ -16,7 +17,7 @@ let pollingInterval = null;
 
 /**
  * Twinkly-Verbindungen
- * @type {{{name: String, host: String, twinkly: Twinkly, connectedState: String, checkConnected: Boolean, connected: Boolean}}}
+ * @type {{{enabled: Boolean, name: String, host: String, connected: Boolean, twinkly: Twinkly}}}
  */
 const connections = {};
 
@@ -124,7 +125,7 @@ function startAdapter(options) {
                     command    = subscribedStates[id].command;
 
                 // Nur ausführen, wenn Gerät verbunden ist!
-                if (connections[connection].checkConnected && !connections[connection].connected) {
+                if (!connections[connection].connected) {
                     adapter.log.debug(`${connections[connection].name} ist nicht verfügbar!`);
                     return;
                 }
@@ -193,26 +194,22 @@ async function poll() {
 
     adapter.log.debug(`Start polling...`);
     for (const connection of Object.keys(connections)) {
-        // Ping-Test
-        // await adapter.sendToAsync('ping', 'ping', connections[connection].twinkly.host, )
-        //     .then(result => {
-        //         adapter.log.info('Polling: Ping Result=' + result);
-        //     });
+        // Ping-Check
+        await ping.probe(connections[connection].host, {log: adapter.log.debug})
+            .then(({host, alive, ms}) => {
+                adapter.log.debug('Ping result for ' + host + ': ' + alive + ' in ' + (ms === null ? '-' : ms) + 'ms');
 
-        // Connected abfragen
-        if (connections[connection].checkConnected) {
-            await adapter.getForeignStateAsync(connections[connection].connectedState)
-                .then((state) => {
-                    connections[connection].connected = state ? state.val : false;
-                });
+                connections[connection].connected = alive;
+                adapter.setState(connection + '.connected', connections[connection].connected, true);
+            })
+            .catch(error => {
+                adapter.log.error(connection + ': ' + error);
+            });
 
-            adapter.setState(connection + '.connected', connections[connection].connected, true);
-
-            // Nur ausführen, wenn Gerät verbunden ist!
-            if (!connections[connection].connected) {
-                adapter.log.debug(`${connection} ist nicht verfügbar!`);
-                continue;
-            }
+        // Nur ausführen, wenn Gerät verbunden ist!
+        if (!connections[connection].connected) {
+            adapter.log.debug(`${connection} ist nicht verfügbar!`);
+            continue;
         }
 
         for (const command of statesConfig) {
@@ -371,17 +368,9 @@ function syncConfig() {
                             enabled        : device.enabled,
                             name           : device.name,
                             host           : device.host,
-                            twinkly        : new Twinkly(device.name, device.host),
-                            connectedState : device.connectedState,
-                            checkConnected : adapter.getState,
-                            connected      : false
+                            connected      : false,
+                            twinkly        : new Twinkly(device.name, device.host)
                         };
-
-                    // Prüfen ob State existiert
-                    if (typeof connections[deviceName].connectedState !== 'undefined')
-                        adapter.getForeignObject(connections[deviceName].connectedState, (err, obj) => {
-                            connections[deviceName].checkConnected = !err && obj != null;
-                        });
                 }
 
             // Prüfung ob aktive Verbindungen verfügbar sind
