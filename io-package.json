@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "news": {
+      "0.0.8": {
+        "en": "Transform JSON into states: Details, MQTT and Timer ",
+        "de": "JSON in Zustände umwandeln: Details, MQTT und Timer",
+        "ru": "Преобразование JSON в состояния: подробности, MQTT и таймер",
+        "pt": "Transforme JSON em estados: Detalhes, MQTT e Timer",
+        "nl": "Transformeer JSON in staten: Details, MQTT en Timer",
+        "fr": "Transformez JSON en états: Détails, MQTT et minuterie",
+        "it": "Trasforma JSON in stati: Dettagli, MQTT e Timer",
+        "es": "Transforma JSON en estados: detalles, MQTT y temporizador",
+        "pl": "Przekształć JSON w stany: Szczegóły, MQTT i Timer",
+        "zh-cn": "将JSON转换为状态：Details，MQTT和Timer"
+      },
       "0.0.7": {
         "en": "Moved Twinkly Connection into own library",
         "de": "Twinkly Connection wurde in eine eigene Bibliothek verschoben",
