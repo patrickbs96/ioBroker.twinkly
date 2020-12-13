@@ -37,24 +37,20 @@ The following additionals States are created per device when checked:
 * Timer (read/write)
 * Reset (write)
 
+[Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
+
 ## TODO
-* Reduce Update-States after start
 * State On: Checkbox for which ON-Mode Playlist/Movie 
 * Details, MQTT, Timer expand JSON into multiple States
 * Network-Status
 
-[Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
-
 ## Changelog
 
-### 0.0.6
-* (patrickbs96) Implemented Ping to check if Twinkly is connected. `Connected State` is no longer needed.
-
-### 0.0.3
-* (patrickbs96) finalized Admin and Coding
-
-### 0.0.1
-* (patrickbs96) initial release
+### 0.0.x
+* 7 - (patrickbs96) Moved Twinkly Connection into own library
+* 6 - (patrickbs96) Implemented Ping to check if Twinkly is connected. `Connected State` is no longer needed.
+* 3 - (patrickbs96) finalized Admin and Coding
+* 1 - (patrickbs96) initial release
 
 ## License
 MIT License

@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "news": {
+      "0.0.7": {
+        "en": "Moved Twinkly Connection into own library",
+        "de": "Twinkly Connection wurde in eine eigene Bibliothek verschoben",
+        "ru": "Twinkly Connection перенесен в собственную библиотеку",
+        "pt": "Movido Twinkly Connection para sua própria biblioteca",
+        "nl": "Twinkly Connection verplaatst naar eigen bibliotheek",
+        "fr": "Déplacement de Twinkly Connection dans sa propre bibliothèque",
+        "it": "Twinkly Connection è stata spostata nella propria libreria",
+        "es": "Se movió Twinkly Connection a su propia biblioteca",
+        "pl": "Przeniesiono Twinkly Connection do własnej biblioteki",
+        "zh-cn": "将Twinkly Connection移到自己的库中"
+      },
       "0.0.6": {
         "en": "Implemented Ping to check if Twinkly is connected",
         "de": "Ping implementiert, um zu überprüfen, ob Twinkly verbunden ist",
