@@ -62,18 +62,6 @@ systemDictionary = {
         'pl': 'Przedział [s]',
         'zh-cn': '间隔[s]'
     },
-    'Additional Settings:': {
-        'en': 'Additional Settings:',
-        'de': 'Zusätzliche Einstellungen:',
-        'ru': 'Дополнительные настройки:',
-        'pt': 'Configurações adicionais:',
-        'nl': 'Aanvullende instellingen:',
-        'fr': 'Paramètres additionnels:',
-        'it': 'Altre impostazioni:',
-        'es': 'Ajustes adicionales:',
-        'pl': 'Dodatkowe ustawienia:',
-        'zh-cn': '其他设置：'
-    },
     'Device Info': {
         'en': 'Device Info',
         'de': 'Geräteinformationen',
@@ -98,28 +86,16 @@ systemDictionary = {
         'pl': 'MQTT',
         'zh-cn': 'MQTT'
     },
-    'Timer': {
-        'en': 'Timer',
-        'de': 'Timer',
-        'ru': 'Таймер',
-        'pt': 'Cronômetro',
-        'nl': 'Timer',
-        'fr': 'Minuteur',
-        'it': 'Timer',
-        'es': 'Temporizador',
-        'pl': 'Regulator czasowy',
-        'zh-cn': '计时器'
-    },
-    'Reset': {
-        'en': 'Reset',
-        'de': 'Zurücksetzen',
-        'ru': 'Сброс настроек',
-        'pt': 'Redefinir',
-        'nl': 'Reset',
-        'fr': 'Réinitialiser',
-        'it': 'Ripristina',
-        'es': 'Reiniciar',
-        'pl': 'Resetowanie',
-        'zh-cn': '重启'
+    'Transform JSON into states': {
+        'en': 'Transform JSON into states',
+        'de': 'JSON in Zustände umwandeln',
+        'ru': 'Преобразование JSON в состояния',
+        'pt': 'Transforme JSON em estados',
+        'nl': 'Transformeer JSON naar staten',
+        'fr': 'Transformez JSON en états',
+        'it': 'Trasforma JSON in stati',
+        'es': 'Transforma JSON en estados',
+        'pl': 'Przekształć JSON w stany',
+        'zh-cn': '将JSON转换成状态'
     }
 };

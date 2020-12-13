@@ -23,7 +23,7 @@ const connections = {};
 
 /**
  * Liste aller States
- * @type {{connection: String, command: String}}
+ * @type {{connection: String, group: String, command: String}}
  */
 const subscribedStates = {};
 
@@ -42,15 +42,17 @@ const stateNames = {
 
         }
     },
-    timer         : {
-        id: 'timer',
+    timer : {
+        id     : 'timer',
         subIDs : {
-
+            time_now : 'now',
+            time_on  : 'on',
+            time_off : 'off'
         }
     },
     reset         : 'reset',
-    details       : {
-        id: 'details',
+    details : {
+        id     : 'details',
         subIDs : {
 
         }
@@ -69,28 +71,11 @@ const statesConfig = [
     stateNames.on,
     stateNames.mode,
     stateNames.bri,
-    stateNames.name
+    stateNames.name,
+    stateNames.timer.id,
+    stateNames.firmware,
+    stateNames.reset
 ];
-
-const LIGHT_MODES = {
-    value: {
-        rt       : 'rt',
-        on       : 'movie',
-        off      : 'off',
-        playlist : 'playlist',
-        demo     : 'demo',
-        effect   : 'effect'
-    },
-    text : {
-        rt       : 'Real Time',
-        movie    : 'Eingeschaltet',
-        off      : 'Ausgeschaltet',
-        playlist : 'Playlist',
-        demo     : 'Demo',
-        effect   : 'Effect'
-    }
-};
-
 
 /**
  * Starts the adapter instance
@@ -138,6 +123,7 @@ function startAdapter(options) {
 
                 const
                     connection = subscribedStates[id].connection,
+                    group      = subscribedStates[id].group,
                     command    = subscribedStates[id].command;
 
                 // Nur ausführen, wenn Gerät verbunden ist!
@@ -147,47 +133,55 @@ function startAdapter(options) {
                 }
 
                 // Gerät ein-/ausschalten
-                if (command === stateNames.on) {
-                    connections[connection].twinkly.set_mode(state.val ? LIGHT_MODES.value.on : LIGHT_MODES.value.off)
+                if (!group && command === stateNames.on) {
+                    connections[connection].twinkly.set_mode(state.val ? twinkly.lightModes.value.on : twinkly.lightModes.value.off)
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
                 // Mode anpassen
-                } else if (command === stateNames.mode) {
+                } else if (!group && command === stateNames.mode) {
                     connections[connection].twinkly.set_mode(state.val)
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
                 // Helligkeit anpassen
-                } else if (command === stateNames.bri) {
+                } else if (!group && command === stateNames.bri) {
                     connections[connection].twinkly.set_brightness(state.val)
                         .catch(error => {adapter.log.error(`Could not set ${connection}.${command} ${error}`);});
 
                 // Namen anpassen
-                } else if (command === stateNames.name) {
+                } else if (!group && command === stateNames.name) {
                     connections[connection].twinkly.set_name(state.val)
                         .catch(
                             error => {adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                             });
 
                 // MQTT anpassen
-                } else if (command === stateNames.mqtt.id) {
+                } else if (!group && command === stateNames.mqtt.id) {
                     connections[connection].twinkly.set_mqtt_str(state.val)
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
                 // Timer anpassen
-                } else if (command === stateNames.timer.id) {
-                    connections[connection].twinkly.set_mqtt_str(state.val)
+                } else if (!group && command === stateNames.timer.id) {
+                    connections[connection].twinkly.set_timer_str(state.val)
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
+                } else if (group && group === stateNames.timer.id) {
+                    const json = {};
+                    await getJSONStates(connection + '.' + group, json, stateNames.timer.subIDs, {id: command, val: state.val});
+
+                    connections[connection].twinkly.set_timer_str(JSON.stringify(json))
+                        .catch(error => {
+                            adapter.log.error(`Could not set ${connection}.${group}.${command} ${error}`);
+                        });
 
                 // Reset
-                } else if (command === stateNames.reset) {
+                } else if (!group && command === stateNames.reset) {
                     await adapter.setState(id, false, true);
                     connections[connection].twinkly.reset()
                         .catch(error => {
@@ -235,8 +229,8 @@ async function poll() {
                 if (command === stateNames.mode) {
                     await connections[connection].twinkly.get_mode()
                         .then(async ({mode}) => {
-                            adapter.setState(connection + '.' + stateNames.on, mode !== LIGHT_MODES.value.off, true);
-                            adapter.setState(connection + '.' + stateNames.mode, mode, true);
+                            adapter.setStateAsync(connection + '.' + stateNames.on, mode !== twinkly.lightModes.value.off, true);
+                            adapter.setStateAsync(connection + '.' + stateNames.mode, mode, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -245,7 +239,7 @@ async function poll() {
                 } else if (command === stateNames.bri) {
                     await connections[connection].twinkly.get_brightness()
                         .then(async ({value}) => {
-                            await adapter.setState(connection + '.' + command, value, true);
+                            await adapter.setStateAsync(connection + '.' + command, value, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -254,7 +248,7 @@ async function poll() {
                 } else if (command === stateNames.name) {
                     await connections[connection].twinkly.get_name()
                         .then(async ({name}) => {
-                            adapter.setState(connection + '.' + command, name, true);
+                            adapter.setStateAsync(connection + '.' + command, name, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -263,7 +257,7 @@ async function poll() {
                 } else if (command === stateNames.mqtt.id) {
                     await connections[connection].twinkly.get_mqtt()
                         .then(async ({mqtt}) => {
-                            adapter.setState(connection + '.' + command, JSON.stringify(mqtt), true);
+                            adapter.setStateAsync(connection + '.' + command, JSON.stringify(mqtt), true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -272,7 +266,7 @@ async function poll() {
                 } else if (command === stateNames.timer.id) {
                     await connections[connection].twinkly.get_timer()
                         .then(async ({timer}) => {
-                            adapter.setState(connection + '.' + command, JSON.stringify(timer), true);
+                            saveJSONinState(connection + '.' + command, timer, stateNames.timer.subIDs);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -281,7 +275,7 @@ async function poll() {
                 } else if (command === stateNames.details.id) {
                     await connections[connection].twinkly.get_details()
                         .then(async ({details}) => {
-                            adapter.setState(connection + '.' + command, JSON.stringify(details), true);
+                            adapter.setStateAsync(connection + '.' + command, JSON.stringify(details), true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -290,7 +284,7 @@ async function poll() {
                 } else if (command === stateNames.firmware) {
                     await connections[connection].twinkly.get_firmware_version()
                         .then(async ({version}) => {
-                            adapter.setState(connection + '.' + command, version, true);
+                            adapter.setStateAsync(connection + '.' + command, version, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -310,7 +304,16 @@ async function poll() {
 async function main() {
     adapter.subscribeStates('*');
 
-    adapter.config.interval = parseInt(adapter.config.interval, 10) < 15 ? 15 : parseInt(adapter.config.interval, 10);
+    // Set Config Default Values
+    adapter.config.interval = parseInt(adapter.config.interval, 10) < 15 ? 15 : parseInt(adapter.config.interval);
+    if (adapter.config.devices === undefined)
+        adapter.config.devices = {};
+    if (adapter.config.details === undefined)
+        adapter.config.details = false;
+    if (adapter.config.mqtt === undefined)
+        adapter.config.mqtt = false;
+    if (adapter.config.expandJSON === undefined)
+        adapter.config.expandJSON = false;
 
     // States/Objekte anlegen...
     syncConfig()
@@ -332,32 +335,20 @@ async function main() {
  */
 function syncConfig() {
     return new Promise((resolve, reject) => {
-        // Details und Firmware hinzufügen, wenn gewünscht
-        if (adapter.config.deviceInfo) {
+        // Details hinzufügen, wenn gewünscht
+        if (adapter.config.details)
             statesConfig.push(stateNames.details.id);
-            statesConfig.push(stateNames.firmware);
-        }
-
         // MQTT hinzufügen, wenn gewünscht
         if (adapter.config.mqtt)
             statesConfig.push(stateNames.mqtt.id);
-
-        // Timer hinzufügen, wenn gewünscht
-        if (adapter.config.timer)
-            statesConfig.push(stateNames.timer.id);
-
-        // Reset hinzufügen, wenn gewünscht
-        if (adapter.config.reset)
-            statesConfig.push(stateNames.reset);
 
         let result = true;
         try {
             adapter.log.debug('[syncConfig] config devices: '    + JSON.stringify(adapter.config.devices));
             adapter.log.debug('[syncConfig] config interval: '   + adapter.config.interval);
-            adapter.log.debug('[syncConfig] config deviceInfo: ' + adapter.config.deviceInfo);
+            adapter.log.debug('[syncConfig] config details: '    + adapter.config.details);
             adapter.log.debug('[syncConfig] config mqtt: '       + adapter.config.mqtt);
-            adapter.log.debug('[syncConfig] config timer: '      + adapter.config.timer);
-            adapter.log.debug('[syncConfig] config reset: '      + adapter.config.reset);
+            adapter.log.debug('[syncConfig] config expandJSON: ' + adapter.config.expandJSON);
 
             if (!adapter.config.devices) {
                 adapter.log.warn('no connections added...');
@@ -447,7 +438,8 @@ function prepareObjectsByConfig() {
                     host: connections[connection].twinkly.host
                 }
             },
-            states: []
+            states  : [],
+            channels: []
         };
 
         if (statesConfig.includes(stateNames.on))
@@ -472,8 +464,8 @@ function prepareObjectsByConfig() {
                     write : true,
                     type  : 'string',
                     role  : 'state',
-                    def   : LIGHT_MODES.value.off,
-                    states: LIGHT_MODES.text
+                    def   : twinkly.lightModes.value.off,
+                    states: twinkly.lightModes.text
                 }
             });
 
@@ -521,18 +513,67 @@ function prepareObjectsByConfig() {
         }
 
         if (statesConfig.includes(stateNames.timer.id)) {
-            // TODO: Extend
-            config.states.push({
-                id: {device: connection, state: stateNames.timer.id},
-                common: {
-                    name : config.device.common.name + ' Timer',
-                    read : true,
-                    write: true,
-                    type : 'string',
-                    role : 'json',
-                    def  : '{}'
-                }
-            });
+            if (adapter.config.expandJSON) {
+                config.channels.push({
+                    id: {device: connection, channel: stateNames.timer.id},
+                    common: {
+                        name : config.device.common.name + ' Timer',
+                        read : true,
+                        write: false,
+                        type : 'string',
+                        role : 'json',
+                        def  : '{}'
+                    }
+                });
+
+                config.states.push({
+                    id: {device: connection, channel: stateNames.timer.id, state: stateNames.timer.subIDs.time_now},
+                    common: {
+                        name : config.device.common.name + ' Timer Now',
+                        read : true,
+                        write: false,
+                        type : 'number',
+                        role : 'value',
+                        def  : '0'
+                    }
+                });
+
+                config.states.push({
+                    id: {device: connection, channel: stateNames.timer.id, state: stateNames.timer.subIDs.time_on},
+                    common: {
+                        name : config.device.common.name + ' Timer On',
+                        read : true,
+                        write: true,
+                        type : 'number',
+                        role : 'value',
+                        def  : '-1'
+                    }
+                });
+
+                config.states.push({
+                    id: {device: connection, channel: stateNames.timer.id, state: stateNames.timer.subIDs.time_off},
+                    common: {
+                        name : config.device.common.name + ' Timer Off',
+                        read : true,
+                        write: true,
+                        type : 'number',
+                        role : 'value',
+                        def  : '-1'
+                    }
+                });
+            } else {
+                config.states.push({
+                    id: {device: connection, state: stateNames.timer.id},
+                    common: {
+                        name : config.device.common.name + ' Timer',
+                        read : true,
+                        write: true,
+                        type : 'string',
+                        role : 'json',
+                        def  : '{}'
+                    }
+                });
+            }
         }
 
         if (statesConfig.includes(stateNames.reset))
@@ -684,7 +725,7 @@ function prepareTasks(preparedObjects, old_objects) {
 
                     // Nur wenn der State bearbeitet werden darf hinzufügen
                     if (state.common.write)
-                        subscribedStates[fullID] = {connection: state.id.device, command: state.id.state};
+                        subscribedStates[fullID] = {connection: state.id.device, group: state.id.channel, command: state.id.state};
 
                     if (oldObj && oldObj.type === 'state') {
                         if (!areStatesEqual(oldObj, state)) {
@@ -870,6 +911,49 @@ function processTasks(tasks) {
             resolve(true);
         }
     });
+}
+
+/**
+ * Save States from JSON
+ * @param state <String>
+ * @param json <{}>
+ * @param mapping <{}>
+ */
+function saveJSONinState(state, json, mapping) {
+    if (adapter.config.expandJSON) {
+        for (const key of Object.keys(json)) {
+            if (Object.keys(mapping).includes((key)))
+                adapter.setStateAsync(state + '.' + mapping[key], json[key], true);
+            else
+                adapter.log.warn(`[saveJSONinState] State <${state}> with key <${key}> does not exist!`);
+        }
+    } else
+        adapter.setStateAsync(state, JSON.stringify(json), true);
+}
+
+/**
+ * Get States in JSON
+ * @param state <String>
+ * @param json <{}>
+ * @param lastState <{id: String, val: any}>
+ * @param mapping <{}>
+ */
+async function getJSONStates(state, json, mapping, lastState) {
+    for (const key of Object.keys(mapping)) {
+        if (!Object.keys(json).includes((key))) {
+            // Check LastState first
+            if (lastState && mapping[key] === lastState.id)
+                json[key] = lastState.val;
+            else
+                await adapter.getStateAsync(state + '.' + mapping[key])
+                    .then(state => {
+                        if (state)
+                            json[key] = state.val;
+                        else
+                            json[key] = '';
+                    });
+        }
+    }
 }
 
 // @ts-ignore parent is a valid property on module

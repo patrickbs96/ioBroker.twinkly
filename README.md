@@ -34,14 +34,12 @@ In the table you can add all the Twinkly lights you want to control.
 The following additionals States are created per device when checked:
 * Device Info (read)
 * MQTT (read/write)
-* Timer (read/write)
-* Reset (write)
 
 [Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
 
 ## TODO
 * State On: Checkbox for which ON-Mode Playlist/Movie 
-* Details, MQTT, Timer expand JSON into multiple States
+* Details, MQTT expand JSON into multiple States
 * Network-Status
 
 ## Changelog
