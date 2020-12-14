@@ -59,7 +59,6 @@ const stateNames = {
         id     : 'details',
         subIDs : {
             product_name        : 'product_name',
-            // product_version     : 'product_version',
             hardware_version    : 'hardware_version',
             bytes_per_led       : 'bytes_per_led',
             hw_id               : 'hw_id',
