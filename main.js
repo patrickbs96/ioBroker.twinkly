@@ -718,17 +718,6 @@ function prepareObjectsByConfig() {
                     }
                 });
                 config.states.push({
-                    id: {device: connection, channel: stateNames.details.id, state: stateNames.details.subIDs.product_version},
-                    common: {
-                        name : config.device.common.name + ' Details Product Version',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
                     id: {device: connection, channel: stateNames.details.id, state: stateNames.details.subIDs.hardware_version},
                     common: {
                         name : config.device.common.name + ' Details Hardware Version',
