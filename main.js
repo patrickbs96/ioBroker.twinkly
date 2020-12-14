@@ -32,11 +32,11 @@ const subscribedStates = {};
  * @type {{{name: string, id: string}}}
  */
 const stateNames = {
-    on            : 'on',
-    mode          : 'mode',
-    bri           : 'bri',
-    name          : 'name',
-    mqtt          : {
+    on   : 'on',
+    mode : 'mode',
+    bri  : 'bri',
+    name : 'name',
+    mqtt : {
         id     : 'mqtt',
         subIDs : {
             broker_host         : 'broker_host',
@@ -54,7 +54,7 @@ const stateNames = {
             time_off : 'off'
         }
     },
-    reset         : 'reset',
+    reset   : 'reset',
     details : {
         id     : 'details',
         subIDs : {
