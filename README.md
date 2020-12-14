@@ -44,7 +44,7 @@ The following additionals States are created per device when checked:
 ## Changelog
 
 ### 0.0.x
-* 8 - (patrickbs96) Details, MQTT expand JSON into multiple States
+* 8 - (patrickbs96) Transform JSON into states: Details, MQTT and Timer
 * 7 - (patrickbs96) Moved Twinkly Connection into own library
 * 6 - (patrickbs96) Implemented Ping to check if Twinkly is connected. `Connected State` is no longer needed.
 * 3 - (patrickbs96) finalized Admin and Coding

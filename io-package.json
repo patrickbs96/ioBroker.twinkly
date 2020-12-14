@@ -4,7 +4,7 @@
     "version": "0.0.8",
     "news": {
       "0.0.8": {
-        "en": "Transform JSON into states: Details, MQTT and Timer ",
+        "en": "Transform JSON into states: Details, MQTT and Timer",
         "de": "JSON in Zustände umwandeln: Details, MQTT und Timer",
         "ru": "Преобразование JSON в состояния: подробности, MQTT и таймер",
         "pt": "Transforme JSON em estados: Detalhes, MQTT e Timer",
