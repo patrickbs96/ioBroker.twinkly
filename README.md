@@ -39,7 +39,6 @@ The following additionals States are created per device when checked:
 
 ## TODO
 * State On: Checkbox for which ON-Mode Playlist/Movie 
-* Details, MQTT expand JSON into multiple States
 * Network-Status
 
 ## Changelog
