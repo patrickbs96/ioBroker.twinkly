@@ -97,5 +97,17 @@ systemDictionary = {
         'es': 'Transforma JSON en estados',
         'pl': 'Przekształć JSON w stany',
         'zh-cn': '将JSON转换成状态'
+    },
+    'Network Status': {
+        'en': 'Network Status',
+        'de': 'Netzwerkstatus',
+        'ru': 'Состояние сети',
+        'pt': 'Status da rede',
+        'nl': 'Netwerk status',
+        'fr': 'L\'état du réseau',
+        'it': 'Stato della rete',
+        'es': 'Estado de la red',
+        'pl': 'Status sieci',
+        'zh-cn': '网络状态'
     }
 };

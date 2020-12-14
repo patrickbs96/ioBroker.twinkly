@@ -1,8 +1,22 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "news": {
+      "0.0.9": {
+        "Reading Network-Status": {
+          "en": "Reading Network-Status",
+          "de": "Netzwerkstatus lesen",
+          "ru": "Чтение статуса сети",
+          "pt": "Lendo o status da rede",
+          "nl": "Netwerkstatus lezen",
+          "fr": "Lecture de l'état du réseau",
+          "it": "Lettura dello stato della rete",
+          "es": "Lectura del estado de la red",
+          "pl": "Czytanie statusu sieci",
+          "zh-cn": "读取网络状态"
+        }
+      },
       "0.0.8": {
         "en": "Transform JSON into states: Details, MQTT and Timer",
         "de": "JSON in Zustände umwandeln: Details, MQTT und Timer",
@@ -154,10 +168,10 @@
   "native": {
     "devices": [],
     "interval": "60",
-    "deviceInfo": false,
-    "reset": false,
+    "details": false,
     "mqtt": false,
-    "timer": false
+    "timer": false,
+    "network": false
   },
   "objects": [],
   "instanceObjects": []

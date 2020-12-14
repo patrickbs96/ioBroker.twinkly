@@ -41,11 +41,12 @@ The following additionals States are created per device when checked:
 ## TODO
 * Update states after change
 * State On: Checkbox for which ON-Mode Playlist/Movie 
-* Network-Status
+* Network-Status (write/Extend-JSON)
 
 ## Changelog
 
 ### 0.0.x
+* 9 - (patrickbs96) Network-Status (read)
 * 8 - (patrickbs96) Transform JSON into states: Details, MQTT and Timer
 * 7 - (patrickbs96) Moved Twinkly Connection into own library
 * 6 - (patrickbs96) Implemented Ping to check if Twinkly is connected. `Connected State` is no longer needed.

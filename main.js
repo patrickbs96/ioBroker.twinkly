@@ -49,9 +49,9 @@ const stateNames = {
     timer : {
         id     : 'timer',
         subIDs : {
-            time_now : 'now',
-            time_on  : 'on',
-            time_off : 'off'
+            time_now : 'time_now',
+            time_on  : 'time_on',
+            time_off : 'time_off'
         }
     },
     reset   : 'reset',
@@ -81,10 +81,15 @@ const stateNames = {
             base_leds_number    : 'base_leds_number'
         }
     },
-    firmware      : 'firmware'
+    firmware      : 'firmware',
+    networkStatus : {
+        id: 'networkStatus',
+        subIDs : {
 
-    // movieConfig   : 'movieConfig',
-    // networkStatus : 'networkStatus'
+        }
+    }
+
+    // movieConfig   : 'movieConfig'
 };
 
 /**
@@ -197,6 +202,21 @@ function startAdapter(options) {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
 
+                // NetoworkStatus anpassen
+                } else if (!group && command === stateNames.networkStatus.id) {
+                    // connections[connection].twinkly.set_network_status(state.val)
+                    //     .catch(error => {
+                    //         adapter.log.error(`Could not set ${connection}.${command} ${error}`);
+                    //     });
+                } else if (group && group === stateNames.networkStatus.id) {
+                    // const json = {};
+                    // await getJSONStates(connection + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
+                    //
+                    // connections[connection].twinkly.set_mqtt_str(JSON.stringify(json))
+                    //     .catch(error => {
+                    //         adapter.log.error(`Could not set ${connection}.${command} ${error}`);
+                    //     });
+
                 // Timer anpassen
                 } else if (!group && command === stateNames.timer.id) {
                     connections[connection].twinkly.set_timer_str(state.val)
@@ -299,6 +319,15 @@ async function poll() {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
+                } else if (command === stateNames.networkStatus.id) {
+                    await connections[connection].twinkly.get_network_status()
+                        .then(async ({status}) => {
+                            saveJSONinState(connection + '.' + command, status, stateNames.networkStatus.subIDs);
+                        })
+                        .catch(error => {
+                            adapter.log.error(`Could not get ${connection}.${command} ${error}`);
+                        });
+
                 } else if (command === stateNames.timer.id) {
                     await connections[connection].twinkly.get_timer()
                         .then(async ({timer}) => {
@@ -348,6 +377,8 @@ async function main() {
         adapter.config.details = false;
     if (adapter.config.mqtt === undefined)
         adapter.config.mqtt = false;
+    if (adapter.config.network === undefined)
+        adapter.config.network = false;
     if (adapter.config.expandJSON === undefined)
         adapter.config.expandJSON = false;
 
@@ -377,6 +408,9 @@ function syncConfig() {
         // MQTT hinzufügen, wenn gewünscht
         if (adapter.config.mqtt)
             statesConfig.push(stateNames.mqtt.id);
+        // Network hinzufügen, wenn gewünscht
+        if (adapter.config.network)
+            statesConfig.push(stateNames.networkStatus.id);
 
         let result = true;
         try {
@@ -608,6 +642,34 @@ function prepareObjectsByConfig() {
                         name : config.device.common.name + ' MQTT',
                         read : true,
                         write: true,
+                        type : 'string',
+                        role : 'json',
+                        def  : '{}'
+                    }
+                });
+            }
+        }
+
+        if (statesConfig.includes(stateNames.networkStatus.id)) {
+            if (adapter.config.expandJSON) {
+                config.channels.push({
+                    id: {device: connection, channel: stateNames.networkStatus.id},
+                    common: {
+                        name : config.device.common.name + ' Network',
+                        read : true,
+                        write: false,
+                        type : 'string',
+                        role : 'json',
+                        def  : '{}'
+                    }
+                });
+            } else {
+                config.states.push({
+                    id: {device: connection, state: stateNames.networkStatus.id},
+                    common: {
+                        name : config.device.common.name + ' Network',
+                        read : true,
+                        write: false,
                         type : 'string',
                         role : 'json',
                         def  : '{}'
