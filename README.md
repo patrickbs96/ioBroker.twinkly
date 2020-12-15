@@ -39,7 +39,6 @@ The following additionals States are created per device when checked:
 [Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
 
 ## TODO
-* Update states after change
 * State On: Checkbox for which ON-Mode Playlist/Movie 
 * Network-Status (write/Extend-JSON)
 
