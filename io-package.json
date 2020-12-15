@@ -1,21 +1,31 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "news": {
+      "0.0.10": {
+        "en": "Restructured CreateStates (dynamic)",
+        "de": "Restrukturierte CreateStates (dynamisch)",
+        "ru": "Реструктурированный CreateStates (динамический)",
+        "pt": "CreateStates reestruturados (dinâmico)",
+        "nl": "Herstructureerde CreateStates (dynamisch)",
+        "fr": "CreateStates restructuré (dynamique)",
+        "it": "CreateStates ristrutturati (dinamico)",
+        "es": "CreateStates reestructurado (dinámico)",
+        "pl": "Restructured CreateStates (dynamiczne)",
+        "zh-cn": "重组的CreateStates（动态）"
+      },
       "0.0.9": {
-        "Reading Network-Status": {
-          "en": "Reading Network-Status",
-          "de": "Netzwerkstatus lesen",
-          "ru": "Чтение статуса сети",
-          "pt": "Lendo o status da rede",
-          "nl": "Netwerkstatus lezen",
-          "fr": "Lecture de l'état du réseau",
-          "it": "Lettura dello stato della rete",
-          "es": "Lectura del estado de la red",
-          "pl": "Czytanie statusu sieci",
-          "zh-cn": "读取网络状态"
-        }
+        "en": "Reading Network-Status",
+        "de": "Netzwerkstatus lesen",
+        "ru": "Чтение статуса сети",
+        "pt": "Lendo o status da rede",
+        "nl": "Netwerkstatus lezen",
+        "fr": "Lecture de l'état du réseau",
+        "it": "Lettura dello stato della rete",
+        "es": "Lectura del estado de la red",
+        "pl": "Czytanie statusu sieci",
+        "zh-cn": "读取网络状态"
       },
       "0.0.8": {
         "en": "Transform JSON into states: Details, MQTT and Timer",

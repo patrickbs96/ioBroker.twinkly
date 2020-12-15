@@ -33,78 +33,78 @@ const subscribedStates = {};
  * @type {{{name: string, id: string | {}}}}
  */
 const stateNames = {
-    on   : 'on',   // {id: 'on', name: 'Eingeschaltet', write: true, type: 'string', def: ''}
-    mode : 'mode',
-    bri  : 'bri',
-    name : 'name',
+    on   : {id: 'on',   name: 'On',         write: true, type: 'boolean', role: 'switch', def: false},
+    mode : {id: 'mode', name: 'Mode',       write: true, type: 'string',  role: 'state', def: twinkly.lightModes.value.off, states: twinkly.lightModes.text},
+    bri  : {id: 'bri',  name: 'Brightness', write: true, type: 'number',  role: 'level.dimmer', min: 0, max: 100},
+    name : {id: 'name', name: 'Name',       write: true, type: 'string',  role: 'info.name'},
     mqtt : {
-        parent : 'mqtt',
+        parent : {id: 'mqtt', name: 'MQTT', write: true, type: 'string', role: 'json'},
         subIDs : {
-            broker_host         : 'broker_host',
-            broker_port         : 'broker_port',
-            client_id           : 'client_id',
-            user                : 'user',
-            keep_alive_interval : 'keep_alive_interval'
+            broker_host         : {id: 'broker_host', name: 'Broker Host', write: true},
+            broker_port         : {id: 'broker_port', name: 'Broker Port', write: true, type: 'number'},
+            client_id           : {id: 'client_id', name: 'Client ID', write: true},
+            user                : {id: 'user', name: 'User', write: true},
+            keep_alive_interval : {id: 'keep_alive_interval', name: 'Keep Alive Interval', write: true, type: 'number', def: 60}
         }
     },
     timer : {
-        parent : 'timer',
+        parent : {id: 'timer', name: 'Timer', write: true, type: 'string', role: 'json'},
         subIDs : {
-            time_now : 'time_now',
-            time_on  : 'time_on',
-            time_off : 'time_off'
+            time_now : {id: 'time_now', name: 'Now', write: true, type: 'number'},
+            time_on  : {id: 'time_on',  name: 'On',  write: true, type: 'number'},
+            time_off : {id: 'time_off', name: 'Off', write: true, type: 'number'}
         }
     },
-    reset   : 'reset',
+    reset   : {id: 'reset', name: 'Name', write: true, type: 'boolean', role: 'button'},
     details : {
-        parent : 'details',
+        parent : {id: 'details', name: 'Details', write: true, type: 'string', role: 'json'},
         subIDs : {
-            product_name        : 'product_name',
-            hardware_version    : 'hardware_version',
-            bytes_per_led       : 'bytes_per_led',
-            hw_id               : 'hw_id',
-            flash_size          : 'flash_size',
-            led_type            : 'led_type',
-            product_code        : 'product_code',
-            fw_family           : 'fw_family',
-            device_name         : 'device_name',
-            uptime              : 'uptime',
-            mac                 : 'mac',
-            uuid                : 'uuid',
-            max_supported_led   : 'max_supported_led',
-            number_of_led       : 'number_of_led',
-            led_profile         : 'led_profile',
-            frame_rate          : 'frame_rate',
-            measured_frame_rate : 'measured_frame_rate',
-            movie_capacity      : 'movie_capacity',
-            wire_type           : 'wire_type',
-            copyright           : 'copyright',
-            base_leds_number    : 'base_leds_number'
+            product_name        : {id: 'product_name',        name: 'Product Name'},
+            hardware_version    : {id: 'hardware_version',    name: 'Hardware Version'},
+            bytes_per_led       : {id: 'bytes_per_led',       name: 'Bytes per LED',       type: 'number'},
+            hw_id               : {id: 'hw_id',               name: 'Hardware ID'},
+            flash_size          : {id: 'flash_size',          name: 'Flash Size',          type: 'number'},
+            led_type            : {id: 'led_type',            name: 'LED Type',            type: 'number'},
+            product_code        : {id: 'product_code',        name: 'Product Code'},
+            fw_family           : {id: 'fw_family',           name: 'Firmware Family'},
+            device_name         : {id: 'device_name',         name: 'Device Name'},
+            uptime              : {id: 'uptime',              name: 'Uptime',              type: 'number'},
+            mac                 : {id: 'mac',                 name: 'MAC'},
+            uuid                : {id: 'uuid',                name: 'UUID'},
+            max_supported_led   : {id: 'max_supported_led',   name: 'Max Supported LED',   type: 'number'},
+            number_of_led       : {id: 'number_of_led',       name: 'Number of LED',       type: 'number'},
+            led_profile         : {id: 'led_profile',         name: 'LED Profile'},
+            frame_rate          : {id: 'frame_rate',          name: 'Frame Rate',          type: 'number'},
+            measured_frame_rate : {id: 'measured_frame_rate', name: 'Measured Frame Rate', type: 'number'},
+            movie_capacity      : {id: 'movie_capacity',      name: 'Movie Capacity',      type: 'number'},
+            wire_type           : {id: 'wire_type',           name: 'Wired Type',          type: 'number'},
+            copyright           : {id: 'copyright',           name: 'Copyright'},
+            base_leds_number    : {id: 'base_leds_number',    name: 'Base LEDs Number'}
         }
     },
-    firmware      : 'firmware',
+    firmware      : {id: 'firmware', name: 'Firmware'},
     networkStatus : {
-        parent : 'networkStatus',
+        parent : {id: 'network', name: 'Network', write: false, type: 'string', role: 'json'},
         subIDs : {
-            mode    : 'mode',
+            mode    : {id: 'mode', name: 'Mode', write: false, type: 'number'},
             station : {
-                parent : 'station',
+                parent : {id: 'station', name: 'Station', write: false, type: 'string', role: 'json'},
                 subIDs : {
-                    ssid : 'ssid',
-                    ip   : 'ip',
-                    gw   : 'gateway',
-                    mask : 'subnetmask'
+                    ssid : {id: 'ssid',       name: 'SSID',       write: false},
+                    ip   : {id: 'ip',         name: 'IP',         write: false},
+                    gw   : {id: 'gateway',    name: 'Gateway',    write: false},
+                    mask : {id: 'subnetmask', name: 'Subnetmask', write: false}
                 }
             },
             ap : {
-                parent : 'accesspoint',
+                parent : {id: 'accesspoint', name: 'AccessPoint', write: false, type: 'string', role: 'json'},
                 subIDs : {
-                    ssid            : 'ssid',
-                    channel         : 'channel',
-                    ip              : 'ip',
-                    enc             : 'encrypted',
-                    ssid_hidden     : 'ssid_hidden',
-                    max_connections : 'max_connections'
+                    ssid            : {id: 'ssid',            name: 'SSID',            write: false},
+                    channel         : {id: 'channel',         name: 'Channel',         write: false},
+                    ip              : {id: 'ip',              name: 'IP',              write: false},
+                    enc             : {id: 'encrypted',       name: 'Encrypted',       write: false, type: 'number'},
+                    ssid_hidden     : {id: 'ssid_hidden',     name: 'SSID Hidden',     write: false, type: 'number'},
+                    max_connections : {id: 'max_connections', name: 'Max Connections', write: false, type: 'number'}
                 }
             }
         }
@@ -118,13 +118,13 @@ const stateNames = {
  * @type {[]}
  */
 const statesConfig = [
-    stateNames.on,
-    stateNames.mode,
-    stateNames.bri,
-    stateNames.name,
-    stateNames.timer.parent,
-    stateNames.firmware,
-    stateNames.reset
+    stateNames.on.id,
+    stateNames.mode.id,
+    stateNames.bri.id,
+    stateNames.name.id,
+    stateNames.timer.parent.id,
+    stateNames.firmware.id,
+    stateNames.reset.id
 ];
 
 /**
@@ -182,7 +182,7 @@ function startAdapter(options) {
                 }
 
                 // Gerät ein-/ausschalten
-                if (!group && command === stateNames.on) {
+                if (!group && command === stateNames.on.id) {
                     connections[connection].twinkly.set_mode(state.val ? twinkly.lightModes.value.on : twinkly.lightModes.value.off)
                         .then(({code}) => {
                             if (code === twinkly.HTTPCodes.values.ok) poll();
@@ -192,7 +192,7 @@ function startAdapter(options) {
                         });
 
                 // Mode anpassen
-                } else if (!group && command === stateNames.mode) {
+                } else if (!group && command === stateNames.mode.id) {
                     connections[connection].twinkly.set_mode(state.val)
                         .then(({code}) => {
                             if (code === twinkly.HTTPCodes.values.ok) poll();
@@ -202,7 +202,7 @@ function startAdapter(options) {
                         });
 
                 // Helligkeit anpassen
-                } else if (!group && command === stateNames.bri) {
+                } else if (!group && command === stateNames.bri.id) {
                     connections[connection].twinkly.set_brightness(state.val)
                         .then(({code}) => {
                             if (code === twinkly.HTTPCodes.values.ok) poll();
@@ -220,7 +220,7 @@ function startAdapter(options) {
                             });
 
                 // MQTT anpassen
-                } else if (!group && command === stateNames.mqtt.parent) {
+                } else if (!group && command === stateNames.mqtt.parent.id) {
                     connections[connection].twinkly.set_mqtt(state.val)
                         .then(({code}) => {
                             if (code === twinkly.HTTPCodes.values.ok) poll();
@@ -228,7 +228,7 @@ function startAdapter(options) {
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
-                } else if (group && group === stateNames.mqtt.parent) {
+                } else if (group && group === stateNames.mqtt.parent.id) {
                     const json = {};
                     await getJSONStates(connection + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
 
@@ -241,12 +241,12 @@ function startAdapter(options) {
                         });
 
                 // NetoworkStatus anpassen
-                } else if (!group && command === stateNames.networkStatus.parent) {
+                } else if (!group && command === stateNames.networkStatus.parent.id) {
                     // connections[connection].twinkly.set_network_status(state.val)
                     //     .catch(error => {
                     //         adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                     //     });
-                } else if (group && group === stateNames.networkStatus.parent) {
+                } else if (group && group === stateNames.networkStatus.parent.id) {
                     // const json = {};
                     // await getJSONStates(connection + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
                     //
@@ -256,7 +256,7 @@ function startAdapter(options) {
                     //     });
 
                 // Timer anpassen
-                } else if (!group && command === stateNames.timer.parent) {
+                } else if (!group && command === stateNames.timer.parent.id) {
                     connections[connection].twinkly.set_timer(state.val)
                         .then(({code}) => {
                             if (code === twinkly.HTTPCodes.values.ok) poll();
@@ -264,7 +264,7 @@ function startAdapter(options) {
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
-                } else if (group && group === stateNames.timer.parent) {
+                } else if (group && group === stateNames.timer.parent.id) {
                     const json = {};
                     await getJSONStates(connection + '.' + group, json, stateNames.timer.subIDs, {id: command, val: state.val});
 
@@ -281,7 +281,7 @@ function startAdapter(options) {
                         adapter.log.debug(`[stateChange] Timer kann noch nicht übermittelt werden: (${json.time_on} > -1 && ${json.time_off} > -1) || (${json.time_on} === -1 && ${json.time_off} === -1)`);
 
                 // Reset
-                } else if (!group && command === stateNames.reset) {
+                } else if (!group && command === stateNames.reset.id) {
                     await adapter.setState(id, false, true);
                     connections[connection].twinkly.reset()
                         .then(({code}) => {
@@ -329,17 +329,17 @@ async function poll() {
             for (const command of statesConfig) {
                 adapter.log.debug(`[poll] Polling ${connection}.${command}`);
 
-                if (command === stateNames.mode) {
+                if (command === stateNames.mode.id) {
                     await connections[connection].twinkly.get_mode()
                         .then(async ({mode}) => {
-                            adapter.setStateAsync(connection + '.' + stateNames.on, mode.mode !== twinkly.lightModes.value.off, true);
-                            adapter.setStateAsync(connection + '.' + stateNames.mode, mode.mode, true);
+                            adapter.setStateAsync(connection + '.' + stateNames.on.id, mode.mode !== twinkly.lightModes.value.off, true);
+                            adapter.setStateAsync(connection + '.' + stateNames.mode.id, mode.mode, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
-                } else if (command === stateNames.bri) {
+                } else if (command === stateNames.bri.id) {
                     await connections[connection].twinkly.get_brightness()
                         .then(async ({bri}) => {
                             await adapter.setStateAsync(connection + '.' + command, bri.value, true);
@@ -348,7 +348,7 @@ async function poll() {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
-                } else if (command === stateNames.name) {
+                } else if (command === stateNames.name.id) {
                     await connections[connection].twinkly.get_name()
                         .then(async ({name}) => {
                             adapter.setStateAsync(connection + '.' + command, name.name, true);
@@ -357,7 +357,7 @@ async function poll() {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
-                } else if (command === stateNames.mqtt.parent) {
+                } else if (command === stateNames.mqtt.parent.id) {
                     await connections[connection].twinkly.get_mqtt()
                         .then(async ({mqtt}) => {
                             saveJSONinState(connection, mqtt, stateNames.mqtt);
@@ -366,7 +366,7 @@ async function poll() {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
-                } else if (command === stateNames.networkStatus.parent) {
+                } else if (command === stateNames.networkStatus.parent.id) {
                     await connections[connection].twinkly.get_network_status()
                         .then(async ({status}) => {
                             saveJSONinState(connection, status, stateNames.networkStatus);
@@ -375,7 +375,7 @@ async function poll() {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
-                } else if (command === stateNames.timer.parent) {
+                } else if (command === stateNames.timer.parent.id) {
                     await connections[connection].twinkly.get_timer()
                         .then(async ({timer}) => {
                             saveJSONinState(connection, timer, stateNames.timer);
@@ -384,7 +384,7 @@ async function poll() {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
-                } else if (command === stateNames.details.parent) {
+                } else if (command === stateNames.details.parent.id) {
                     await connections[connection].twinkly.get_details()
                         .then(async ({details}) => {
                             saveJSONinState(connection, details, stateNames.details);
@@ -393,7 +393,7 @@ async function poll() {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
                         });
 
-                } else if (command === stateNames.firmware) {
+                } else if (command === stateNames.firmware.id) {
                     await connections[connection].twinkly.get_firmware_version()
                         .then(async ({version}) => {
                             adapter.setStateAsync(connection + '.' + command, version.version, true);
@@ -451,13 +451,13 @@ function syncConfig() {
     return new Promise((resolve, reject) => {
         // Details hinzufügen, wenn gewünscht
         if (adapter.config.details)
-            statesConfig.push(stateNames.details.parent);
+            statesConfig.push(stateNames.details.parent.id);
         // MQTT hinzufügen, wenn gewünscht
         if (adapter.config.mqtt)
-            statesConfig.push(stateNames.mqtt.parent);
+            statesConfig.push(stateNames.mqtt.parent.id);
         // Network hinzufügen, wenn gewünscht
         if (adapter.config.network)
-            statesConfig.push(stateNames.networkStatus.parent);
+            statesConfig.push(stateNames.networkStatus.parent.id);
 
         let result = true;
         try {
@@ -541,6 +541,89 @@ function syncConfig() {
  * @returns {{}}
  */
 function prepareObjectsByConfig() {
+    /**
+     *
+     * @param {{}} config
+     * @param {{id: {}, common: {}, native: {}}} prevChannel
+     * @returns {{}}
+     */
+    function getCommon(config, prevChannel) {
+        const result = {};
+
+        result.name  = (prevChannel.common ? prevChannel.common.name + ' ' : '') + (config.name !== undefined ? config.name : config.id);
+        result.read  = true;
+        result.write = config.write !== undefined ? config.write : false;
+        result.type  = config.type  !== undefined ? config.type  : 'string';
+        result.role  = config.role  !== undefined ? config.role  : 'state';
+
+        if (config.min !== undefined)
+            result.min = config.min;
+        if (config.max !== undefined)
+            result.max = config.max;
+
+        if (result.def === undefined) {
+            if (result.type === 'string')
+                result.def = '';
+            else if (result.type === 'number')
+                result.def = result.min !== undefined ? result.min : 0;
+            else if (result.type === 'boolean')
+                result.def = false;
+        } else
+            result.def = config.def;
+
+        if (config.states !== undefined)
+            result.states = config.states;
+
+        return result;
+    }
+
+    /**
+     * TODO: Automatische Erstellung aller States
+     * @param {{device: {}, states: [], channels: []}} config
+     * @param {{}} states
+     * @param {Boolean} root
+     * @param {{id: {}, common: {}, native: {}}} prevChannel
+     */
+    function prepareConfig(config, states, root, prevChannel) {
+        for (const state of Object.keys(states)) {
+            if (root) {
+                let bContinue = false;
+                if (states[state].parent !== undefined)
+                    bContinue = !statesConfig.includes(states[state].parent.id);
+                else
+                    bContinue = states[state].id === undefined || !statesConfig.includes(states[state].id);
+
+                if (bContinue) continue;
+            }
+
+            const stateObj = {
+                id : {
+                    device  : config.device.id.device,
+                    channel : prevChannel.id.channel ? prevChannel.id.channel : ''
+                },
+                common : getCommon(states[state].parent !== undefined ? states[state].parent : states[state], prevChannel),
+                native : {}
+            };
+
+            if (states[state].parent !== undefined) {
+
+                if (adapter.config.expandJSON && states[state].subIDs !== undefined) {
+                    stateObj.id.channel += (stateObj.id.channel !== '' ? '.' : '') + states[state].parent.id;
+                    config.channels.push(stateObj);
+
+                    prepareConfig(config, states[state].subIDs, false, stateObj);
+                } else {
+                    stateObj.id.state = states[state].parent.id;
+                    config.states.push(stateObj);
+                }
+            } else {
+                stateObj.id.state = states[state].id;
+                config.states.push(stateObj);
+            }
+        }
+    }
+
+
     const result = [];
     for (const connection of Object.keys(connections)) {
         const config = {
@@ -559,662 +642,7 @@ function prepareObjectsByConfig() {
             channels: []
         };
 
-        if (statesConfig.includes(stateNames.on))
-            config.states.push({
-                id: {device: connection, state: stateNames.on},
-                common: {
-                    name : config.device.common.name + ' eingeschaltet',
-                    read : true,
-                    write: true,
-                    type : 'boolean',
-                    role : 'switch',
-                    def  : false
-                }
-            });
-
-        if (statesConfig.includes(stateNames.mode))
-            config.states.push({
-                id: {device: connection, state: stateNames.mode},
-                common: {
-                    name  : config.device.common.name + ' Mode',
-                    read  : true,
-                    write : true,
-                    type  : 'string',
-                    role  : 'state',
-                    def   : twinkly.lightModes.value.off,
-                    states: twinkly.lightModes.text
-                }
-            });
-
-        if (statesConfig.includes(stateNames.bri))
-            config.states.push({
-                id: {device: connection, state: stateNames.bri},
-                common: {
-                    name : config.device.common.name + ' Brightness',
-                    read : true,
-                    write: true,
-                    type : 'number',
-                    role : 'level.dimmer',
-                    min  : 0,
-                    max  : 100,
-                    def  : 0
-                }
-            });
-
-        if (statesConfig.includes(stateNames.name))
-            config.states.push({
-                id: {device: connection, state: stateNames.name},
-                common: {
-                    name : config.device.common.name + ' Name',
-                    read : true,
-                    write: true,
-                    type : 'string',
-                    role : 'info.name',
-                    def: ''
-                }
-            });
-
-        if (statesConfig.includes(stateNames.mqtt.parent)) {
-            if (adapter.config.expandJSON) {
-                config.channels.push({
-                    id: {device: connection, channel: stateNames.mqtt.parent},
-                    common: {
-                        name : config.device.common.name + ' MQTT',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.mqtt.parent, state: stateNames.mqtt.subIDs.broker_host},
-                    common: {
-                        name : config.device.common.name + ' MQTT Broker Host',
-                        read : true,
-                        write: true,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.mqtt.parent, state: stateNames.mqtt.subIDs.broker_port},
-                    common: {
-                        name : config.device.common.name + ' MQTT Broker Port',
-                        read : true,
-                        write: true,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.mqtt.parent, state: stateNames.mqtt.subIDs.client_id},
-                    common: {
-                        name : config.device.common.name + ' MQTT Client ID',
-                        read : true,
-                        write: true,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.mqtt.parent, state: stateNames.mqtt.subIDs.user},
-                    common: {
-                        name : config.device.common.name + ' MQTT User',
-                        read : true,
-                        write: true,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.mqtt.parent, state: stateNames.mqtt.subIDs.keep_alive_interval},
-                    common: {
-                        name : config.device.common.name + ' MQTT Keep Alive Interval',
-                        read : true,
-                        write: true,
-                        type : 'number',
-                        role : 'state',
-                        def  : 60
-                    }
-                });
-            } else {
-                config.states.push({
-                    id: {device: connection, state: stateNames.mqtt.parent},
-                    common: {
-                        name : config.device.common.name + ' MQTT',
-                        read : true,
-                        write: true,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-            }
-        }
-
-        if (statesConfig.includes(stateNames.networkStatus.parent)) {
-            if (adapter.config.expandJSON) {
-                config.channels.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent},
-                    common: {
-                        name : config.device.common.name + ' Network',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent, state: stateNames.networkStatus.subIDs.mode},
-                    common: {
-                        name : config.device.common.name + ' Network Mode',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.channels.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.station.parent},
-                    common: {
-                        name : config.device.common.name + ' Network Station',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.station.parent,
-                        state: stateNames.networkStatus.subIDs.station.subIDs.ssid},
-                    common: {
-                        name : config.device.common.name + ' Network Station SSID',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.station.parent,
-                        state: stateNames.networkStatus.subIDs.station.subIDs.ip},
-                    common: {
-                        name : config.device.common.name + ' Network Station IP',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.station.parent,
-                        state: stateNames.networkStatus.subIDs.station.subIDs.gw},
-                    common: {
-                        name : config.device.common.name + ' Network Station Gateway',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.station.parent,
-                        state: stateNames.networkStatus.subIDs.station.subIDs.mask},
-                    common: {
-                        name : config.device.common.name + ' Network Station Subnetmask',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.channels.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.ap.parent},
-                    common: {
-                        name : config.device.common.name + ' Network AccessPoint',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.ap.parent,
-                        state: stateNames.networkStatus.subIDs.ap.subIDs.ssid},
-                    common: {
-                        name : config.device.common.name + ' Network AccessPoint SSID',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.ap.parent,
-                        state: stateNames.networkStatus.subIDs.ap.subIDs.ip},
-                    common: {
-                        name : config.device.common.name + ' Network AccessPoint IP',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.ap.parent,
-                        state: stateNames.networkStatus.subIDs.ap.subIDs.channel},
-                    common: {
-                        name : config.device.common.name + ' Network AccessPoint Channel',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.ap.parent,
-                        state: stateNames.networkStatus.subIDs.ap.subIDs.enc},
-                    common: {
-                        name : config.device.common.name + ' Network AccessPoint Encrypted',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.ap.parent,
-                        state: stateNames.networkStatus.subIDs.ap.subIDs.max_connections},
-                    common: {
-                        name : config.device.common.name + ' Network AccessPoint Max Connections',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.networkStatus.parent + '.' + stateNames.networkStatus.subIDs.ap.parent,
-                        state: stateNames.networkStatus.subIDs.ap.subIDs.ssid_hidden},
-                    common: {
-                        name : config.device.common.name + ' Network AccessPoint SSID Hidden',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-            } else {
-                config.states.push({
-                    id: {device: connection, state: stateNames.networkStatus.parent},
-                    common: {
-                        name : config.device.common.name + ' Network',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-            }
-        }
-
-        if (statesConfig.includes(stateNames.timer.parent)) {
-            if (adapter.config.expandJSON) {
-                config.channels.push({
-                    id: {device: connection, channel: stateNames.timer.parent},
-                    common: {
-                        name : config.device.common.name + ' Timer',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-
-                config.states.push({
-                    id: {device: connection, channel: stateNames.timer.parent, state: stateNames.timer.subIDs.time_now},
-                    common: {
-                        name : config.device.common.name + ' Timer Now',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'value',
-                        def  : '0'
-                    }
-                });
-
-                config.states.push({
-                    id: {device: connection, channel: stateNames.timer.parent, state: stateNames.timer.subIDs.time_on},
-                    common: {
-                        name : config.device.common.name + ' Timer On',
-                        read : true,
-                        write: true,
-                        type : 'number',
-                        role : 'value',
-                        def  : '-1'
-                    }
-                });
-
-                config.states.push({
-                    id: {device: connection, channel: stateNames.timer.parent, state: stateNames.timer.subIDs.time_off},
-                    common: {
-                        name : config.device.common.name + ' Timer Off',
-                        read : true,
-                        write: true,
-                        type : 'number',
-                        role : 'value',
-                        def  : '-1'
-                    }
-                });
-            } else {
-                config.states.push({
-                    id: {device: connection, state: stateNames.timer.parent},
-                    common: {
-                        name : config.device.common.name + ' Timer',
-                        read : true,
-                        write: true,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-            }
-        }
-
-        if (statesConfig.includes(stateNames.reset))
-            config.states.push({
-                id: {device: connection, state: stateNames.reset},
-                common: {
-                    name : config.device.common.name + ' Reset',
-                    read : true,
-                    write: true,
-                    type : 'boolean',
-                    role : 'button',
-                    def  : false
-                }
-            });
-
-        if (statesConfig.includes(stateNames.details.parent)) {
-            if (adapter.config.expandJSON) {
-                config.channels.push({
-                    id: {device: connection, channel: stateNames.details.parent},
-                    common: {
-                        name : config.device.common.name + ' Details',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.product_name},
-                    common: {
-                        name : config.device.common.name + ' Details Product Name',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.hardware_version},
-                    common: {
-                        name : config.device.common.name + ' Details Hardware Version',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.flash_size},
-                    common: {
-                        name : config.device.common.name + ' Details Flash Size',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.led_type},
-                    common: {
-                        name : config.device.common.name + ' Details Led Type',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.product_code},
-                    common: {
-                        name : config.device.common.name + ' Details Product Code',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.device_name},
-                    common: {
-                        name : config.device.common.name + ' Details Device Name',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.uptime},
-                    common: {
-                        name : config.device.common.name + ' Details Uptime',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.hw_id},
-                    common: {
-                        name : config.device.common.name + ' Details Hardware ID',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.mac},
-                    common: {
-                        name : config.device.common.name + ' Details MAC',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.max_supported_led},
-                    common: {
-                        name : config.device.common.name + ' Details Max supported LED',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.number_of_led},
-                    common: {
-                        name : config.device.common.name + ' Details Number of LED',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.led_profile},
-                    common: {
-                        name : config.device.common.name + ' Details LED Profile',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.frame_rate},
-                    common: {
-                        name : config.device.common.name + ' Details Frame Rate',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.movie_capacity},
-                    common: {
-                        name : config.device.common.name + ' Details Movie Capacity',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.copyright},
-                    common: {
-                        name : config.device.common.name + ' Details Copyright',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.bytes_per_led},
-                    common: {
-                        name : config.device.common.name + ' Details Bytes per LED',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.fw_family},
-                    common: {
-                        name : config.device.common.name + ' Details Firmware Family',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.uuid},
-                    common: {
-                        name : config.device.common.name + ' Details UUID',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'state',
-                        def  : ''
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.measured_frame_rate},
-                    common: {
-                        name : config.device.common.name + ' Details Measured Frame Rate',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-                config.states.push({
-                    id: {device: connection, channel: stateNames.details.parent, state: stateNames.details.subIDs.wire_type},
-                    common: {
-                        name : config.device.common.name + ' Details Wire-Type',
-                        read : true,
-                        write: false,
-                        type : 'number',
-                        role : 'state',
-                        def  : 0
-                    }
-                });
-            } else {
-                config.states.push({
-                    id: {device: connection, state: stateNames.details.parent},
-                    common: {
-                        name : config.device.common.name + ' Details',
-                        read : true,
-                        write: false,
-                        type : 'string',
-                        role : 'json',
-                        def  : '{}'
-                    }
-                });
-            }
-        }
-
-        if (statesConfig.includes(stateNames.firmware))
-            config.states.push({
-                id: {device: connection, state: stateNames.firmware},
-                common: {
-                    name : config.device.common.name + ' Firmware',
-                    read : true,
-                    write: false,
-                    type : 'string',
-                    role : 'state',
-                    def  : ''
-                }
-            });
+        prepareConfig(config, stateNames, true, config.device);
 
         config.states.push({
             id: {device: connection, state: 'connected'},
@@ -1499,20 +927,20 @@ function processTasks(tasks) {
  */
 function saveJSONinState(state, json, mapping) {
     if (adapter.config.expandJSON) {
-        state += '.' + mapping.parent;
+        state += '.' + mapping.parent.id;
         adapter.setStateAsync(state, JSON.stringify(json), true);
 
         for (const key of Object.keys(json)) {
             if (Object.keys(mapping.subIDs).includes((key))) {
                 if (typeof json[key] !== 'object')
-                    adapter.setStateAsync(state + '.' + mapping.subIDs[key], json[key], true);
+                    adapter.setStateAsync(state + '.' + mapping.subIDs[key].id, json[key], true);
                 else
                     saveJSONinState(state, json[key], mapping.subIDs[key]);
             } else
                 adapter.log.warn(`[saveJSONinState] Unhandled Item <${key}> detected!`);
         }
     } else
-        adapter.setStateAsync(state + '.' + mapping.parent, JSON.stringify(json), true);
+        adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true);
 }
 
 /**

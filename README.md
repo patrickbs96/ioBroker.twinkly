@@ -34,23 +34,25 @@ In the table you can add all the Twinkly lights you want to control.
 
 The following additionals States are created per device when checked:
 * Device Info (read)
+* Network Status (read)
 * MQTT (read/write)
 
 [Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
 
 ## TODO
+* Network-Status (write)
 * State On: Checkbox for which ON-Mode Playlist/Movie 
-* Network-Status (write/Extend-JSON)
 
 ## Changelog
 
 ### 0.0.x
-* 9 - (patrickbs96) Network-Status (read)
-* 8 - (patrickbs96) Transform JSON into states: Details, MQTT and Timer
-* 7 - (patrickbs96) Moved Twinkly Connection into own library
-* 6 - (patrickbs96) Implemented Ping to check if Twinkly is connected. `Connected State` is no longer needed.
-* 3 - (patrickbs96) finalized Admin and Coding
-* 1 - (patrickbs96) initial release
+* 10 - (patrickbs96) Restructured CreateStates (dynamic)
+*  9 - (patrickbs96) Network-Status (read)
+*  8 - (patrickbs96) Transform JSON into states: Details, MQTT and Timer
+*  7 - (patrickbs96) Moved Twinkly Connection into own library
+*  6 - (patrickbs96) Implemented Ping to check if Twinkly is connected. `Connected State` is no longer needed.
+*  3 - (patrickbs96) finalized Admin and Coding
+*  1 - (patrickbs96) initial release
 
 ## License
 MIT License
