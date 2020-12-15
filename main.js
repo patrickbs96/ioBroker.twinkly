@@ -40,10 +40,10 @@ const stateNames = {
     mqtt : {
         parent : {id: 'mqtt', name: 'MQTT', write: true, type: 'string', role: 'json'},
         subIDs : {
-            broker_host         : {id: 'broker_host', name: 'Broker Host', write: true},
-            broker_port         : {id: 'broker_port', name: 'Broker Port', write: true, type: 'number'},
-            client_id           : {id: 'client_id', name: 'Client ID', write: true},
-            user                : {id: 'user', name: 'User', write: true},
+            broker_host         : {id: 'broker_host',         name: 'Broker Host',         write: true},
+            broker_port         : {id: 'broker_port',         name: 'Broker Port',         write: true, type: 'number'},
+            client_id           : {id: 'client_id',           name: 'Client ID',           write: true},
+            user                : {id: 'user',                name: 'User',                write: true},
             keep_alive_interval : {id: 'keep_alive_interval', name: 'Keep Alive Interval', write: true, type: 'number', def: 60}
         }
     },
