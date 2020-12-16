@@ -448,7 +448,7 @@ async function main() {
     // Sentry-Test!!!
     // if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
     //     const sentryInstance = adapter.getPluginInstance('sentry');
-    //     if (sentryInstance) {
+    //     if (sentryInstance && sentryInstance.getSentryObject()) {
     //         sentryInstance.getSentryObject().captureException('This is a Sentry test');
     //     }
     // }
