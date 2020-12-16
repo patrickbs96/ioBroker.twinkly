@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "news": {
+      "0.1.4": {
+        "en": "Temporary removing Reset as API path not exists",
+        "de": "Temporäres Entfernen Zurücksetzen als API-Pfad nicht vorhanden",
+        "ru": "Временное удаление Reset as API path не существует",
+        "pt": "Remoção temporária Redefinir porque o caminho da API não existe",
+        "nl": "Tijdelijke verwijdering Reset omdat API-pad niet bestaat",
+        "fr": "Suppression temporaire de Reset car le chemin d'API n'existe pas",
+        "it": "Rimozione temporanea Reimposta come percorso API non esistente",
+        "es": "Eliminación temporal Restablecer como ruta de API no existe",
+        "pl": "Tymczasowe usunięcie Resetuj, ponieważ ścieżka API nie istnieje",
+        "zh-cn": "暂时删除重置为API路径不存在"
+      },
       "0.1.1": {
         "en": "Prevent Crash Case at HTTP Error (Sentry IOBROKER-TWINKLY-3)",
         "de": "Absturz bei HTTP-Fehler verhindern (Sentry IOBROKER-TWINKLY-3)",

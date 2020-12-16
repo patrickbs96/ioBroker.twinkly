@@ -47,6 +47,7 @@ The following additionals States are created per device when checked:
 ## Changelog
 
 ### 0.1.x
+* 4 - (patrickbs96) Temporary removing Reset as API path not exists
 * 1 - (patrickbs96) Prevent Crash Case at HTTP Error (Sentry IOBROKER-TWINKLY-3)
 
 ### 0.0.x
