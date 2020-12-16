@@ -55,7 +55,7 @@ const stateNames = {
             time_off : {id: 'time_off', name: 'Off', write: true, type: 'number'}
         }
     },
-    // reset   : {id: 'reset', name: 'Name', write: true, type: 'boolean', role: 'button'},
+    reset   : {id: 'reset', name: 'Name', write: true, type: 'boolean', role: 'button'},
     details : {
         parent : {id: 'details', name: 'Details', write: true, type: 'string', role: 'json'},
         subIDs : {
@@ -125,8 +125,8 @@ const statesConfig = [
     stateNames.bri.id,
     stateNames.name.id,
     stateNames.timer.parent.id,
-    stateNames.firmware.id,
-    stateNames.reset.id
+    stateNames.firmware.id
+    // stateNames.reset.id
 ];
 
 /**
