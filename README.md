@@ -46,6 +46,9 @@ The following additionals States are created per device when checked:
 
 ## Changelog
 
+### 0.1.x
+* 0 - (patrickbs96) Prevent Crash Case at HTTP Error (Sentry IOBROKER-TWINKLY-3)
+
 ### 0.0.x
 * 10 - (patrickbs96) Restructured CreateStates (dynamic)
 *  9 - (patrickbs96) Network-Status (read)
