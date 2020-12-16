@@ -446,12 +446,12 @@ async function main() {
         });
 
     // Sentry-Test!!!
-    if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
-        const sentryInstance = adapter.getPluginInstance('sentry');
-        if (sentryInstance) {
-            sentryInstance.getSentryObject().captureException('This is a Sentry test');
-        }
-    }
+    // if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
+    //     const sentryInstance = adapter.getPluginInstance('sentry');
+    //     if (sentryInstance) {
+    //         sentryInstance.getSentryObject().captureException('This is a Sentry test');
+    //     }
+    // }
 }
 
 /**
