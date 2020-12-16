@@ -137,7 +137,6 @@ jobs:
         run: |
           npm i -g @sentry/cli
           export SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
-          export SENTRY_URL=https://sentry.io/api/0/
           export SENTRY_ORG=patrickbs96
           export SENTRY_PROJECT=iobroker-twinkly
           export SENTRY_VERSION=iobroker.twinkly@${{ env.VERSION }}
