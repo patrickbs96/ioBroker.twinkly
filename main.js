@@ -108,9 +108,10 @@ const stateNames = {
                 }
             }
         }
-    }
-
+    },
     // movieConfig   : 'movieConfig'
+
+    connected : {id: 'connected', name: 'Connected', type: 'boolean', role: 'indicator.connected'}
 };
 
 /**
@@ -118,6 +119,7 @@ const stateNames = {
  * @type {[]}
  */
 const statesConfig = [
+    stateNames.connected.id,
     stateNames.on.id,
     stateNames.mode.id,
     stateNames.bri.id,
@@ -308,28 +310,29 @@ async function poll() {
     adapter.log.debug(`[poll] Start polling...`);
     try {
         for (const connection of Object.keys(connections)) {
-            // Ping-Check
-            await ping.probe(connections[connection].host, {log: adapter.log.debug})
-                .then(({host, alive, ms}) => {
-                    adapter.log.debug('[poll] Ping result for ' + host + ': ' + alive + ' in ' + (ms === null ? '-' : ms) + 'ms');
-
-                    connections[connection].connected = alive;
-                    adapter.setState(connection + '.connected', connections[connection].connected, true);
-                })
-                .catch(error => {
-                    adapter.log.error(connection + ': ' + error);
-                });
-
-            // Nur ausführen, wenn Gerät verbunden ist!
-            if (!connections[connection].connected) {
-                adapter.log.debug(`[poll] ${connection} ist nicht verfügbar!`);
-                continue;
-            }
-
             for (const command of statesConfig) {
                 adapter.log.debug(`[poll] Polling ${connection}.${command}`);
 
-                if (command === stateNames.mode.id) {
+                if (command === stateNames.connected.id) {
+                    // Ping-Check
+                    await ping.probe(connections[connection].host, {log: adapter.log.debug})
+                        .then(({host, alive, ms}) => {
+                            adapter.log.debug('[poll] Ping result for ' + host + ': ' + alive + ' in ' + (ms === null ? '-' : ms) + 'ms');
+
+                            connections[connection].connected = alive;
+                            adapter.setStateAsync(connection + '.' + command, connections[connection].connected, true);
+                        })
+                        .catch(error => {
+                            adapter.log.error(connection + ': ' + error);
+                        });
+
+                    // Nur ausführen, wenn Gerät verbunden ist!
+                    if (!connections[connection].connected) {
+                        adapter.log.debug(`[poll] ${connection} ist nicht verfügbar!`);
+                        break;
+                    }
+
+                } else if (command === stateNames.mode.id) {
                     await connections[connection].twinkly.get_mode()
                         .then(async ({mode}) => {
                             adapter.setStateAsync(connection + '.' + stateNames.on.id, mode.mode !== twinkly.lightModes.value.off, true);
@@ -436,11 +439,19 @@ async function main() {
                 // Polling starten...
                 pollingInterval = setTimeout(async () => {await poll();}, 5000);
             else
-                adapter.log.error('Polling wird nicht gestartet!');
+                adapter.log.info('Polling wird nicht gestartet!');
         })
         .catch(error => {
             adapter.log.error(error);
         });
+
+    // Sentry-Test!!!
+    if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
+        const sentryInstance = adapter.getPluginInstance('sentry');
+        if (sentryInstance) {
+            sentryInstance.getSentryObject().captureException('This is a Sentry test');
+        }
+    }
 }
 
 /**
@@ -465,11 +476,12 @@ function syncConfig() {
             adapter.log.debug('[syncConfig] config interval: '   + adapter.config.interval);
             adapter.log.debug('[syncConfig] config details: '    + adapter.config.details);
             adapter.log.debug('[syncConfig] config mqtt: '       + adapter.config.mqtt);
+            adapter.log.debug('[syncConfig] config network: '    + adapter.config.network);
             adapter.log.debug('[syncConfig] config expandJSON: ' + adapter.config.expandJSON);
 
-            if (!adapter.config.devices) {
-                adapter.log.warn('no connections added...');
+            if (adapter.config.devices.length === 0) {
                 result = false;
+                adapter.log.info('no connections added...');
             }
 
             // Verbindungen auslesen und erstellen
@@ -493,18 +505,18 @@ function syncConfig() {
                         adapter.log.warn(`Objects with same id = ${stateTools.buildId({device: deviceName, channel: null, state: null}, adapter)} created for two connections ${JSON.stringify(device)}`);
                     else
                         connections[deviceName] = {
-                            enabled        : device.enabled,
-                            name           : device.name,
-                            host           : device.host,
-                            connected      : false,
-                            twinkly        : new twinkly.Connection(adapter.log, device.name, device.host)
+                            enabled   : device.enabled,
+                            name      : device.name,
+                            host      : device.host,
+                            connected : false,
+                            twinkly   : new twinkly.Connection(adapter.log, device.name, device.host)
                         };
                 }
 
             // Prüfung ob aktive Verbindungen verfügbar sind
             if (result && Object.keys(connections).length === 0) {
                 result = false;
-                adapter.log.warn('no enabled connections added...');
+                adapter.log.info('no enabled connections added...');
             }
         } catch (e) {
             result = false;
@@ -556,10 +568,12 @@ function prepareObjectsByConfig() {
         result.type  = config.type  !== undefined ? config.type  : 'string';
         result.role  = config.role  !== undefined ? config.role  : 'state';
 
-        if (config.min !== undefined)
-            result.min = config.min;
-        if (config.max !== undefined)
-            result.max = config.max;
+        if (result.type === 'number') {
+            if (config.min !== undefined)
+                result.min = config.min;
+            if (config.max !== undefined)
+                result.max = config.max;
+        }
 
         if (result.def === undefined) {
             if (result.type === 'string')
@@ -623,38 +637,19 @@ function prepareObjectsByConfig() {
         }
     }
 
-
     const result = [];
     for (const connection of Object.keys(connections)) {
         const config = {
             device: {
-                id: {
-                    device: connection
-                },
-                common: {
-                    name: connections[connection].name
-                },
-                native: {
-                    host: connections[connection].twinkly.host
-                }
+                id     : {device : connection},
+                common : {name   : connections[connection].name},
+                native : {host   : connections[connection].twinkly.host}
             },
-            states  : [],
-            channels: []
+            states   : [],
+            channels : []
         };
 
         prepareConfig(config, stateNames, true, config.device);
-
-        config.states.push({
-            id: {device: connection, state: 'connected'},
-            common: {
-                name : config.device.common.name + ' Connected',
-                read : true,
-                write: false,
-                type : 'boolean',
-                role : 'indicator.connected',
-                def  : false
-            }
-        });
 
         result.push(config);
     }
@@ -719,22 +714,22 @@ function prepareTasks(preparedObjects, old_objects) {
                     if (oldObj && oldObj.type === 'channel') {
                         if (!areStatesEqual(oldObj, channel)) {
                             channelsToUpdate.push({
-                                type: 'update_channel',
-                                id: channel.id,
-                                data: {
-                                    common: channel.common,
-                                    native: channel.native
+                                type : 'update_channel',
+                                id   : channel.id,
+                                data : {
+                                    common : channel.common,
+                                    native : channel.native
                                 }
                             });
                         }
                         old_objects[fullID] = undefined;
                     } else {
                         channelsToUpdate.push({
-                            type: 'create_channel',
-                            id: channel.id,
-                            data: {
-                                common: channel.common,
-                                native: channel.native
+                            type : 'create_channel',
+                            id   : channel.id,
+                            data : {
+                                common : channel.common,
+                                native : channel.native
                             }
                         });
                     }
@@ -757,22 +752,22 @@ function prepareTasks(preparedObjects, old_objects) {
                     if (oldObj && oldObj.type === 'state') {
                         if (!areStatesEqual(oldObj, state)) {
                             statesToUpdate.push({
-                                type: 'update_state',
-                                id: state.id,
-                                data: {
-                                    common: state.common,
-                                    native: state.native
+                                type : 'update_state',
+                                id   : state.id,
+                                data : {
+                                    common : state.common,
+                                    native : state.native
                                 }
                             });
                         }
                         old_objects[fullID] = undefined;
                     } else {
                         statesToUpdate.push({
-                            type: 'create_state',
-                            id: state.id,
-                            data: {
-                                common: state.common,
-                                native: state.native
+                            type : 'create_state',
+                            id   : state.id,
+                            data : {
+                                common : state.common,
+                                native : state.native
                             }
                         });
                     }
