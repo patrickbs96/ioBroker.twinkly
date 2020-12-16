@@ -1,6 +1,6 @@
 {
   "name": "iobroker.twinkly",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Adapter to communicate with the Twinkly lights.",
   "author": {
     "name": "patrickbs96",
