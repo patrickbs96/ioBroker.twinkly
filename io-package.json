@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "news": {
+      "0.1.5": {
+        "en": "Prevent Crash Case at HTTP Error (Sentry IOBROKER-TWINKLY-3)",
+        "de": "Absturz bei HTTP-Fehler verhindern (Sentry IOBROKER-TWINKLY-3)",
+        "ru": "Предотвращение сбоя при ошибке HTTP (Sentry IOBROKER-TWINKLY-3)",
+        "pt": "Prevenir caso de falha em erro HTTP (Sentry IOBROKER-TWINKLY-3)",
+        "nl": "Voorkom een crashcase bij HTTP-fout (Sentry IOBROKER-TWINKLY-3)",
+        "fr": "Empêcher le crash en cas d'erreur HTTP (Sentry IOBROKER-TWINKLY-3)",
+        "it": "Previeni caso di arresto anomalo in caso di errore HTTP (Sentry IOBROKER-TWINKLY-3)",
+        "es": "Evitar caso de bloqueo en caso de error HTTP (Sentry IOBROKER-TWINKLY-3)",
+        "pl": "Zapobiegaj przypadkowi awarii przy błędzie HTTP (Sentry IOBROKER-TWINKLY-3)",
+        "zh-cn": "防止HTTP错误时发生崩溃情况（Sentry IOBROKER-TWINKLY-3）"
+      },
       "0.1.4": {
         "en": "Temporary removing Reset as API path not exists",
         "de": "Temporäres Entfernen Zurücksetzen als API-Pfad nicht vorhanden",

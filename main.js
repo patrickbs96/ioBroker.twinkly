@@ -187,7 +187,7 @@ function startAdapter(options) {
                 if (!group && command === stateNames.on.id) {
                     connections[connection].twinkly.set_mode(state.val ? twinkly.lightModes.value.on : twinkly.lightModes.value.off)
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
@@ -197,7 +197,7 @@ function startAdapter(options) {
                 } else if (!group && command === stateNames.mode.id) {
                     connections[connection].twinkly.set_mode(state.val)
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
@@ -207,7 +207,7 @@ function startAdapter(options) {
                 } else if (!group && command === stateNames.bri.id) {
                     connections[connection].twinkly.set_brightness(state.val)
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(error => {adapter.log.error(`Could not set ${connection}.${command} ${error}`);});
 
@@ -215,7 +215,7 @@ function startAdapter(options) {
                 } else if (!group && command === stateNames.name) {
                     connections[connection].twinkly.set_name(state.val)
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(
                             error => {adapter.log.error(`Could not set ${connection}.${command} ${error}`);
@@ -225,7 +225,7 @@ function startAdapter(options) {
                 } else if (!group && command === stateNames.mqtt.parent.id) {
                     connections[connection].twinkly.set_mqtt(state.val)
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
@@ -236,7 +236,7 @@ function startAdapter(options) {
 
                     connections[connection].twinkly.set_mqtt(json)
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
@@ -261,7 +261,7 @@ function startAdapter(options) {
                 } else if (!group && command === stateNames.timer.parent.id) {
                     connections[connection].twinkly.set_timer(state.val)
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
@@ -274,7 +274,7 @@ function startAdapter(options) {
                     if ((json.time_on > -1 && json.time_off > -1) || (json.time_on === -1 && json.time_off === -1)) {
                         connections[connection].twinkly.set_timer(json)
                             .then(({code}) => {
-                                if (code === twinkly.HTTPCodes.values.ok) poll();
+                                if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                             })
                             .catch(error => {
                                 adapter.log.error(`Could not set ${connection}.${group}.${command} ${error}`);
@@ -287,7 +287,7 @@ function startAdapter(options) {
                     await adapter.setState(id, false, true);
                     connections[connection].twinkly.reset()
                         .then(({code}) => {
-                            if (code === twinkly.HTTPCodes.values.ok) poll();
+                            if (code === twinkly.HTTPCodes.values.ok) poll(connection);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
@@ -301,7 +301,12 @@ function startAdapter(options) {
     }));
 }
 
-async function poll() {
+/**
+ * Polling auf alle Verbindungen ausführen
+ * @param specificConnection
+ * @returns {Promise<void>}
+ */
+async function poll(specificConnection = '') {
     if (pollingInterval) {
         clearTimeout(pollingInterval);
         pollingInterval = null;
@@ -310,6 +315,9 @@ async function poll() {
     adapter.log.debug(`[poll] Start polling...`);
     try {
         for (const connection of Object.keys(connections)) {
+            // Falls gefüllt nur bestimmte Connection abfragen...
+            if (specificConnection !== '' && connection !== specificConnection) continue;
+
             for (const command of statesConfig) {
                 adapter.log.debug(`[poll] Polling ${connection}.${command}`);
 
