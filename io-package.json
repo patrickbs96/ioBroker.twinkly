@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "news": {
+      "0.1.6": {
+        "en": "Update dependencies",
+        "de": "Abhängigkeiten aktualisieren",
+        "ru": "Обновить зависимости",
+        "pt": "Atualizar dependências",
+        "nl": "Update afhankelijkheden",
+        "fr": "Mettre à jour les dépendances",
+        "it": "Aggiorna le dipendenze",
+        "es": "Actualizar dependencias",
+        "pl": "Zaktualizuj zależności",
+        "zh-cn": "更新依赖"
+      },
       "0.1.5": {
         "en": "Prevent Crash Case at HTTP Error (Sentry IOBROKER-TWINKLY-3)",
         "de": "Absturz bei HTTP-Fehler verhindern (Sentry IOBROKER-TWINKLY-3)",
