@@ -3,6 +3,18 @@
     "name": "twinkly",
     "version": "0.1.7",
     "news": {
+      "0.1.7": {
+        "en": "Update dependencies",
+        "de": "Abhängigkeiten aktualisieren",
+        "ru": "Обновить зависимости",
+        "pt": "Atualizar dependências",
+        "nl": "Update afhankelijkheden",
+        "fr": "Mettre à jour les dépendances",
+        "it": "Aggiorna le dipendenze",
+        "es": "Actualizar dependencias",
+        "pl": "Zaktualizuj zależności",
+        "zh-cn": "更新依赖"
+      },
       "0.1.6": {
         "en": "Update dependencies",
         "de": "Abhängigkeiten aktualisieren",
