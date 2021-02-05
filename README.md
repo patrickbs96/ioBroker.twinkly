@@ -47,6 +47,7 @@ The following additionals States are created per device when checked:
 ## Changelog
 
 ### 0.1.x
+* 7 - (patrickbs96) Changes from Review
 * 6 - (patrickbs96) Update dependencies
 * 5 - (patrickbs96) Prevent Crash Case at HTTP Error (Sentry IOBROKER-TWINKLY-3)
 * 4 - (patrickbs96) Temporary removing Reset as API path not exists
@@ -64,7 +65,7 @@ The following additionals States are created per device when checked:
 ## License
 MIT License
 
-Copyright (c) 2020 patrickbs96 <patrickbsimon96@gmail.com>
+Copyright (c) 2021 patrickbs96 <patrickbsimon96@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

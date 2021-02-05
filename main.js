@@ -343,8 +343,8 @@ async function poll(specificConnection = '') {
                 } else if (command === stateNames.mode.id) {
                     await connections[connection].twinkly.get_mode()
                         .then(async ({mode}) => {
-                            adapter.setStateAsync(connection + '.' + stateNames.on.id, mode.mode !== twinkly.lightModes.value.off, true);
-                            adapter.setStateAsync(connection + '.' + stateNames.mode.id, mode.mode, true);
+                            await adapter.setStateAsync(connection + '.' + stateNames.on.id, mode.mode !== twinkly.lightModes.value.off, true);
+                            await adapter.setStateAsync(connection + '.' + stateNames.mode.id, mode.mode, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -362,7 +362,7 @@ async function poll(specificConnection = '') {
                 } else if (command === stateNames.name.id) {
                     await connections[connection].twinkly.get_name()
                         .then(async ({name}) => {
-                            adapter.setStateAsync(connection + '.' + command, name.name, true);
+                            await adapter.setStateAsync(connection + '.' + command, name.name, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -407,7 +407,7 @@ async function poll(specificConnection = '') {
                 } else if (command === stateNames.firmware.id) {
                     await connections[connection].twinkly.get_firmware_version()
                         .then(async ({version}) => {
-                            adapter.setStateAsync(connection + '.' + command, version.version, true);
+                            await adapter.setStateAsync(connection + '.' + command, version.version, true);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
