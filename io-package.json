@@ -112,16 +112,16 @@
         "zh-cn": "实施Ping检查Twinkly是否已连接"
       },
       "0.0.4": {
-      "en": "Translations",
-      "de": "Übersetzungen",
-      "ru": "Переводы",
-      "pt": "Traduções",
-      "nl": "Vertalingen",
-      "fr": "Traductions",
-      "it": "Traduzioni",
-      "es": "Traducciones",
-      "pl": "Tłumaczenia",
-      "zh-cn": "翻译"
+        "en": "Translations",
+        "de": "Übersetzungen",
+        "ru": "Переводы",
+        "pt": "Traduções",
+        "nl": "Vertalingen",
+        "fr": "Traductions",
+        "it": "Traduzioni",
+        "es": "Traducciones",
+        "pl": "Tłumaczenia",
+        "zh-cn": "翻译"
       },
       "0.0.3": {
         "en": "finalized Admin and Coding",
@@ -204,7 +204,8 @@
       "sentry": {
         "dsn": "https://3b050a32f5f74a32968fab1c58a7afad@o490501.ingest.sentry.io/5554454"
       }
-    }
+    },
+    "installedFrom": "https://github.com/patrickbs96/ioBroker.twinkly/tree/Changes-Review/tarball/1db80bc40429f0a78d3f8ebccb0d86416c4d4ceb"
   },
   "native": {
     "devices": [],
