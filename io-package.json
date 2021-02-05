@@ -194,27 +194,10 @@
     "dataSource": "poll",
     "compact": true,
     "materialize": true,
-    "materializeTab": true,
-    "adminTab": {
-      "singleton": true,
-      "name": {
-        "en": "Twinkly",
-        "de": "Twinkly",
-        "ru": "Твинкли",
-        "pt": "Twinkly",
-        "nl": "Twinkly",
-        "fr": "Twinkly",
-        "it": "Twinkly",
-        "es": "Twinkly",
-        "pl": "Twinkly",
-        "zh-cn": "Twinkly"
-      },
-      "link": "",
-      "fa-icon": "info"
-    },
+    "materializeTab": false,
     "dependencies": [
       {
-        "js-controller": ">=1.4.2"
+        "js-controller": ">=2.0.0"
       }
     ],
     "plugins": {
