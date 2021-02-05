@@ -4,16 +4,17 @@
     "version": "0.1.7",
     "news": {
       "0.1.7": {
-        "en": "Update dependencies",
-        "de": "Abhängigkeiten aktualisieren",
-        "ru": "Обновить зависимости",
-        "pt": "Atualizar dependências",
-        "nl": "Update afhankelijkheden",
-        "fr": "Mettre à jour les dépendances",
-        "it": "Aggiorna le dipendenze",
-        "es": "Actualizar dependencias",
-        "pl": "Zaktualizuj zależności",
-        "zh-cn": "更新依赖"
+        "en": "Changes Review",
+        "de": "Änderungsüberprüfung",
+        "ru": "Обзор изменений",
+        "pt": "Revisão de alterações",
+        "nl": "Wijzigingen Review",
+        "fr": "Examen des modifications",
+        "it": "Revisione delle modifiche",
+        "es": "Revisión de cambios",
+        "pl": "Przegląd zmian",
+        "zh-cn": "变更审查"
+      }
       },
       "0.1.6": {
         "en": "Update dependencies",
