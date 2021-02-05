@@ -149,9 +149,10 @@ function startAdapter(options) {
 
                 // Alle Verbindungen abmelden...
                 for (const connection of Object.keys(connections))
-                    connections[connection].twinkly.logout().catch(error => {
-                        adapter.log.error(`[onStop.${connections[connection].twinkly.name}] ${error}`);
-                    });
+                    connections[connection].twinkly.logout()
+                        .catch(error => {
+                            adapter.log.error(`[onStop.${connections[connection].twinkly.name}] ${error}`);
+                        });
 
                 callback();
             } catch (e) {
@@ -441,17 +442,15 @@ async function main() {
         adapter.config.expandJSON = false;
 
     // States/Objekte anlegen...
-    syncConfig()
-        .then(result => {
-            if (result)
-                // Polling starten...
-                poll();
-            else
-                adapter.log.info('Polling wird nicht gestartet!');
-        })
-        .catch(error => {
-            adapter.log.error(error);
-        });
+    try {
+        if (await syncConfig())
+            await poll();
+        else
+            adapter.log.info('Polling wird nicht gestartet!');
+    } catch (e) {
+        adapter.log.error(e);
+        adapter.log.info('Polling wird nicht gestartet!');
+    }
 
     // Sentry-Test!!!
     // if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
@@ -467,7 +466,7 @@ async function main() {
  * @return Promise<Boolean>
  */
 async function syncConfig() {
-    let result = true, resultError;
+    let result = true;
 
     // Details hinzufügen, wenn gewünscht
     if (adapter.config.details)
@@ -527,7 +526,7 @@ async function syncConfig() {
             adapter.log.info('no enabled connections added...');
         }
     } catch (e) {
-        result = false;
+        throw Error(e);
     }
 
     if (result) {
@@ -535,29 +534,20 @@ async function syncConfig() {
         const preparedObjects = prepareObjectsByConfig();
         adapter.log.debug('[syncConfig] Get existing objects');
 
-        await adapter.getAdapterObjectsAsync()
-            .then(async (_objects) => {
-                adapter.log.debug('[syncConfig] Prepare tasks of objects update');
-                const tasks = prepareTasks(preparedObjects, _objects);
+        const _objects = await adapter.getAdapterObjectsAsync();
+        adapter.log.debug('[syncConfig] Prepare tasks of objects update');
+        const tasks = prepareTasks(preparedObjects, _objects);
 
-                adapter.log.debug('[syncConfig] Start tasks of objects update');
-                await processTasks(tasks)
-                    .then(response => {
-                        result = response;
-                        adapter.log.debug('[syncConfig] Finished tasks of objects update');
-                    })
-                    .catch(error => {
-                        resultError = error;
-                    });
-            });
+        adapter.log.debug('[syncConfig] Start tasks of objects update');
+        try {
+            await processTasks(tasks);
+            adapter.log.debug('[syncConfig] Finished tasks of objects update');
+        } catch (e) {
+            throw Error(e);
+        }
     }
 
-    return new Promise((resolve, reject) => {
-        if (resultError)
-            reject(resultError);
-        else
-            resolve(result);
-    });
+    return result;
 }
 
 /**
@@ -848,88 +838,78 @@ function areObjectsEqual(aObj, bObj) {
 /**
  * processTasks
  * @param tasks
- * @return Promise<Boolean>
  */
 async function processTasks(tasks) {
-    let result, resultError;
     if (!tasks || !tasks.length || tasks.length === 0) {
-        resultError = 'Tasks nicht gefüllt!';
-    } else {
-        while (tasks.length > 0) {
-            const
-                task = tasks.shift(),
-                id   = stateTools.buildId(task.id, adapter);
-
-            adapter.log.debug('[processTasks] Task: ' + JSON.stringify(task) + ', ID: ' + id);
-
-            if (task.type === 'create_device') {
-                adapter.log.debug('[processTasks] Create device id=' + id);
-                await stateTools.createDevice(adapter, task.id, task.data.common, task.data.native)
-                    .catch(error => {
-                        adapter.log.error('Cannot create device: ' + id + ' Error: ' + error);
-                    });
-            } else if (task.type === 'update_device') {
-                adapter.log.debug('[processTasks] Update device id=' + id);
-                await adapter.extendObject(id, task.data, err => {
-                    if (err) adapter.log.error('Cannot update device: ' + id + ' Error: ' + err);
-                });
-            } else if (task.type === 'delete_device') {
-                adapter.log.debug('[processTasks] Delete device id=' + id);
-
-                await adapter.delObject(id, err => {
-                    if (err) adapter.log.error('Cannot delete device : ' + id + ' Error: ' + err);
-                });
-
-            } else if (task.type === 'create_channel') {
-                adapter.log.debug('[processTasks] Create channel id=' + id);
-                await stateTools.createChannel(adapter, task.id, task.data.common, task.data.native)
-                    .catch(error => {
-                        adapter.log.error('Cannot create channel: ' + id + ' Error: ' + error);
-                    });
-            } else if (task.type === 'update_channel') {
-                adapter.log.debug('[processTasks] Update channel id=' + id);
-
-                await adapter.extendObject(id, task.data, err => {
-                    err && adapter.log.error('Cannot update channel : ' + id + ' Error: ' + err);
-                });
-            } else if (task.type === 'delete_channel') {
-                adapter.log.debug('[processTasks] Delete channel id=' + id);
-
-                await adapter.delObject(id, err => {
-                    err && adapter.log.error('Cannot delete channel : ' + id + ' Error: ' + err);
-                });
-
-            } else if (task.type === 'create_state') {
-                adapter.log.debug('[processTasks] Create state id=' + id);
-                await stateTools.createState(adapter, task.id, task.data.common, task.data.native)
-                    .catch(error => {
-                        adapter.log.error('Cannot create state: ' + id + ' Error: ' + error);
-                    });
-            } else if (task.type === 'update_state') {
-                adapter.log.debug('[processTasks] Update state id=' + id);
-
-                await adapter.extendObject(id, task.data, err => {
-                    if (err) adapter.log.error('Cannot update state : ' + id + ' Error: ' + err);
-                });
-            } else if (task.type === 'delete_state') {
-                adapter.log.debug('[processTasks] Delete state id=' + id);
-
-                await adapter.delObject(id, err => {
-                    if (err) adapter.log.error('Cannot delete state : ' + id + ' Error: ' + err);
-                });
-            } else
-                adapter.log.error('Unknown task type: ' + JSON.stringify(task));
-        }
-
-        result = true;
+        adapter.log.debug('[processTasks] No tasks to process!');
+        return;
     }
 
-    return new Promise((resolve, reject) => {
-        if (resultError)
-            reject(resultError);
-        else
-            resolve(result);
-    });
+    while (tasks.length > 0) {
+        const
+            task = tasks.shift(),
+            id   = stateTools.buildId(task.id, adapter);
+
+        adapter.log.debug('[processTasks] Task: ' + JSON.stringify(task) + ', ID: ' + id);
+
+        if (task.type === 'create_device') {
+            adapter.log.debug('[processTasks] Create device id=' + id);
+            await stateTools.createDevice(adapter, task.id, task.data.common, task.data.native)
+                .catch(error => {
+                    adapter.log.error('Cannot create device: ' + id + ' Error: ' + error);
+                });
+        } else if (task.type === 'update_device') {
+            adapter.log.debug('[processTasks] Update device id=' + id);
+            await adapter.extendObject(id, task.data, err => {
+                if (err) adapter.log.error('Cannot update device: ' + id + ' Error: ' + err);
+            });
+        } else if (task.type === 'delete_device') {
+            adapter.log.debug('[processTasks] Delete device id=' + id);
+
+            await adapter.delObject(id, err => {
+                if (err) adapter.log.error('Cannot delete device : ' + id + ' Error: ' + err);
+            });
+
+        } else if (task.type === 'create_channel') {
+            adapter.log.debug('[processTasks] Create channel id=' + id);
+            await stateTools.createChannel(adapter, task.id, task.data.common, task.data.native)
+                .catch(error => {
+                    adapter.log.error('Cannot create channel: ' + id + ' Error: ' + error);
+                });
+        } else if (task.type === 'update_channel') {
+            adapter.log.debug('[processTasks] Update channel id=' + id);
+
+            await adapter.extendObject(id, task.data, err => {
+                err && adapter.log.error('Cannot update channel : ' + id + ' Error: ' + err);
+            });
+        } else if (task.type === 'delete_channel') {
+            adapter.log.debug('[processTasks] Delete channel id=' + id);
+
+            await adapter.delObject(id, err => {
+                err && adapter.log.error('Cannot delete channel : ' + id + ' Error: ' + err);
+            });
+
+        } else if (task.type === 'create_state') {
+            adapter.log.debug('[processTasks] Create state id=' + id);
+            await stateTools.createState(adapter, task.id, task.data.common, task.data.native)
+                .catch(error => {
+                    adapter.log.error('Cannot create state: ' + id + ' Error: ' + error);
+                });
+        } else if (task.type === 'update_state') {
+            adapter.log.debug('[processTasks] Update state id=' + id);
+
+            await adapter.extendObject(id, task.data, err => {
+                if (err) adapter.log.error('Cannot update state : ' + id + ' Error: ' + err);
+            });
+        } else if (task.type === 'delete_state') {
+            adapter.log.debug('[processTasks] Delete state id=' + id);
+
+            await adapter.delObject(id, err => {
+                if (err) adapter.log.error('Cannot delete state : ' + id + ' Error: ' + err);
+            });
+        } else
+            adapter.log.error('Unknown task type: ' + JSON.stringify(task));
+    }
 }
 
 /**
