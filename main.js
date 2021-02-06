@@ -431,7 +431,7 @@ async function main() {
     // Set Config Default Values
     adapter.config.interval = parseInt(adapter.config.interval, 10) < 15 ? 15 : parseInt(adapter.config.interval);
     if (adapter.config.devices === undefined)
-        adapter.config.devices = {};
+        adapter.config.devices = [];
     if (adapter.config.details === undefined)
         adapter.config.details = false;
     if (adapter.config.mqtt === undefined)
@@ -487,8 +487,8 @@ async function syncConfig() {
         adapter.log.debug('[syncConfig] config expandJSON: ' + adapter.config.expandJSON);
 
         if (adapter.config.devices.length === 0) {
-            result = false;
             adapter.log.info('no connections added...');
+            result = false;
         }
 
         // Verbindungen auslesen und erstellen
@@ -522,8 +522,8 @@ async function syncConfig() {
 
         // Prüfung ob aktive Verbindungen verfügbar sind
         if (result && Object.keys(connections).length === 0) {
-            result = false;
             adapter.log.info('no enabled connections added...');
+            result = false;
         }
     } catch (e) {
         throw Error(e);
@@ -532,9 +532,10 @@ async function syncConfig() {
     if (result) {
         adapter.log.debug('[syncConfig] Prepare objects');
         const preparedObjects = prepareObjectsByConfig();
-        adapter.log.debug('[syncConfig] Get existing objects');
 
+        adapter.log.debug('[syncConfig] Get existing objects');
         const _objects = await adapter.getAdapterObjectsAsync();
+
         adapter.log.debug('[syncConfig] Prepare tasks of objects update');
         const tasks = prepareTasks(preparedObjects, _objects);
 
