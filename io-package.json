@@ -1,19 +1,19 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "news": {
-      "0.1.7": {
-        "en": "Changes Review",
-        "de": "Änderungsüberprüfung",
-        "ru": "Обзор изменений",
-        "pt": "Revisão de alterações",
-        "nl": "Wijzigingen Review",
-        "fr": "Examen des modifications",
-        "it": "Revisione delle modifiche",
-        "es": "Revisión de cambios",
-        "pl": "Przegląd zmian",
-        "zh-cn": "变更审查"
+      "0.1.8": {
+        "en": "Changes from the Review",
+        "de": "Änderungen aus der Überprüfung",
+        "ru": "Изменения по сравнению с обзором",
+        "pt": "Mudanças da revisão",
+        "nl": "Wijzigingen ten opzichte van de recensie",
+        "fr": "Changements par rapport à l'examen",
+        "it": "Modifiche dalla revisione",
+        "es": "Cambios de la revisión",
+        "pl": "Zmiany z przeglądu",
+        "zh-cn": "评论的变化"
       },
       "0.1.6": {
         "en": "Update dependencies",
