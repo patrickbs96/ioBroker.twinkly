@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "news": {
+      "0.1.9": {
+        "en": "Update API values to Firmware 2.7.1",
+        "de": "API-Werte auf Firmware 2.7.1 aktualisieren",
+        "ru": "Обновите значения API до микропрограммы 2.7.1",
+        "pt": "Atualize os valores da API para o Firmware 2.7.1",
+        "nl": "Update API-waarden naar Firmware 2.7.1",
+        "fr": "Mettre à jour les valeurs de l'API vers le firmware 2.7.1",
+        "it": "Aggiorna i valori API al firmware 2.7.1",
+        "es": "Actualizar los valores de la API al firmware 2.7.1",
+        "pl": "Zaktualizuj wartości API do oprogramowania układowego 2.7.1",
+        "zh-cn": "将 API 值更新到固件 2.7.1"
+      },
       "0.1.8": {
         "en": "Changes from the Review",
         "de": "Änderungen aus der Überprüfung",

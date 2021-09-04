@@ -86,18 +86,6 @@ systemDictionary = {
         'pl': 'MQTT',
         'zh-cn': 'MQTT'
     },
-    'Transform JSON into states': {
-        'en': 'Transform JSON into states',
-        'de': 'JSON in Zustände umwandeln',
-        'ru': 'Преобразование JSON в состояния',
-        'pt': 'Transforme JSON em estados',
-        'nl': 'Transformeer JSON naar staten',
-        'fr': 'Transformez JSON en états',
-        'it': 'Trasforma JSON in stati',
-        'es': 'Transforma JSON en estados',
-        'pl': 'Przekształć JSON w stany',
-        'zh-cn': '将JSON转换成状态'
-    },
     'Network Status': {
         'en': 'Network Status',
         'de': 'Netzwerkstatus',

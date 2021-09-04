@@ -26,8 +26,6 @@
                 settings.details = false;
             if (settings.mqtt === undefined)
                 settings.mqtt = false;
-            if (settings.expandJSON === undefined)
-                settings.expandJSON = false;
 
             const devices = settings.devices || [];
 
@@ -106,9 +104,9 @@
                     <table class="table-values">
                         <thead>
                         <tr>
-                            <th data-name="enabled"   class="translate" style="width: 70px" data-style="width: 80px" data-type="checkbox">Enabled</th>
+                            <th data-name="enabled"   class="translate" style="width: 100px" data-style="width: 80px" data-type="checkbox">Enabled</th>
                             <th data-name="name"      class="translate">Name</th>
-                            <th data-name="host"      class="translate" style="width: 120px; white-space: nowrap" >IP Address</th>
+                            <th data-name="host"      class="translate" style="width: 30%; white-space: nowrap" >IP Address</th>
                             <th data-buttons="delete" style="width: 120px"></th>
                         </tr>
                         </thead>
@@ -138,12 +136,6 @@
                     <div class="col s12">
                         <input class="value" id="network" type="checkbox">
                         <span class="translate" for="network">Network Status</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <input class="value" id="expandJSON" type="checkbox">
-                        <span class="translate" for="expandJSON">Transform JSON into states</span>
                     </div>
                 </div>
             </div>

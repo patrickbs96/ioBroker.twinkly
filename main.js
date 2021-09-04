@@ -30,14 +30,24 @@ const subscribedStates = {};
 
 /**
  * Namen der einzelnen States, Mapping für das Speichern nach dem Polling
- * @type {{{name: string, id: string | {}}}}
+ * @type {{[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}}}, expandJSON: boolean}}}
  */
 const stateNames = {
-    on   : {id: 'on',   name: 'On',         write: true, type: 'boolean', role: 'switch', def: false},
-    mode : {id: 'mode', name: 'Mode',       write: true, type: 'string',  role: 'state', def: twinkly.lightModes.value.off, states: twinkly.lightModes.text},
-    bri  : {id: 'bri',  name: 'Brightness', write: true, type: 'number',  role: 'level.dimmer', min: 0, max: 100},
-    name : {id: 'name', name: 'Name',       write: true, type: 'string',  role: 'info.name'},
-    mqtt : {
+    'on'   : {id: 'on', name: 'On', write: true, type: 'boolean', role: 'switch', def: false},
+    'mode' : {
+        parent : {id: 'mode', name: 'Mode', write: true, type: 'string', role: 'json'},
+        subIDs : {
+            mode      : {id: 'mode',      name: 'Mode',       write: true, type: 'string',  role: 'state', def: twinkly.lightModes.value.off, states: twinkly.lightModes.text},
+            shop_mode : {id: 'shop_mode', name: 'Shop',       type: 'number'},
+            id        : {id: 'id',        name: 'Id',         type: 'number'},
+            unique_id : {id: 'unique_id', name: 'Unique Id'},
+            name      : {id: 'name',      name: 'Name'}
+        },
+        expandJSON: true
+    },
+    'bri'  : {id: 'bri',  name: 'Brightness', write: true, type: 'number',  role: 'level.dimmer', min: 0, max: 100},
+    'name' : {id: 'name', name: 'Name',       write: true, type: 'string',  role: 'info.name'},
+    'mqtt' : {
         parent : {id: 'mqtt', name: 'MQTT', write: true, type: 'string', role: 'json'},
         subIDs : {
             broker_host         : {id: 'broker_host',         name: 'Broker Host',         write: true},
@@ -45,18 +55,20 @@ const stateNames = {
             client_id           : {id: 'client_id',           name: 'Client ID',           write: true},
             user                : {id: 'user',                name: 'User',                write: true},
             keep_alive_interval : {id: 'keep_alive_interval', name: 'Keep Alive Interval', write: true, type: 'number', def: 60}
-        }
+        },
+        expandJSON: true
     },
-    timer : {
+    'timer' : {
         parent : {id: 'timer', name: 'Timer', write: true, type: 'string', role: 'json'},
         subIDs : {
             time_now : {id: 'time_now', name: 'Now', write: true, type: 'number'},
             time_on  : {id: 'time_on',  name: 'On',  write: true, type: 'number'},
             time_off : {id: 'time_off', name: 'Off', write: true, type: 'number'}
-        }
+        },
+        expandJSON: false
     },
-    reset   : {id: 'reset', name: 'Name', write: true, type: 'boolean', role: 'button'},
-    details : {
+    'reset'   : {id: 'reset', name: 'Name', write: true, type: 'boolean', role: 'button'},
+    'details' : {
         parent : {id: 'details', name: 'Details', write: true, type: 'string', role: 'json'},
         subIDs : {
             product_name        : {id: 'product_name',        name: 'Product Name'},
@@ -68,7 +80,7 @@ const stateNames = {
             product_code        : {id: 'product_code',        name: 'Product Code'},
             fw_family           : {id: 'fw_family',           name: 'Firmware Family'},
             device_name         : {id: 'device_name',         name: 'Device Name'},
-            uptime              : {id: 'uptime',              name: 'Uptime',              type: 'number'},
+            uptime              : {id: 'uptime',              name: 'Uptime'},
             mac                 : {id: 'mac',                 name: 'MAC'},
             uuid                : {id: 'uuid',                name: 'UUID'},
             max_supported_led   : {id: 'max_supported_led',   name: 'Max Supported LED',   type: 'number'},
@@ -80,10 +92,11 @@ const stateNames = {
             wire_type           : {id: 'wire_type',           name: 'Wired Type',          type: 'number'},
             copyright           : {id: 'copyright',           name: 'Copyright'},
             base_leds_number    : {id: 'base_leds_number',    name: 'Base LEDs Number'}
-        }
+        },
+        expandJSON: true
     },
-    firmware      : {id: 'firmware', name: 'Firmware'},
-    networkStatus : {
+    'firmware'      : {id: 'firmware', name: 'Firmware'},
+    'networkStatus' : {
         parent : {id: 'network', name: 'Network', write: false, type: 'string', role: 'json'},
         subIDs : {
             mode    : {id: 'mode', name: 'Mode', write: false, type: 'number'},
@@ -107,11 +120,12 @@ const stateNames = {
                     max_connections : {id: 'max_connections', name: 'Max Connections', write: false, type: 'number'}
                 }
             }
-        }
+        },
+        expandJSON: true
     },
     // movieConfig   : 'movieConfig'
 
-    connected : {id: 'connected', name: 'Connected', type: 'boolean', role: 'indicator.connected'}
+    'connected' : {id: 'connected', name: 'Connected', type: 'boolean', role: 'indicator.connected'}
 };
 
 /**
@@ -121,7 +135,7 @@ const stateNames = {
 const statesConfig = [
     stateNames.connected.id,
     stateNames.on.id,
-    stateNames.mode.id,
+    stateNames.mode.parent.id,
     stateNames.bri.id,
     stateNames.name.id,
     stateNames.timer.parent.id,
@@ -195,7 +209,7 @@ function startAdapter(options) {
                         });
 
                 // Mode anpassen
-                } else if (!group && command === stateNames.mode.id) {
+                } else if (group && group === stateNames.mode.parent.id && command === stateNames.mode.subIDs.mode.id) {
                     connections[connection].twinkly.set_mode(state.val)
                         .then(({code}) => {
                             if (code === twinkly.HTTPCodes.values.ok) poll(connection);
@@ -232,7 +246,8 @@ function startAdapter(options) {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
                 } else if (group && group === stateNames.mqtt.parent.id) {
-                    const json = {};
+                    /** @type {{broker_host: String, broker_port: Number, client_id: String, user: String, keep_alive_interval : Number}} */
+                    const json = {broker_host: '', broker_port: 0, client_id: '', user: '', keep_alive_interval : 0};
                     await getJSONStates(connection + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
 
                     connections[connection].twinkly.set_mqtt(json)
@@ -268,7 +283,8 @@ function startAdapter(options) {
                             adapter.log.error(`Could not set ${connection}.${command} ${error}`);
                         });
                 } else if (group && group === stateNames.timer.parent.id) {
-                    const json = {};
+                    /** @type {{time_now: Number, time_on: Number, time_off: Number}} */
+                    const json = {time_now: -1, time_on: -1, time_off: -1};
                     await getJSONStates(connection + '.' + group, json, stateNames.timer.subIDs, {id: command, val: state.val});
 
                     // Prüfen ob Daten gesendet werden können
@@ -341,11 +357,11 @@ async function poll(specificConnection = '') {
                         break;
                     }
 
-                } else if (command === stateNames.mode.id) {
+                } else if (command === stateNames.mode.parent.id) {
                     await connections[connection].twinkly.get_mode()
                         .then(async ({mode}) => {
                             await adapter.setStateAsync(connection + '.' + stateNames.on.id, mode.mode !== twinkly.lightModes.value.off, true);
-                            await adapter.setStateAsync(connection + '.' + stateNames.mode.id, mode.mode, true);
+                            saveJSONinState(connection, mode, stateNames.mode);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -429,7 +445,7 @@ async function main() {
     adapter.subscribeStates('*');
 
     // Set Config Default Values
-    adapter.config.interval = parseInt(adapter.config.interval, 10) < 15 ? 15 : parseInt(adapter.config.interval);
+    adapter.config.interval = adapter.config.interval < 15 ? 15 : adapter.config.interval;
     if (adapter.config.devices === undefined)
         adapter.config.devices = [];
     if (adapter.config.details === undefined)
@@ -438,8 +454,6 @@ async function main() {
         adapter.config.mqtt = false;
     if (adapter.config.network === undefined)
         adapter.config.network = false;
-    if (adapter.config.expandJSON === undefined)
-        adapter.config.expandJSON = false;
 
     // States/Objekte anlegen...
     try {
@@ -451,14 +465,6 @@ async function main() {
         adapter.log.error(e);
         adapter.log.info('Polling wird nicht gestartet!');
     }
-
-    // Sentry-Test!!!
-    // if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
-    //     const sentryInstance = adapter.getPluginInstance('sentry');
-    //     if (sentryInstance && sentryInstance.getSentryObject()) {
-    //         sentryInstance.getSentryObject().captureException('This is a Sentry test');
-    //     }
-    // }
 }
 
 /**
@@ -484,7 +490,6 @@ async function syncConfig() {
         adapter.log.debug('[syncConfig] config details: '    + adapter.config.details);
         adapter.log.debug('[syncConfig] config mqtt: '       + adapter.config.mqtt);
         adapter.log.debug('[syncConfig] config network: '    + adapter.config.network);
-        adapter.log.debug('[syncConfig] config expandJSON: ' + adapter.config.expandJSON);
 
         if (adapter.config.devices.length === 0) {
             adapter.log.info('no connections added...');
@@ -516,7 +521,7 @@ async function syncConfig() {
                         name      : device.name,
                         host      : device.host,
                         connected : false,
-                        twinkly   : new twinkly.Connection(adapter.log, device.name, device.host)
+                        twinkly   : new twinkly.Connection(adapter, device.name, device.host)
                     };
             }
 
@@ -624,7 +629,7 @@ function prepareObjectsByConfig() {
 
             if (states[state].parent !== undefined) {
 
-                if (adapter.config.expandJSON && states[state].subIDs !== undefined) {
+                if (states[state].subIDs !== undefined) {
                     stateObj.id.channel += (stateObj.id.channel !== '' ? '.' : '') + states[state].parent.id;
                     config.channels.push(stateObj);
 
@@ -781,14 +786,10 @@ function prepareTasks(preparedObjects, old_objects) {
         adapter.log.error(e.name + ': ' + e.message);
     }
 
-    // eslint-disable-next-line no-unused-vars
-    const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
-    // eslint-disable-next-line no-unused-vars
-    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device') .map(([id, object]) => ({ type: 'delete_device', id: id }));
-    // eslint-disable-next-line no-unused-vars
-    const channelsToDelete = oldEntries.filter(([id, object]) => object.type === 'channel').map(([id, object]) => ({ type: 'delete_channel', id: id }));
-    // eslint-disable-next-line no-unused-vars
-    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id, object]) => ({ type: 'delete_state',  id: id }));
+    const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([object]) => object);
+    const devicesToDelete  = oldEntries.filter(([object]) => object.type === 'device') .map(([id]) => ({ type: 'delete_device',  id: id }));
+    const channelsToDelete = oldEntries.filter(([object]) => object.type === 'channel').map(([id]) => ({ type: 'delete_channel', id: id }));
+    const stateToDelete    = oldEntries.filter(([object]) => object.type === 'state')  .map(([id]) => ({ type: 'delete_state',   id: id }));
 
     return stateToDelete.concat(devicesToUpdate, devicesToDelete, channelsToUpdate, channelsToDelete, statesToUpdate);
 }
@@ -917,24 +918,24 @@ async function processTasks(tasks) {
  * Save States from JSON
  * @param state <String>
  * @param json <{}>
- * @param mapping <{}>
+ * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean}>
  */
 function saveJSONinState(state, json, mapping) {
-    if (adapter.config.expandJSON) {
+    if (mapping.expandJSON) {
         state += '.' + mapping.parent.id;
-        adapter.setStateAsync(state, JSON.stringify(json), true);
+        adapter.setStateAsync(state, JSON.stringify(json), true).then(() => {});
 
         for (const key of Object.keys(json)) {
             if (Object.keys(mapping.subIDs).includes((key))) {
                 if (typeof json[key] !== 'object')
-                    adapter.setStateAsync(state + '.' + mapping.subIDs[key].id, json[key], true);
+                    adapter.setStateAsync(state + '.' + mapping.subIDs[key].id, json[key], true).then(() => {});
                 else
                     saveJSONinState(state, json[key], mapping.subIDs[key]);
             } else
                 adapter.log.warn(`[saveJSONinState] Unhandled Item <${key}> detected!`);
         }
     } else
-        adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true);
+        adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true).then(() => {});
 }
 
 /**

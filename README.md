@@ -42,6 +42,7 @@ The following additionals States are created per device when checked:
 ## Changelog
 
 ### 0.1.x
+* 9 - (patrickbs96) Update API values to Firmware 2.7.1
 * 8 - (patrickbs96) Changes from the Review
 * 6 - (patrickbs96) Update dependencies
 * 5 - (patrickbs96) Prevent Crash Case at HTTP Error (Sentry IOBROKER-TWINKLY-3)
