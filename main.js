@@ -30,7 +30,7 @@ const subscribedStates = {};
 
 /**
  * Namen der einzelnen States, Mapping für das Speichern nach dem Polling
- * @type {{[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}}}, expandJSON: boolean}}}
+ * @type {{[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean}}, expandJSON: boolean}}}
  */
 const stateNames = {
     'on'   : {id: 'on', name: 'On', write: true, type: 'boolean', role: 'switch', def: false},
@@ -107,7 +107,8 @@ const stateNames = {
                     ip   : {id: 'ip',         name: 'IP',         write: false},
                     gw   : {id: 'gateway',    name: 'Gateway',    write: false},
                     mask : {id: 'subnetmask', name: 'Subnetmask', write: false}
-                }
+                },
+                expandJSON: true
             },
             ap : {
                 parent : {id: 'accesspoint', name: 'AccessPoint', write: false, type: 'string', role: 'json'},
@@ -118,7 +119,8 @@ const stateNames = {
                     enc             : {id: 'encrypted',       name: 'Encrypted',       write: false, type: 'number'},
                     ssid_hidden     : {id: 'ssid_hidden',     name: 'SSID Hidden',     write: false, type: 'number'},
                     max_connections : {id: 'max_connections', name: 'Max Connections', write: false, type: 'number'}
-                }
+                },
+                expandJSON: true
             }
         },
         expandJSON: true
@@ -512,7 +514,7 @@ async function syncConfig() {
                 }
 
                 // Verbindung anlegen
-                const deviceName = device.name.replace(/[\][*,;'"`<>\\?]/g, '_').replace(/[.\s]+/g, '_');
+                const deviceName = device.name.replace(stateTools.FORBIDDEN_CHARS, '_').replace(/[.\s]+/g, '_');
                 if (Object.keys(connections).includes(deviceName))
                     adapter.log.warn(`Objects with same id = ${stateTools.buildId({device: deviceName, channel: null, state: null}, adapter)} created for two connections ${JSON.stringify(device)}`);
                 else
@@ -629,7 +631,7 @@ function prepareObjectsByConfig() {
 
             if (states[state].parent !== undefined) {
 
-                if (states[state].subIDs !== undefined) {
+                if (states[state].subIDs !== undefined && states[state].expandJSON) {
                     stateObj.id.channel += (stateObj.id.channel !== '' ? '.' : '') + states[state].parent.id;
                     config.channels.push(stateObj);
 
@@ -786,10 +788,14 @@ function prepareTasks(preparedObjects, old_objects) {
         adapter.log.error(e.name + ': ' + e.message);
     }
 
-    const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([object]) => object);
-    const devicesToDelete  = oldEntries.filter(([object]) => object.type === 'device') .map(([id]) => ({ type: 'delete_device',  id: id }));
-    const channelsToDelete = oldEntries.filter(([object]) => object.type === 'channel').map(([id]) => ({ type: 'delete_channel', id: id }));
-    const stateToDelete    = oldEntries.filter(([object]) => object.type === 'state')  .map(([id]) => ({ type: 'delete_state',   id: id }));
+    // eslint-disable-next-line no-unused-vars
+    const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
+    // eslint-disable-next-line no-unused-vars
+    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device') .map(([id]) => ({ type: 'delete_device', id: id }));
+    // eslint-disable-next-line no-unused-vars
+    const channelsToDelete = oldEntries.filter(([id, object]) => object.type === 'channel').map(([id]) => ({ type: 'delete_channel', id: id }));
+    // eslint-disable-next-line no-unused-vars
+    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id]) => ({ type: 'delete_state',  id: id }));
 
     return stateToDelete.concat(devicesToUpdate, devicesToDelete, channelsToUpdate, channelsToDelete, statesToUpdate);
 }
