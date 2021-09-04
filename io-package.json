@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "news": {
       "0.1.10": {
         "en": "Update API values to Firmware 2.7.1",
