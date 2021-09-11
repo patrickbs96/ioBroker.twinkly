@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "news": {
+      "0.1.11": {
+        "en": "Added new Values from Response (Sentry IOBROKER-TWINKLY-7)",
+        "de": "Neue Werte aus Antwort hinzugefügt (Sentry IOBROKER-TWINKLY-7)",
+        "ru": "Добавлены новые значения из ответа (Sentry IOBROKER-TWINKLY-7)",
+        "pt": "Adicionados novos valores de resposta (Sentry IOBROKER-TWINKLY-7)",
+        "nl": "Nieuwe waarden uit reactie toegevoegd (Sentry IOBROKER-TWINKLY-7)",
+        "fr": "Ajout de nouvelles valeurs à partir de la réponse (Sentry IOBROKER-TWINKLY-7)",
+        "it": "Aggiunti nuovi valori dalla risposta (Sentry IOBROKER-TWINKLY-7)",
+        "es": "Se agregaron nuevos valores de Response (Sentry IOBROKER-TWINKLY-7)",
+        "pl": "Dodano nowe wartości z odpowiedzi (Sentry IOBROKER-TWINKLY-7)",
+        "zh-cn": "添加了来自响应的新值 (Sentry IOBROKER-TWINKLY-7)"
+      },
       "0.1.10": {
         "en": "Update API values to Firmware 2.7.1",
         "de": "API-Werte auf Firmware 2.7.1 aktualisieren",
@@ -74,7 +86,7 @@
     "dataSource": "poll",
     "compact": true,
     "materialize": true,
-    "materializeTab": false,
+    "materializeTab": true,
     "dependencies": [
       {
         "js-controller": ">=2.0.0"
@@ -91,8 +103,7 @@
     "interval": 60,
     "details": false,
     "mqtt": false,
-    "network": false,
-    "expandJSON": false
+    "network": false
   },
   "objects": [],
   "instanceObjects": []
