@@ -23,6 +23,12 @@ let pollingInterval = null;
 const connections = {};
 
 /**
+ * Sentry
+ * @type {{[x: string]: string}}
+ */
+const sentryMessages = {};
+
+/**
  * Liste aller States
  * @type {{connection: String, group: String, command: String}}
  */
@@ -91,7 +97,9 @@ const stateNames = {
             movie_capacity      : {id: 'movie_capacity',      name: 'Movie Capacity',      type: 'number'},
             wire_type           : {id: 'wire_type',           name: 'Wired Type',          type: 'number'},
             copyright           : {id: 'copyright',           name: 'Copyright'},
-            base_leds_number    : {id: 'base_leds_number',    name: 'Base LEDs Number'}
+            base_leds_number    : {id: 'base_leds_number',    name: 'Base LEDs Number',    type: 'number'},
+            rssi                : {id: 'rssi',                name: 'RSSI',                type: 'number'},
+            led_version         : {id: 'led_version',         name: 'LED Version',         type: 'number'}
         },
         expandJSON: true
     },
@@ -523,7 +531,7 @@ async function syncConfig() {
                         name      : device.name,
                         host      : device.host,
                         connected : false,
-                        twinkly   : new twinkly.Connection(adapter, device.name, device.host)
+                        twinkly   : new twinkly.Connection(adapter, device.name, device.host, sentryMessages)
                     };
             }
 
