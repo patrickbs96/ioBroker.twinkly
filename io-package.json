@@ -3,7 +3,7 @@
     "name": "twinkly",
     "version": "0.1.11",
     "news": {
-      "0.1.11": {
+      "0.1.12": {
         "en": "Added new Values from Response (Sentry IOBROKER-TWINKLY-7)",
         "de": "Neue Werte aus Antwort hinzugefügt (Sentry IOBROKER-TWINKLY-7)",
         "ru": "Добавлены новые значения из ответа (Sentry IOBROKER-TWINKLY-7)",
