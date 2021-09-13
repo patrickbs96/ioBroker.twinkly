@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "news": {
       "0.1.12": {
         "en": "Added new Values from Response (Sentry IOBROKER-TWINKLY-7)",
