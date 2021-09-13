@@ -122,7 +122,7 @@ const stateNames = {
                 parent : {id: 'accesspoint', name: 'AccessPoint', write: false, type: 'string', role: 'json'},
                 subIDs : {
                     ssid            : {id: 'ssid',            name: 'SSID',            write: false},
-                    channel         : {id: 'channel',         name: 'Channel',         write: false},
+                    channel         : {id: 'channel',         name: 'Channel',         write: false, type: 'number'},
                     ip              : {id: 'ip',              name: 'IP',              write: false},
                     enc             : {id: 'encrypted',       name: 'Encrypted',       write: false, type: 'number'},
                     ssid_hidden     : {id: 'ssid_hidden',     name: 'SSID Hidden',     write: false, type: 'number'},
@@ -531,7 +531,7 @@ async function syncConfig() {
                         name      : device.name,
                         host      : device.host,
                         connected : false,
-                        twinkly   : new twinkly.Connection(adapter, device.name, device.host, sentryMessages)
+                        twinkly   : new twinkly.Connection(adapter, device.name, device.host, handleSentryMessage)
                     };
             }
 
@@ -946,7 +946,8 @@ function saveJSONinState(state, json, mapping) {
                 else
                     saveJSONinState(state, json[key], mapping.subIDs[key]);
             } else
-                adapter.log.warn(`[saveJSONinState] Unhandled Item <${key}> detected!`);
+                handleSentryMessage('saveJSONinState',
+                    `${state}:${key}`, `Unhandled Item (${key}) detected!`);
         }
     } else
         adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true).then(() => {});
@@ -974,6 +975,34 @@ async function getJSONStates(state, json, mapping, lastState) {
                             json[key] = '';
                     });
         }
+    }
+}
+
+/**
+ * Handle Sentry Messages and check if already sent
+ * @param functionName <String>
+ * @param key <String>
+ * @param message <String>
+ */
+function handleSentryMessage(functionName, key, message) {
+    adapter.log.debug(`[${functionName}] ${key} - ${message}`);
+
+    const sentryKey = `${functionName}:${key}`;
+
+    if (!Object.keys(sentryMessages).includes(sentryKey)) {
+        sentryMessages[sentryKey] = message;
+
+        let canSendSentry = false;
+        if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
+            const sentryInstance = adapter.getPluginInstance('sentry');
+            if (sentryInstance && sentryInstance.getSentryObject()) {
+                canSendSentry = true;
+                sentryInstance.getSentryObject().captureException(message);
+            }
+        }
+
+        if (!canSendSentry)
+            adapter.log.warn(`[${functionName}] ${message} Please notify the developer!`);
     }
 }
 
