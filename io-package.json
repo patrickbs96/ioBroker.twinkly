@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "news": {
+      "0.1.13": {
+        "en": "Handling rssi (Sentry IOBROKER-TWINKLY-8)",
+        "de": "Umgang mit rssi (Sentry IOBROKER-TWINKLY-8)",
+        "ru": "Обработка rssi (Sentry IOBROKER-TWINKLY-8)",
+        "pt": "Manipulando rssi (Sentinela IOBROKER-TWINKLY-8)",
+        "nl": "Bediening rssi (Sentry IOBROKER-TWINKLY-8)",
+        "fr": "Manipulation rssi (Sentry IOBROKER-TWINKLY-8)",
+        "it": "Gestione rssi (Sentry IOBROKER-TWINKLY-8)",
+        "es": "Manejo de rssi (Sentry IOBROKER-TWINKLY-8)",
+        "pl": "Obsługa rssi (Sentry IOBROKER-TWINKLY-8)",
+        "zh-cn": "处理 rssi (Sentry IOBROKER-TWINKLY-8)"
+      },
       "0.1.12": {
         "en": "Added new Values from Response (Sentry IOBROKER-TWINKLY-7)",
         "de": "Neue Werte aus Antwort hinzugefügt (Sentry IOBROKER-TWINKLY-7)",

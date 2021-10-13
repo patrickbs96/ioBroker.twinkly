@@ -98,7 +98,6 @@ const stateNames = {
             wire_type           : {id: 'wire_type',           name: 'Wired Type',          type: 'number'},
             copyright           : {id: 'copyright',           name: 'Copyright'},
             base_leds_number    : {id: 'base_leds_number',    name: 'Base LEDs Number',    type: 'number'},
-            rssi                : {id: 'rssi',                name: 'RSSI',                type: 'number'},
             led_version         : {id: 'led_version',         name: 'LED Version',         type: 'number'}
         },
         expandJSON: true
@@ -114,7 +113,8 @@ const stateNames = {
                     ssid : {id: 'ssid',       name: 'SSID',       write: false},
                     ip   : {id: 'ip',         name: 'IP',         write: false},
                     gw   : {id: 'gateway',    name: 'Gateway',    write: false},
-                    mask : {id: 'subnetmask', name: 'Subnetmask', write: false}
+                    mask : {id: 'subnetmask', name: 'Subnetmask', write: false},
+                    rssi : {id: 'rssi',       name: 'RSSI',       write: false,  type: 'number'}
                 },
                 expandJSON: true
             },
@@ -371,7 +371,7 @@ async function poll(specificConnection = '') {
                     await connections[connection].twinkly.get_mode()
                         .then(async ({mode}) => {
                             await adapter.setStateAsync(connection + '.' + stateNames.on.id, mode.mode !== twinkly.lightModes.value.off, true);
-                            saveJSONinState(connection, mode, stateNames.mode);
+                            saveJSONinState(connection, connection, mode, stateNames.mode);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -398,7 +398,7 @@ async function poll(specificConnection = '') {
                 } else if (command === stateNames.mqtt.parent.id) {
                     await connections[connection].twinkly.get_mqtt()
                         .then(async ({mqtt}) => {
-                            saveJSONinState(connection, mqtt, stateNames.mqtt);
+                            saveJSONinState(connection, connection, mqtt, stateNames.mqtt);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -407,7 +407,7 @@ async function poll(specificConnection = '') {
                 } else if (command === stateNames.networkStatus.parent.id) {
                     await connections[connection].twinkly.get_network_status()
                         .then(async ({status}) => {
-                            saveJSONinState(connection, status, stateNames.networkStatus);
+                            saveJSONinState(connection, connection, status, stateNames.networkStatus);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -416,7 +416,7 @@ async function poll(specificConnection = '') {
                 } else if (command === stateNames.timer.parent.id) {
                     await connections[connection].twinkly.get_timer()
                         .then(async ({timer}) => {
-                            saveJSONinState(connection, timer, stateNames.timer);
+                            saveJSONinState(connection, connection, timer, stateNames.timer);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -425,7 +425,7 @@ async function poll(specificConnection = '') {
                 } else if (command === stateNames.details.parent.id) {
                     await connections[connection].twinkly.get_details()
                         .then(async ({details}) => {
-                            saveJSONinState(connection, details, stateNames.details);
+                            saveJSONinState(connection, connection, details, stateNames.details);
                         })
                         .catch(error => {
                             adapter.log.error(`Could not get ${connection}.${command} ${error}`);
@@ -930,11 +930,12 @@ async function processTasks(tasks) {
 
 /**
  * Save States from JSON
+ * @param connection <String>
  * @param state <String>
  * @param json <{}>
  * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean}>
  */
-function saveJSONinState(state, json, mapping) {
+function saveJSONinState(connection, state, json, mapping) {
     if (mapping.expandJSON) {
         state += '.' + mapping.parent.id;
         adapter.setStateAsync(state, JSON.stringify(json), true).then(() => {});
@@ -944,10 +945,10 @@ function saveJSONinState(state, json, mapping) {
                 if (typeof json[key] !== 'object')
                     adapter.setStateAsync(state + '.' + mapping.subIDs[key].id, json[key], true).then(() => {});
                 else
-                    saveJSONinState(state, json[key], mapping.subIDs[key]);
+                    saveJSONinState(connection, state, json[key], mapping.subIDs[key]);
             } else
                 handleSentryMessage('saveJSONinState',
-                    `${state}:${key}`, `Unhandled Item (${key}) detected!`);
+                    `${state.replace(connection, '####')}:${key}`, `Unhandled Item (${key}) detected!`);
         }
     } else
         adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true).then(() => {});
@@ -997,12 +998,12 @@ function handleSentryMessage(functionName, key, message) {
             const sentryInstance = adapter.getPluginInstance('sentry');
             if (sentryInstance && sentryInstance.getSentryObject()) {
                 canSendSentry = true;
-                sentryInstance.getSentryObject().captureException(message);
+                sentryInstance.getSentryObject().captureException(`[${sentryKey}] ${message}`);
             }
         }
 
         if (!canSendSentry)
-            adapter.log.warn(`[${functionName}] ${message} Please notify the developer!`);
+            adapter.log.log(`[${functionName}] ${message} Please notify the developer!`);
     }
 }
 
