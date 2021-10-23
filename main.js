@@ -36,33 +36,42 @@ const subscribedStates = {};
 
 /**
  * Namen der einzelnen States, Mapping für das Speichern nach dem Polling
- * @type {{[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean}}, expandJSON: boolean}}}
+ * @type {{[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string} | {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem: boolean}}, expandJSON: boolean, logItem}}}
  */
 const stateNames = {
     'on'   : {id: 'on', name: 'On', write: true, type: 'boolean', role: 'switch', def: false},
     'mode' : {
         parent : {id: 'mode', name: 'Mode', write: true, type: 'string', role: 'json'},
         subIDs : {
-            mode      : {id: 'mode',      name: 'Mode',       write: true, type: 'string',  role: 'state', def: twinkly.lightModes.value.off, states: twinkly.lightModes.text},
-            shop_mode : {id: 'shop_mode', name: 'Shop',       type: 'number'},
-            id        : {id: 'id',        name: 'Id',         type: 'number'},
-            unique_id : {id: 'unique_id', name: 'Unique Id'},
-            name      : {id: 'name',      name: 'Name'}
+            id           : {id: 'id',        name: 'Id',         type: 'number'},
+            mode         : {id: 'mode',      name: 'Mode',       type: 'string', write: true, role: 'state', def: twinkly.lightModes.value.off, states: twinkly.lightModes.text},
+            name         : {id: 'name',      name: 'Name'},
+            shop_mode    : {id: 'shop_mode', name: 'Shop',       type: 'number'},
+            unique_id    : {id: 'unique_id', name: 'Unique Id'},
+
+            color_config : {
+                parent: {id: 'color_config', name: 'Color Config'},
+                subIDs: {},
+                expandJSON: false,
+                logItem: true
+            },
         },
-        expandJSON: true
+        expandJSON: true,
+        logItem: false
     },
-    'bri'  : {id: 'bri',  name: 'Brightness', write: true, type: 'number',  role: 'level.dimmer', min: 0, max: 100},
-    'name' : {id: 'name', name: 'Name',       write: true, type: 'string',  role: 'info.name'},
+    'bri'  : {id: 'bri',  name: 'Brightness', write: true, type: 'number', role: 'level.dimmer', min: 0, max: 100},
+    'name' : {id: 'name', name: 'Name',       write: true, type: 'string', role: 'info.name'},
     'mqtt' : {
         parent : {id: 'mqtt', name: 'MQTT', write: true, type: 'string', role: 'json'},
         subIDs : {
             broker_host         : {id: 'broker_host',         name: 'Broker Host',         write: true},
             broker_port         : {id: 'broker_port',         name: 'Broker Port',         write: true, type: 'number'},
             client_id           : {id: 'client_id',           name: 'Client ID',           write: true},
-            user                : {id: 'user',                name: 'User',                write: true},
-            keep_alive_interval : {id: 'keep_alive_interval', name: 'Keep Alive Interval', write: true, type: 'number', def: 60}
+            keep_alive_interval : {id: 'keep_alive_interval', name: 'Keep Alive Interval', write: true, type: 'number', def: 60},
+            user                : {id: 'user',                name: 'User',                write: true}
         },
-        expandJSON: true
+        expandJSON: true,
+        logItem: false
     },
     'timer' : {
         parent : {id: 'timer', name: 'Timer', write: true, type: 'string', role: 'json'},
@@ -71,67 +80,75 @@ const stateNames = {
             time_on  : {id: 'time_on',  name: 'On',  write: true, type: 'number'},
             time_off : {id: 'time_off', name: 'Off', write: true, type: 'number'}
         },
-        expandJSON: false
+        expandJSON: false,
+        logItem: false
     },
     'reset'   : {id: 'reset', name: 'Name', write: true, type: 'boolean', role: 'button'},
     'details' : {
         parent : {id: 'details', name: 'Details', write: true, type: 'string', role: 'json'},
         subIDs : {
-            product_name        : {id: 'product_name',        name: 'Product Name'},
-            hardware_version    : {id: 'hardware_version',    name: 'Hardware Version'},
+            base_leds_number    : {id: 'base_leds_number',    name: 'Base LEDs Number',    type: 'number'},
             bytes_per_led       : {id: 'bytes_per_led',       name: 'Bytes per LED',       type: 'number'},
-            hw_id               : {id: 'hw_id',               name: 'Hardware ID'},
-            flash_size          : {id: 'flash_size',          name: 'Flash Size',          type: 'number'},
-            led_type            : {id: 'led_type',            name: 'LED Type',            type: 'number'},
-            product_code        : {id: 'product_code',        name: 'Product Code'},
-            fw_family           : {id: 'fw_family',           name: 'Firmware Family'},
+            copyright           : {id: 'copyright',           name: 'Copyright'},
             device_name         : {id: 'device_name',         name: 'Device Name'},
-            uptime              : {id: 'uptime',              name: 'Uptime'},
-            mac                 : {id: 'mac',                 name: 'MAC'},
-            uuid                : {id: 'uuid',                name: 'UUID'},
-            max_supported_led   : {id: 'max_supported_led',   name: 'Max Supported LED',   type: 'number'},
-            number_of_led       : {id: 'number_of_led',       name: 'Number of LED',       type: 'number'},
-            led_profile         : {id: 'led_profile',         name: 'LED Profile'},
+            flash_size          : {id: 'flash_size',          name: 'Flash Size',          type: 'number'},
             frame_rate          : {id: 'frame_rate',          name: 'Frame Rate',          type: 'number'},
+            fw_family           : {id: 'fw_family',           name: 'Firmware Family'},
+            hardware_version    : {id: 'hardware_version',    name: 'Hardware Version'},
+            hw_id               : {id: 'hw_id',               name: 'Hardware ID'},
+            led_profile         : {id: 'led_profile',         name: 'LED Profile'},
+            led_type            : {id: 'led_type',            name: 'LED Type',            type: 'number'},
+            led_version         : {id: 'led_version',         name: 'LED Version',         type: 'number'},
+            mac                 : {id: 'mac',                 name: 'MAC'},
+            max_supported_led   : {id: 'max_supported_led',   name: 'Max Supported LED',   type: 'number'},
             measured_frame_rate : {id: 'measured_frame_rate', name: 'Measured Frame Rate', type: 'number'},
             movie_capacity      : {id: 'movie_capacity',      name: 'Movie Capacity',      type: 'number'},
-            wire_type           : {id: 'wire_type',           name: 'Wired Type',          type: 'number'},
-            copyright           : {id: 'copyright',           name: 'Copyright'},
-            base_leds_number    : {id: 'base_leds_number',    name: 'Base LEDs Number',    type: 'number'},
-            led_version         : {id: 'led_version',         name: 'LED Version',         type: 'number'}
+            number_of_led       : {id: 'number_of_led',       name: 'Number of LED',       type: 'number'},
+            product_name        : {id: 'product_name',        name: 'Product Name'},
+            product_version     : {id: 'product_version',     name: 'Product Version'},
+            product_code        : {id: 'product_code',        name: 'Product Code'},
+            rssi                : {id: 'rssi',                name: 'RSSI',                type: 'number'},
+            uptime              : {id: 'uptime',              name: 'Uptime'},
+            uuid                : {id: 'uuid',                name: 'UUID'},
+            wire_type           : {id: 'wire_type',           name: 'Wire Type',           type: 'number'}
         },
-        expandJSON: true
+        expandJSON: true,
+        logItem: false
     },
     'firmware'      : {id: 'firmware', name: 'Firmware'},
     'networkStatus' : {
-        parent : {id: 'network', name: 'Network', write: false, type: 'string', role: 'json'},
+        parent : {id: 'network', name: 'Network', type: 'string', role: 'json'},
         subIDs : {
-            mode    : {id: 'mode', name: 'Mode', write: false, type: 'number'},
+            mode    : {id: 'mode', name: 'Mode', type: 'number'},
             station : {
-                parent : {id: 'station', name: 'Station', write: false, type: 'string', role: 'json'},
+                parent : {id: 'station', name: 'Station', type: 'string', role: 'json'},
                 subIDs : {
-                    ssid : {id: 'ssid',       name: 'SSID',       write: false},
-                    ip   : {id: 'ip',         name: 'IP',         write: false},
-                    gw   : {id: 'gateway',    name: 'Gateway',    write: false},
-                    mask : {id: 'subnetmask', name: 'Subnetmask', write: false},
-                    rssi : {id: 'rssi',       name: 'RSSI',       write: false,  type: 'number'}
+                    ip     : {id: 'ip',         name: 'IP'},
+                    gw     : {id: 'gateway',    name: 'Gateway'},
+                    mask   : {id: 'subnetmask', name: 'Subnetmask'},
+                    rssi   : {id: 'rssi',       name: 'RSSI',        type: 'number'},
+                    ssid   : {id: 'ssid',       name: 'SSID'},
+                    status : {id: 'status',     name: 'Status'},
                 },
-                expandJSON: true
+                expandJSON: true,
+                logItem: false
             },
             ap : {
                 parent : {id: 'accesspoint', name: 'AccessPoint', write: false, type: 'string', role: 'json'},
                 subIDs : {
-                    ssid            : {id: 'ssid',            name: 'SSID',            write: false},
-                    channel         : {id: 'channel',         name: 'Channel',         write: false, type: 'number'},
-                    ip              : {id: 'ip',              name: 'IP',              write: false},
-                    enc             : {id: 'encrypted',       name: 'Encrypted',       write: false, type: 'number'},
-                    ssid_hidden     : {id: 'ssid_hidden',     name: 'SSID Hidden',     write: false, type: 'number'},
-                    max_connections : {id: 'max_connections', name: 'Max Connections', write: false, type: 'number'}
+                    enc             : {id: 'encrypted',       name: 'Encrypted',       type: 'number'},
+                    ip              : {id: 'ip',              name: 'IP'},
+                    channel         : {id: 'channel',         name: 'Channel',         type: 'number'},
+                    max_connections : {id: 'max_connections', name: 'Max Connections', type: 'number'},
+                    ssid            : {id: 'ssid',            name: 'SSID'},
+                    ssid_hidden     : {id: 'ssid_hidden',     name: 'SSID Hidden',     type: 'number'}
                 },
-                expandJSON: true
+                expandJSON: true,
+                logItem: false
             }
         },
-        expandJSON: true
+        expandJSON: true,
+        logItem: false
     },
     // movieConfig   : 'movieConfig'
 
@@ -933,7 +950,7 @@ async function processTasks(tasks) {
  * @param connection <String>
  * @param state <String>
  * @param json <{}>
- * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean}>
+ * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem: boolean}>
  */
 function saveJSONinState(connection, state, json, mapping) {
     if (mapping.expandJSON) {
@@ -948,10 +965,15 @@ function saveJSONinState(connection, state, json, mapping) {
                     saveJSONinState(connection, state, json[key], mapping.subIDs[key]);
             } else
                 handleSentryMessage('saveJSONinState',
-                    `${state.replace(connection, '####')}:${key}`, `Unhandled Item (${key}) detected!`);
+                    `${state.replace(connection, '####')}:${key}`, `Unhandled Item (${key}, ${JSON.stringify(json[key])}, ${typeof json[key]}) detected!`);
         }
     } else
         adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true).then(() => {});
+
+    if (mapping.logItem) {
+        handleSentryMessage('saveJSONinState',
+            `LogItem:${state.replace(connection, '####')}:${mapping.parent.id}`, `LogItem (${mapping.parent.id}, ${JSON.stringify(json)})`);
+    }
 }
 
 /**

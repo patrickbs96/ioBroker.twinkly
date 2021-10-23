@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "news": {
+      "0.1.14": {
+        "en": "Add new values from API-Response",
+        "de": "Neue Werte aus API-Response hinzufügen",
+        "ru": "Добавить новые значения из API-Response",
+        "pt": "Adicionar novos valores de API-Response",
+        "nl": "Nieuwe waarden toevoegen vanuit API-Response",
+        "fr": "Ajouter de nouvelles valeurs depuis API-Response",
+        "it": "Aggiungi nuovi valori da API-Response",
+        "es": "Agregar nuevos valores de API-Response",
+        "pl": "Dodaj nowe wartości z API-Response",
+        "zh-cn": "从 API-Response 添加新值"
+      },
       "0.1.13": {
         "en": "Handling rssi (Sentry IOBROKER-TWINKLY-8)",
         "de": "Umgang mit rssi (Sentry IOBROKER-TWINKLY-8)",
