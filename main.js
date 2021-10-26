@@ -136,12 +136,13 @@ const stateNames = {
             ap : {
                 parent : {id: 'accesspoint', name: 'AccessPoint', write: false, type: 'string', role: 'json'},
                 subIDs : {
-                    enc             : {id: 'encrypted',       name: 'Encrypted',       type: 'number'},
-                    ip              : {id: 'ip',              name: 'IP'},
-                    channel         : {id: 'channel',         name: 'Channel',         type: 'number'},
-                    max_connections : {id: 'max_connections', name: 'Max Connections', type: 'number'},
-                    ssid            : {id: 'ssid',            name: 'SSID'},
-                    ssid_hidden     : {id: 'ssid_hidden',     name: 'SSID Hidden',     type: 'number'}
+                    enc              : {id: 'encrypted',        name: 'Encrypted',        type: 'number'},
+                    ip               : {id: 'ip',               name: 'IP'},
+                    channel          : {id: 'channel',          name: 'Channel',          type: 'number'},
+                    max_connections  : {id: 'max_connections',  name: 'Max Connections',  type: 'number'},
+                    password_changed : {id: 'password_changed', name: 'Password Changed', type: 'number'},
+                    ssid             : {id: 'ssid',             name: 'SSID'},
+                    ssid_hidden      : {id: 'ssid_hidden',      name: 'SSID Hidden',      type: 'number'}
                 },
                 expandJSON: true,
                 logItem: false
@@ -965,14 +966,16 @@ function saveJSONinState(connection, state, json, mapping) {
                     saveJSONinState(connection, state, json[key], mapping.subIDs[key]);
             } else
                 handleSentryMessage('saveJSONinState',
-                    `${state.replace(connection, '####')}:${key}`, `Unhandled Item (${key}, ${JSON.stringify(json[key])}, ${typeof json[key]}) detected!`);
+                    `${state.replace(connection, '####')}:${key}`, `Unhandled Item detected! ` +
+                    `(${state.replace(connection, '')}.${key}, ${JSON.stringify(json[key])}, ${typeof json[key]})`);
         }
     } else
         adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true).then(() => {});
 
     if (mapping.logItem) {
         handleSentryMessage('saveJSONinState',
-            `LogItem:${state.replace(connection, '####')}:${mapping.parent.id}`, `LogItem (${mapping.parent.id}, ${JSON.stringify(json)})`);
+            `LogItem:${state.replace(connection, '####')}:${mapping.parent.id}`,
+            `LogItem (${state.replace(connection, '')}.${mapping.parent.id}, ${JSON.stringify(json)})`);
     }
 }
 
@@ -1020,7 +1023,7 @@ function handleSentryMessage(functionName, key, message) {
             const sentryInstance = adapter.getPluginInstance('sentry');
             if (sentryInstance && sentryInstance.getSentryObject()) {
                 canSendSentry = true;
-                sentryInstance.getSentryObject().captureException(`[${sentryKey}] ${message}`);
+                sentryInstance.getSentryObject().captureException(`[${functionName}] ${message}`);
             }
         }
 

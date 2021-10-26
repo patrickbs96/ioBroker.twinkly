@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "news": {
-      "0.1.14": {
+      "0.1.15": {
         "en": "Add new values from API-Response",
         "de": "Neue Werte aus API-Response hinzufügen",
         "ru": "Добавить новые значения из API-Response",
