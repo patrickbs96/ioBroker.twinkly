@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check if PR should be auto-merged
-        uses: ahmadnassri/action-dependabot-auto-merge@v2.4
+        uses: ahmadnassri/action-dependabot-auto-merge@v2.6
         with:
           # This must be a personal access token with push access
           github-token: ${{ secrets.AUTO_MERGE_TOKEN }}
