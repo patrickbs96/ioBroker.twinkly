@@ -34,12 +34,32 @@ In the table you can add all the Twinkly lights you want to control.
 
 The following additionals States are created per device when checked:
 * Device Info (read)
+* Additional Config Information (read)
 * Network Status (read)
 * MQTT (read/write)
+
+
+The following States can be changed:
+
+| State          | Description                        |
+| ------------   | ---------------------------------- |
+| `bri`          | Brightness |
+| `mode.value`   | Mode: RealTime (not yet supported), On, Off, Playlist, Demo, Effect |
+| `movie`        | Active Movie, If multiple Movies are added in the Playlist feature then they can be selected here. Works only in Mode `On`. |
+| `name`         | Name |
+| `on`           | On/Off Switch |
+| `paused`       | Pause Connection to Twinkly so you can do changes in the App. Otherwise you might loose the connection while working in the App |
+| `reloadMovies` | Reload the Movies (Playlist) |
+| `sat`          | Saturation |
 
 [Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
 
 ## Changelog
+
+### 0.1.16 (2021-11-28)
+* (patrickbs96) Add new Value `mode.colorConfig` from API-Response (Sentry IOBROKER-TWINKLY-J, IOBROKER-TWINKLY-K, IOBROKER-TWINKLY-M, IOBROKER-TWINKLY-N, IOBROKER-TWINKLY-P)
+* (patrickbs96) Add Pause-Feature, to work with app. (Twinkly only allows one active connection...)
+* (patrickbs96) Add Feature, activate uploaded Movies (Playlist) 
 
 ### 0.1.15 (2021-10-26)
 * (patrickbs96) Add new Value `network.accesspoint.password_changed` from API-Response (Sentry IOBROKER-TWINKLY-A)

@@ -74,6 +74,18 @@ systemDictionary = {
         'pl': 'Informacje o urządzeniu',
         'zh-cn': '设备信息'
     },
+    'Additional Information': {
+        'en': 'Additional Information',
+        'de': 'Weitere Informationen',
+        'ru': 'Дополнительная информация',
+        'pt': 'Informações adicionais',
+        'nl': 'Extra informatie',
+        'fr': 'Information additionnelle',
+        'it': 'Informazioni aggiuntive',
+        'es': 'información adicional',
+        'pl': 'Dodatkowe informacje',
+        'zh-cn': '附加信息'
+    },
     'MQTT': {
         'en': 'MQTT',
         'de': 'MQTT',

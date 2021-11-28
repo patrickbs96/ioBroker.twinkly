@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.15",
+    "version": "0.1.16",
     "news": {
+      "0.1.16": {
+        "en": "Add new values from API-Response, Add Feature Pause, Add Feature select movies from Playlist",
+        "de": "Neue Werte aus API-Response hinzufügen, Feature Pause hinzufügen, Feature hinzufügen Filme aus Playlist auswählen",
+        "ru": "Добавить новые значения из API-Response, Добавить функцию, Пауза, Добавить функцию, выбрать фильмы из списка воспроизведения",
+        "pt": "Adicione novos valores de API-Response, Add Feature Pause, Add Feature selecione filmes da lista de reprodução",
+        "nl": "Voeg nieuwe waarden toe vanuit API-Response, Voeg functiepauze toe, voeg functie toe selecteer films uit afspeellijst",
+        "fr": "Ajouter de nouvelles valeurs à partir de l'API-Response, ajouter une pause de fonctionnalité, ajouter des films de sélection de fonctionnalité à partir de la liste de lecture",
+        "it": "Aggiungi nuovi valori da Risposta API, Aggiungi pausa funzionalità, Aggiungi funzionalità seleziona film dalla playlist",
+        "es": "Agregue nuevos valores de API-Response, agregue pausa de funciones, agregue películas de selección de funciones de la lista de reproducción",
+        "pl": "Dodaj nowe wartości z API-Response, Dodaj pauzę funkcji, Dodaj funkcję wybierz filmy z listy odtwarzania",
+        "zh-cn": "从 API 响应添加新值、添加功能暂停、添加功能从播放列表中选择电影"
+      },
       "0.1.15": {
         "en": "Add new values from API-Response",
         "de": "Neue Werte aus API-Response hinzufügen",
@@ -126,6 +138,7 @@
     "devices": [],
     "interval": 60,
     "details": false,
+    "detailedInfo": false,
     "mqtt": false,
     "network": false
   },
