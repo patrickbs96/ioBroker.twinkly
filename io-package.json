@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.1.16",
+    "version": "0.2.0",
     "news": {
-      "0.1.16": {
+      "0.2.0": {
         "en": "Add new values from API-Response, Add Feature Pause, Add Feature select movies from Playlist",
         "de": "Neue Werte aus API-Response hinzufügen, Feature Pause hinzufügen, Feature hinzufügen Filme aus Playlist auswählen",
         "ru": "Добавить новые значения из API-Response, Добавить функцию, Пауза, Добавить функцию, выбрать фильмы из списка воспроизведения",
