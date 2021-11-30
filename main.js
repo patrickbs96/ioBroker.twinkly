@@ -44,9 +44,9 @@ let initializing = true;
 /**
  * Namen der einzelnen States, Mapping für das Speichern nach dem Polling
  * @type {{[x: string]: {id: string, name: string, hide?: boolean} |
- *                      {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string, hide?: boolean} |
- *                                                                                 {parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem?: boolean, detailed?: boolean, hide?: boolean}},
- *                       expandJSON: boolean, logItem?: boolean, detailed?: boolean, hide?: boolean}}}
+ *                      {parent: {id: string, name: string, hide?: boolean}, subIDs: {[x: string]: {id: string, name: string, hide?: boolean} |
+ *                                                                                                 {parent: {id: string, name: string, hide?: boolean}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem?: boolean, hide?: boolean}},
+ *                       expandJSON: boolean, logItem?: boolean, hide?: boolean}}}
  */
 const stateNames = {
     bri : {id: 'bri', name: 'Brightness', write: true, type: 'number', role: 'level.dimmer', min: 0, max: 100},
@@ -699,8 +699,6 @@ async function main() {
         adapter.config.devices = [];
     if (adapter.config.details === undefined)
         adapter.config.details = false;
-    if (adapter.config.detailedInfo === undefined)
-        adapter.config.detailedInfo = false;
     if (adapter.config.mqtt === undefined)
         adapter.config.mqtt = false;
     if (adapter.config.network === undefined)
@@ -884,7 +882,7 @@ function prepareObjectsByConfig() {
                 native: {}
             };
 
-            if ((states[state].hide === undefined || !states[state].hide) && (states[state].detailed === undefined || !states[state].detailed || adapter.config.detailedInfo)) {
+            if (states[state].hide === undefined || !states[state].hide) {
 
                 if (states[state].parent !== undefined) {
                     if (states[state].subIDs !== undefined && states[state].expandJSON) {
@@ -1188,7 +1186,7 @@ async function processTasks(tasks) {
  * @param connection <String>
  * @param state <String>
  * @param json <{}>
- * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem?: boolean, detailed?: boolean, hide: boolean}>
+ * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem?: boolean, hide: boolean}>
  */
 function saveJSONinState(connection, state, json, mapping) {
     if (typeof mapping === undefined) {
@@ -1197,7 +1195,7 @@ function saveJSONinState(connection, state, json, mapping) {
     }
 
     mapping.logItem = mapping.logItem !== undefined && mapping.logItem === true;
-    if (mapping.hide || (mapping.detailed && !adapter.config.detailedInfo)) return;
+    if (mapping.hide) return;
 
     if (mapping.expandJSON) {
         if (!mapping.parent.hide) {

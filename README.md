@@ -27,7 +27,7 @@ The following Settings are available:
 In the table you can add all the Twinkly lights you want to control. 
 
 | Column       | Description                        |
-| ------------ | ---------------------------------- |
+|--------------|------------------------------------|
 | `Enabled`    | Shall this connection be accessed  |
 | `Name`       | Name of the connection in ioBroker |
 | `IP Address` | IP-Address to the Twinkly Lights   |
@@ -39,25 +39,38 @@ The following additionals States are created per device when checked:
 * MQTT (read/write)
 
 
-The following States can be changed:
+The following States are available:
 
-| State          | Description                        |
-| ------------   | ---------------------------------- |
-| `bri`          | Brightness |
-| `mode.value`   | Mode: RealTime (not yet supported), On, Off, Playlist, Demo, Effect |
-| `movie`        | Active Movie, If multiple Movies are added in the Playlist feature then they can be selected here. Works only in Mode `On`. |
-| `name`         | Name |
-| `on`           | On/Off Switch |
-| `paused`       | Pause Connection to Twinkly so you can do changes in the App. Otherwise you might loose the connection while working in the App |
-| `reloadMovies` | Reload the Movies (Playlist) |
-| `sat`          | Saturation |
+| State                         | Writable           | Description                                                                                                                     |
+|-------------------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `activePlaylistMovie`         | :white_check_mark: | Active Playlist Movie                                                                                                           |
+| `activePlaylistMovieDuration` | :white_check_mark: | Active Playlist Movie Duration                                                                                                  |
+| `bri`                         | :heavy_check_mark: | Brightness                                                                                                                      |
+| `color`                       | :heavy_check_mark: | HSV/RGB/HEX                                                                                                                     |
+| `connected`                   | :white_check_mark: | Device Connected                                                                                                                |
+| `firmware`                    | :white_check_mark: | Firmware                                                                                                                        |
+| `mode`                        | :heavy_check_mark: | Mode: On, Playlist, Color, Off, RealTime (not yet supported), Demo, Effect                                                      |
+| `movie`                       | :heavy_check_mark: | Active Movie, If multiple Movies are added in the Playlist feature then they can be selected here. Works only in Mode `On`.     |
+| `mqtt`                        | :heavy_check_mark: | MQTT-Connection                                                                                                                 |
+| `name`                        | :heavy_check_mark: | Name                                                                                                                            |
+| `network`                     | :white_check_mark: | Network-Information                                                                                                             |
+| `on`                          | :heavy_check_mark: | On/Off Switch                                                                                                                   |
+| `paused`                      | :heavy_check_mark: | Pause Connection to Twinkly so you can do changes in the App. Otherwise you might loose the connection while working in the App |
+| `reloadMovies`                | :heavy_check_mark: | Reload the Movies (Playlist)                                                                                                    |
+| `sat`                         | :heavy_check_mark: | Saturation                                                                                                                      |
+| `timer`                       | :heavy_check_mark: | Update the Timer                                                                                                                |
+
+
 
 [Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
 
 ## Changelog
 
+### 0.2.1 (2021-11-30)
+* (patrickbs96) Add Feature to change Color
+
 ### 0.2.0 (2021-11-28)
-* (patrickbs96) Add new Value `mode.colorConfig` from API-Response (Sentry IOBROKER-TWINKLY-J, IOBROKER-TWINKLY-K, IOBROKER-TWINKLY-M, IOBROKER-TWINKLY-N, IOBROKER-TWINKLY-P)
+* (patrickbs96) Add new Value `color` from API-Response (Sentry IOBROKER-TWINKLY-J, IOBROKER-TWINKLY-K, IOBROKER-TWINKLY-M, IOBROKER-TWINKLY-N, IOBROKER-TWINKLY-P)
 * (patrickbs96) Add Pause-Feature, to work with app. (Twinkly only allows one active connection...)
 * (patrickbs96) Add Feature, activate uploaded Movies (Playlist) 
 
@@ -68,7 +81,7 @@ The following States can be changed:
 * (patrickbs96) Add new Value `network.station.status` from API-Response (Sentry IOBROKER-TWINKLY-A, IOBROKER-TWINKLY-B)
 * (patrickbs96) Add new Value `network.details.product_version` from API-Response (Sentry IOBROKER-TWINKLY-E)
 * (patrickbs96) Add new Value `network.details.rssi` from API-Response (Sentry IOBROKER-TWINKLY-D)
-* (patrickbs96) Add new Value `mode.color_config` from API-Response (Sentry IOBROKER-TWINKLY-7)
+* (patrickbs96) Add new Value `color` from API-Response (Sentry IOBROKER-TWINKLY-7)
 
 ### 0.1.13 (2021-10-13)
 * (patrickbs96) Add new Value `network.station.rssi` from API-Response (Sentry IOBROKER-TWINKLY-8)
