@@ -120,8 +120,8 @@ const stateNames = {
 
             // Color configuration
             color_config : {
-                parent: {id: 'colorConfig', name: 'Color Config'},
-                subIDs: {
+                parent : {id: 'colorConfig', name: 'Color Config'},
+                subIDs : {
                     hue        : {id: 'hue', name: 'Hue',   type: 'number'},
                     saturation : {id: 'sat', name: 'Sat',   type: 'number'},
                     value      : {id: 'val', name: 'Value', type: 'number'},
@@ -132,6 +132,16 @@ const stateNames = {
                 },
                 hide      : true,
                 expandJSON: false
+            },
+
+            musicreactive_config : {
+                parent: {id: 'musicreactiveConfig', name: 'Musicreactive Config'},
+                subIDs : {
+                    handle    : {id: 'handle',   name: 'handle',   type: 'number'},
+                    unique_id : {id: 'uniqueId', name: 'Unique Id'}
+                },
+                hide       : true,
+                expandJSON : false
             }
         },
         expandJSON: true
@@ -1185,14 +1195,11 @@ async function processTasks(tasks) {
  * Save States from JSON
  * @param connection <String>
  * @param state <String>
- * @param json <{}>
+ * @param json <{} | undefined>
  * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem?: boolean, hide: boolean}>
  */
 function saveJSONinState(connection, state, json, mapping) {
-    if (typeof mapping === undefined) {
-        adapter.log.info(`[saveJSONinState] json is undefined!`);
-        return;
-    }
+    if (typeof json === undefined) return;
 
     mapping.logItem = mapping.logItem !== undefined && mapping.logItem === true;
     if (mapping.hide) return;
