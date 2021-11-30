@@ -43,17 +43,17 @@ The following States are available:
 
 | State                         | Writable           | Description                                                                                                                     |
 |-------------------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| `activePlaylistMovie`         | :white_check_mark: | Active Playlist Movie                                                                                                           |
-| `activePlaylistMovieDuration` | :white_check_mark: | Active Playlist Movie Duration                                                                                                  |
+| `activePlaylistMovie`         | :x:                | Active Playlist Movie                                                                                                           |
+| `activePlaylistMovieDuration` | :x:                | Active Playlist Movie Duration                                                                                                  |
 | `bri`                         | :heavy_check_mark: | Brightness                                                                                                                      |
 | `color`                       | :heavy_check_mark: | HSV/RGB/HEX                                                                                                                     |
-| `connected`                   | :white_check_mark: | Device Connected                                                                                                                |
-| `firmware`                    | :white_check_mark: | Firmware                                                                                                                        |
+| `connected`                   | :x:                | Device Connected                                                                                                                |
+| `firmware`                    | :x:                | Firmware                                                                                                                        |
 | `mode`                        | :heavy_check_mark: | Mode: On, Playlist, Color, Off, RealTime (not yet supported), Demo, Effect                                                      |
 | `movie`                       | :heavy_check_mark: | Active Movie, If multiple Movies are added in the Playlist feature then they can be selected here. Works only in Mode `On`.     |
 | `mqtt`                        | :heavy_check_mark: | MQTT-Connection                                                                                                                 |
 | `name`                        | :heavy_check_mark: | Name                                                                                                                            |
-| `network`                     | :white_check_mark: | Network-Information                                                                                                             |
+| `network`                     | :x:                | Network-Information                                                                                                             |
 | `on`                          | :heavy_check_mark: | On/Off Switch                                                                                                                   |
 | `paused`                      | :heavy_check_mark: | Pause Connection to Twinkly so you can do changes in the App. Otherwise you might loose the connection while working in the App |
 | `reloadMovies`                | :heavy_check_mark: | Reload the Movies (Playlist)                                                                                                    |
