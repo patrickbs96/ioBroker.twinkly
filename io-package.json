@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "news": {
+      "0.2.1": {
+        "en": "Add Feature to change Color",
+        "de": "Funktion hinzufügen, um die Farbe zu ändern",
+        "ru": "Добавить функцию, чтобы изменить цвет",
+        "pt": "Adicionar característica para mudar a cor",
+        "nl": "Functie toevoegen om kleur te wijzigen",
+        "fr": "Ajouter une fonctionnalité pour changer la couleur",
+        "it": "Aggiungi funzionalità per cambiare colore",
+        "es": "Agregar función para cambiar el color",
+        "pl": "Dodaj funkcję, aby zmienić kolor",
+        "zh-cn": "添加功能以更改颜色"
+      },
       "0.2.0": {
         "en": "Add new values from API-Response, Add Feature Pause, Add Feature select movies from Playlist",
         "de": "Neue Werte aus API-Response hinzufügen, Feature Pause hinzufügen, Feature hinzufügen Filme aus Playlist auswählen",
@@ -138,7 +150,6 @@
     "devices": [],
     "interval": 60,
     "details": false,
-    "detailedInfo": false,
     "mqtt": false,
     "network": false
   },
