@@ -66,7 +66,7 @@ The following States are available:
 
 ## Changelog
 
-### 0.2.1 (2021-11-30)
+### 0.2.2 (2021-11-30)
 * (patrickbs96) Add Feature to change Color
 
 ### 0.2.0 (2021-11-28)

@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "news": {
-      "0.2.1": {
+      "0.2.2": {
         "en": "Add Feature to change Color",
         "de": "Funktion hinzufügen, um die Farbe zu ändern",
         "ru": "Добавить функцию, чтобы изменить цвет",
