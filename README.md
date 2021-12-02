@@ -33,10 +33,9 @@ In the table you can add all the Twinkly lights you want to control.
 | `IP Address` | IP-Address to the Twinkly Lights   |
 
 The following additionals States are created per device when checked:
-* Device Info (read)
-* Additional Config Information (read)
-* Network Status (read)
-* MQTT (read/write)
+* Device Info
+* Network Status
+* MQTT
 
 
 The following States are available:
@@ -45,7 +44,7 @@ The following States are available:
 |-------------------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | `activePlaylistMovie`         | :x:                | Active Playlist Movie                                                                                                           |
 | `activePlaylistMovieDuration` | :x:                | Active Playlist Movie Duration                                                                                                  |
-| `bri`                         | :heavy_check_mark: | Brightness                                                                                                                      |
+| `bri`                         | :heavy_check_mark: | Brightness (deactivate control by setting -1)                                                                                   |
 | `color`                       | :heavy_check_mark: | HSV/RGB/HEX                                                                                                                     |
 | `connected`                   | :x:                | Device Connected                                                                                                                |
 | `firmware`                    | :x:                | Firmware                                                                                                                        |
@@ -57,7 +56,7 @@ The following States are available:
 | `on`                          | :heavy_check_mark: | On/Off Switch                                                                                                                   |
 | `paused`                      | :heavy_check_mark: | Pause Connection to Twinkly so you can do changes in the App. Otherwise you might loose the connection while working in the App |
 | `reloadMovies`                | :heavy_check_mark: | Reload the Movies (Playlist)                                                                                                    |
-| `sat`                         | :heavy_check_mark: | Saturation                                                                                                                      |
+| `sat`                         | :heavy_check_mark: | Saturation 0-100 (deactivate control by setting -1)                                                                             |
 | `timer`                       | :heavy_check_mark: | Update the Timer                                                                                                                |
 
 
