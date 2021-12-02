@@ -103,8 +103,8 @@ const stateNames = {
             mode : {id: 'mode', name: 'Mode', write: true, role: 'state', def: twinkly.lightModes.value.off, states: twinkly.lightModes.text},
 
             // Active Movie in Mode "movie"
-            id           : {id: 'id',        name: 'Id',         type: 'number', hide: true},
-            name         : {id: 'name',      name: 'Name',                       hide: true},
+            id           : {id: 'id',       name: 'Id',         type: 'number', hide: true},
+            name         : {id: 'name',     name: 'Name',                       hide: true},
             shop_mode    : {id: 'shopMode', name: 'Shop',       type: 'number', hide: true},
             unique_id    : {id: 'uniqueId', name: 'Unique Id',                  hide: true},
 
@@ -209,7 +209,7 @@ const stateNames = {
             time_off : {id: 'timeOff',  name: 'Off',      write: true, type: 'number'},
             tz       : {id: 'timeZone', name: 'Timezone', write: true}
         },
-        expandJSON: false
+        expandJSON: true
     },
     sat : {id: 'sat', name: 'Saturation', write: true, type: 'number', role: 'level.dimmer', min: -1, max: 100},
 
@@ -367,9 +367,9 @@ function startAdapter(options) {
 
                             } else {
                                 const hexRgb = tools.hexToRgb(state.val);
-                                json.red = hexRgb.r;
+                                json.red   = hexRgb.r;
                                 json.green = hexRgb.g;
-                                json.blue = hexRgb.b;
+                                json.blue  = hexRgb.b;
                             }
 
                             const response = await connection.twinkly.setLEDColorRGBW(json.red, json.green, json.blue, json.white);
@@ -411,14 +411,6 @@ function startAdapter(options) {
                     }
 
                 // MQTT anpassen
-                } else if (!group && command === stateNames.mqtt.parent.id) {
-                    try {
-                        const response = await connection.twinkly.setMqttConfiguration(state.val);
-                        if (response.code === twinkly.HTTPCodes.values.ok)
-                            await poll(connectionName, [stateNames.mqtt.parent.id]);
-                    } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
-                    }
                 } else if (group && group === stateNames.mqtt.parent.id) {
                     /** @type {{broker_host: String, broker_port: Number, client_id: String, user: String, keep_alive_interval : Number, encryption_key_set: Boolean}} */
                     const json = {broker_host: '', broker_port: 0, client_id: '', user: '', keep_alive_interval: 0, encryption_key_set: false};
@@ -502,14 +494,6 @@ function startAdapter(options) {
                     }
 
                 // Timer anpassen
-                } else if (!group && command === stateNames.timer.parent.id) {
-                    try {
-                        const response = await connection.twinkly.setTimer(state.val);
-                        if (response.code === twinkly.HTTPCodes.values.ok)
-                            await poll(connectionName, [stateNames.timer.parent.id]);
-                    } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
-                    }
                 } else if (group && group === stateNames.timer.parent.id) {
                     /** @type {{time_now: Number, time_on: Number, time_off: Number, tz: String}} */
                     const json = {time_now: -1, time_on: -1, time_off: -1, tz: ''};
@@ -976,6 +960,14 @@ async function prepareObjectsByConfig() {
 
     const result = [];
     for (const connection of Object.keys(connections)) {
+        // Ping-Check
+        try {
+            connections[connection].connected = await connection.twinkly.ping();
+        } catch (error) {
+            connections[connection].connected = false;
+            adapter.log.error(`Could not ping ${connection} ${error}`);
+        }
+
         const config = {
             device: {
                 id     : {device : connection},
