@@ -19,7 +19,7 @@ let pollingInterval = null;
 
 /**
  * Twinkly-Verbindungen
- * @type {{[x: string]: {enabled: Boolean, paused: Boolean, name: String, host: String, connected: Boolean, twinkly: Connection}}}
+ * @type {{[x: string]: {enabled: Boolean, paused: Boolean, name: String, host: String, connected: Boolean, twinkly: Twinkly}}}
  */
 const connections = {};
 
@@ -358,7 +358,7 @@ function startAdapter(options) {
                         if ([stateNames.color.subIDs.hue.id, stateNames.color.subIDs.saturation.id, stateNames.color.subIDs.value.id].includes(command)) {
                             /** @type {{hue: Number, saturation: Number, value: Number}} */
                             const json = {hue: 0, saturation: 0, value: 0};
-                            await getJSONStates(connectionName + '.' + group, json, stateNames.color.subIDs, {
+                            await getJSONStates(connectionName, connectionName + '.' + group, json, stateNames.color.subIDs, {
                                 id: command,
                                 val: state.val
                             });
@@ -369,10 +369,10 @@ function startAdapter(options) {
 
                         } else if ([stateNames.color.subIDs.red.id, stateNames.color.subIDs.green.id, stateNames.color.subIDs.blue.id, stateNames.color.subIDs.white.id, stateNames.color.subIDs.hex.id].includes(command)) {
                             /** @type {{red: Number, green: Number, blue: Number, white: Number}} */
-                            const json = {red: 0, green: 0, blue: 0, white: 0};
+                            const json = {red: 0, green: 0, blue: 0, white: -1};
 
                             if ([stateNames.color.subIDs.red.id, stateNames.color.subIDs.green.id, stateNames.color.subIDs.blue.id, stateNames.color.subIDs.white.id].includes(command)) {
-                                await getJSONStates(connectionName + '.' + group, json, stateNames.color.subIDs, {
+                                await getJSONStates(connectionName, connectionName + '.' + group, json, stateNames.color.subIDs, {
                                     id: command,
                                     val: state.val
                                 });
@@ -384,7 +384,7 @@ function startAdapter(options) {
                                 json.blue = hexRgb.b;
                             }
 
-                            const response = await connection.twinkly.setLEDColorRGBW(json.red, json.green, json.blue);
+                            const response = await connection.twinkly.setLEDColorRGBW(json.red, json.green, json.blue, json.white);
                             if (response.code === twinkly.HTTPCodes.values.ok)
                                 await poll(connectionName, [stateNames.color.parent.id]);
                         }
@@ -454,7 +454,7 @@ function startAdapter(options) {
                 } else if (group && group === stateNames.mqtt.parent.id) {
                     /** @type {{broker_host: String, broker_port: Number, client_id: String, user: String, keep_alive_interval : Number, encryption_key_set: Boolean}} */
                     const json = {broker_host: '', broker_port: 0, client_id: '', user: '', keep_alive_interval: 0, encryption_key_set: false};
-                    await getJSONStates(connection + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
+                    await getJSONStates(connectionName, connectionName + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
 
                     try {
                         const response = await connection.twinkly.setMqttConfiguration(json);
@@ -472,7 +472,7 @@ function startAdapter(options) {
                     //     });
                 } else if (group && group === stateNames.networkStatus.parent.id) {
                     // const json = {};
-                    // await getJSONStates(connection + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
+                    // await getJSONStates(connectionName, connectionName + '.' + group, json, stateNames.mqtt.subIDs, {id: command, val: state.val});
                     //
                     // connection.twinkly.set_mqtt_str(JSON.stringify(json))
                     //     .catch(error => {
@@ -491,7 +491,7 @@ function startAdapter(options) {
                 } else if (group && group === stateNames.timer.parent.id) {
                     /** @type {{time_now: Number, time_on: Number, time_off: Number}} */
                     const json = {time_now: -1, time_on: -1, time_off: -1};
-                    await getJSONStates(connectionName + '.' + group, json, stateNames.timer.subIDs, {id: command, val: state.val});
+                    await getJSONStates(connectionName, connectionName + '.' + group, json, stateNames.timer.subIDs, {id: command, val: state.val});
 
                     // Prüfen ob Daten gesendet werden können
                     if ((json.time_on > -1 && json.time_off > -1) || (json.time_on === -1 && json.time_off === -1)) {
@@ -806,7 +806,7 @@ async function syncConfig() {
                         name      : device.name,
                         host      : device.host,
                         connected : false,
-                        twinkly   : new twinkly.Connection(adapter, device.name, device.host, handleSentryMessage)
+                        twinkly   : new twinkly.Twinkly(adapter, device.name, device.host, handleSentryMessage)
                     };
             }
 
@@ -1274,25 +1274,30 @@ async function saveJSONinState(connection, state, json, mapping) {
 
 /**
  * Get States in JSON
- * @param state <String>
+ * @param connection <String>
+ * @param stateId <String>
  * @param json <{}>
  * @param lastState <{id: String, val: any}>
  * @param mapping <{}>
  */
-async function getJSONStates(state, json, mapping, lastState) {
+async function getJSONStates(connection, stateId, json, mapping, lastState) {
     for (const key of Object.keys(mapping)) {
         if (Object.keys(json).includes((key))) {
             // Check LastState first
             if (lastState && mapping[key].id === lastState.id)
                 json[key] = lastState.val;
-            else
-                await adapter.getStateAsync(state + '.' + mapping[key].id)
-                    .then(state => {
-                        if (state)
-                            json[key] = state.val;
-                        else
-                            json[key] = '';
-                    });
+            else {
+                let canGetState = !mapping[key].hide;
+                if (canGetState && mapping[key].filter !== undefined)
+                    canGetState = await connections[connection].twinkly.checkDetailInfo(mapping[key].filter);
+                if (canGetState) {
+                    const state = await adapter.getStateAsync(stateId + '.' + mapping[key].id);
+                    if (state)
+                        json[key] = state.val;
+                    else
+                        json[key] = '';
+                }
+            }
         }
     }
 }
