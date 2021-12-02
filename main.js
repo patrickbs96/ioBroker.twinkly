@@ -962,7 +962,7 @@ async function prepareObjectsByConfig() {
     for (const connection of Object.keys(connections)) {
         // Ping-Check
         try {
-            connections[connection].connected = await connection.twinkly.ping();
+            connections[connection].connected = await connections[connection].twinkly.ping();
         } catch (error) {
             connections[connection].connected = false;
             adapter.log.error(`Could not ping ${connection} ${error}`);
