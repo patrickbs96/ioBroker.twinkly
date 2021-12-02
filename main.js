@@ -587,7 +587,8 @@ async function poll(specificConnection = '', filter = []) {
 
                 try {
                     const response = await connection.twinkly.getBrightness();
-                    await adapter.setStateAsync(connectionName + '.' + stateNames.bri.id, response.bri.value, true);
+                    await adapter.setStateAsync(connectionName + '.' + stateNames.bri.id,
+                        response.bri.mode !== 'disabled' ? response.bri.value : -1, true);
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${stateNames.bri.id} ${e}`);
                 }
@@ -704,7 +705,8 @@ async function poll(specificConnection = '', filter = []) {
 
                 try {
                     const response = await connection.twinkly.getSaturation();
-                    await adapter.setStateAsync(connectionName + '.' + stateNames.sat.id, response.sat.value, true);
+                    await adapter.setStateAsync(connectionName + '.' + stateNames.sat.id,
+                        response.sat.mode !== 'disabled' ? response.sat.value : -1, true);
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${stateNames.sat.id} ${e}`);
                 }
