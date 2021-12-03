@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "news": {
+      "0.2.4": {
+        "en": "Handle wrong input so it does not cause exceptions",
+        "de": "Behandeln Sie falsche Eingaben, damit keine Ausnahmen auftreten",
+        "ru": "Обрабатывать неправильный ввод, чтобы не вызывать исключений",
+        "pt": "Trate a entrada errada para não causar exceções",
+        "nl": "Omgaan met verkeerde invoer zodat het geen uitzonderingen veroorzaakt",
+        "fr": "Gérer les entrées erronées afin qu'elles ne provoquent pas d'exceptions",
+        "it": "Gestire l'input sbagliato in modo che non causi eccezioni",
+        "es": "Maneje la entrada incorrecta para que no cause excepciones",
+        "pl": "Obsługuj nieprawidłowe dane wejściowe, aby nie powodowały wyjątków",
+        "zh-cn": "处理错误的输入，以免引起异常"
+      },
       "0.2.2": {
         "en": "Add Feature to change Color",
         "de": "Funktion hinzufügen, um die Farbe zu ändern",

@@ -95,7 +95,7 @@ const stateNames = {
         },
         expandJSON: true
     },
-    effect   : {id: 'effect',   name: 'Effect', write: true, type: 'number'},
+    effect   : {id: 'effect',   name: 'Effect', write: true, type: 'number', exclude: ['states']},
     firmware : {id: 'firmware', name: 'Firmware'},
     mode : {
         parent : {id: 'mode', name: 'Mode', write: true, type: 'string', role: 'json', hide: true},
@@ -149,7 +149,7 @@ const stateNames = {
         expandJSON: true
     },
 
-    movie        : {id: 'movie',        name: 'Movie',                    write: true, type: 'number'},
+    movie        : {id: 'movie',        name: 'Movie',                    write: true, type: 'number',  exclude: ['states']},
     movies       : {id: 'movies',       name: 'Movies',                                                 role: 'json'},
     reloadMovies : {id: 'reloadMovies', name: 'Reload Movies (Playlist)', write: true, type: 'boolean', role: 'button'},
 
@@ -336,7 +336,7 @@ function startAdapter(options) {
                             if (response.code === twinkly.HTTPCodes.values.ok)
                                 await poll(connectionName, [stateNames.bri.id]);
                         } catch (e) {
-                            adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                            adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                         }
                     }
 
@@ -377,37 +377,65 @@ function startAdapter(options) {
                                 await poll(connectionName, [stateNames.color.parent.id]);
                         }
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // Effect anpassen
                 } else if (!group && command === stateNames.effect.id) {
                     try {
-                        const response = await connection.twinkly.setCurrentLEDEffect(state.val);
-                        if (response.code === twinkly.HTTPCodes.values.ok)
+                        if (!Object.keys(connection.twinkly.effects).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
+                            adapter.log.warn(`[${connectionName}.${command}] Effect ${state.val} does not exist!`);
                             await poll(connectionName, [stateNames.effect.id]);
+
+                        } else {
+                            const response = await connection.twinkly.setCurrentLEDEffect(state.val);
+                            if (response.code === twinkly.HTTPCodes.values.ok)
+                                await poll(connectionName, [stateNames.effect.id]);
+                        }
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // Mode anpassen
                 } else if (!group && command === stateNames.mode.subIDs.mode.id) {
                     try {
-                        const response = await connection.twinkly.setLEDMode(state.val);
-                        if (response.code === twinkly.HTTPCodes.values.ok)
+                        if (!Object.values(twinkly.lightModes.value).includes(state.val)) {
+                            adapter.log.warn(`[${connectionName}.${command}] Could not set ${state.val}! Mode does not exist!`);
                             await poll(connectionName, [stateNames.mode.parent.id]);
+
+                        } else if (state.val === twinkly.lightModes.value.on && Object.keys(connection.twinkly.movies).length === 0) {
+                            adapter.log.warn(`[${connectionName}.${command}] Could not set Mode ${twinkly.lightModes.text.movie}! No movie available! Is a Effect/Playlist selected?`);
+                            await poll(connectionName, [stateNames.mode.parent.id]);
+                            await updateMovies(connectionName);
+
+                        } else if (state.val === twinkly.lightModes.value.playlist && Object.keys(connection.twinkly.movies).length === 0) {
+                            adapter.log.warn(`[${connectionName}.${command}] Could not set Mode ${twinkly.lightModes.text.playlist}! No movie available! Is a Playlist created?`);
+                            await poll(connectionName, [stateNames.mode.parent.id]);
+                            await updateMovies(connectionName);
+
+                        } else {
+                            const response = await connection.twinkly.setLEDMode(state.val);
+                            if (response.code === twinkly.HTTPCodes.values.ok)
+                                await poll(connectionName, [stateNames.mode.parent.id]);
+                        }
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // Movie anpassen
                 } else if (!group && command === stateNames.movie.id) {
                     try {
-                        const response = await connection.twinkly.setCurrentMovie(state.val);
-                        if (response.code === twinkly.HTTPCodes.values.ok)
-                            await poll(connectionName);
+                        if (!Object.keys(connection.twinkly.movies).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
+                            adapter.log.warn(`[${connectionName}.${command}] Movie ${state.val} does not exist!`);
+                            await poll(connectionName, [stateNames.movie.id]);
+
+                        } else {
+                            const response = await connection.twinkly.setCurrentMovie(state.val);
+                            if (response.code === twinkly.HTTPCodes.values.ok)
+                                await poll(connectionName);
+                        }
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${group}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // MQTT anpassen
@@ -421,7 +449,7 @@ function startAdapter(options) {
                         if (response.code === twinkly.HTTPCodes.values.ok)
                             await poll(connectionName, [stateNames.mqtt.parent.id]);
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // Namen anpassen
@@ -431,7 +459,7 @@ function startAdapter(options) {
                         if (response.code === twinkly.HTTPCodes.values.ok)
                             await poll(connectionName, [stateNames.details.parent.id, stateNames.name.id]);
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // NetworkStatus anpassen
@@ -456,12 +484,13 @@ function startAdapter(options) {
                         if (response.code === twinkly.HTTPCodes.values.ok)
                             await poll(connectionName, [stateNames.mode.parent.id]);
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // Update Movies
                 } else if (!group && command === stateNames.reloadMovies.id) {
                     await updateMovies(connectionName);
+                    await poll(connectionName, [stateNames.movie.id]);
 
                 // Reset
                 } else if (!group && command === stateNames.reset.id) {
@@ -470,7 +499,7 @@ function startAdapter(options) {
                         if (response.code === twinkly.HTTPCodes.values.ok)
                             await poll(connectionName);
                     } catch (e) {
-                        adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                        adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                     }
 
                 // Saturation anpassen
@@ -481,7 +510,7 @@ function startAdapter(options) {
                             if (response.code === twinkly.HTTPCodes.values.ok)
                                 await poll(connectionName, [stateNames.sat.id]);
                         } catch (e) {
-                            adapter.log.error(`Could not disable ${connectionName}.${command} ${e}`);
+                            adapter.log.error(`[${connectionName}.${command}] Could not disable! ${e}`);
                         }
                     } else {
                         try {
@@ -489,7 +518,7 @@ function startAdapter(options) {
                             if (response.code === twinkly.HTTPCodes.values.ok)
                                 await poll(connectionName, [stateNames.sat.id]);
                         } catch (e) {
-                            adapter.log.error(`Could not set ${connectionName}.${command} ${e}`);
+                            adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
                         }
                     }
 
@@ -506,7 +535,7 @@ function startAdapter(options) {
                             if (response.code === twinkly.HTTPCodes.values.ok)
                                 await poll(connectionName, [stateNames.timer.parent.id]);
                         } catch (e) {
-                            adapter.log.error(`Could not set ${connectionName}.${group}.${command} ${e}`);
+                            adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e}`);
                         }
                     } else
                         adapter.log.debug(`[stateChange] Timer kann noch nicht übermittelt werden: (${json.time_on} > -1 && ${json.time_off} > -1) || (${json.time_on} === -1 && ${json.time_off} === -1)`);
@@ -583,7 +612,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.bri.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.bri.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.bri.id}`);
 
                 try {
                     const response = await connection.twinkly.getBrightness();
@@ -595,7 +624,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.color.parent.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.color.parent.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.color.parent.id}`);
 
                 try {
                     const response = await connection.twinkly.getLEDColor();
@@ -610,7 +639,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.details.parent.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.details.parent.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.details.parent.id}`);
 
                 try {
                     const response = await connection.twinkly.getDeviceDetails();
@@ -621,7 +650,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.effect.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.effect.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.effect.id}`);
 
                 try {
                     const response = await connection.twinkly.getCurrentLEDEffect();
@@ -634,7 +663,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.firmware.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.firmware.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.firmware.id}`);
 
                 try {
                     const response = await connection.twinkly.getFirmwareVersion();
@@ -645,19 +674,25 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.mode.parent.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.mode.parent.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.mode.parent.id}`);
 
                 try {
                     const response = await connection.twinkly.getLEDMode();
-                    await adapter.setStateAsync(connectionName + '.' + stateNames.on.id, response.mode.mode !== twinkly.lightModes.value.off, true);
                     await saveJSONinState(connectionName, connectionName, response.mode, stateNames.mode);
+                    await adapter.setStateAsync(connectionName + '.' + stateNames.on.id, response.mode.mode !== twinkly.lightModes.value.off, true);
+
+                    // Wenn nicht im Modus Playlist, dann entfernen
+                    if (connection.twinkly.mode !== twinkly.lightModes.value.playlist) {
+                        await adapter.setStateAsync(connectionName + '.' + stateNames.mode.subIDs.movie.subIDs.name.id, '', true);
+                        await adapter.setStateAsync(connectionName + '.' + stateNames.mode.subIDs.movie.subIDs.duration.id, 0, true);
+                    }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${stateNames.mode.parent.id} ${e}`);
                 }
             }
 
             if (canExecuteCommand(stateNames.movie.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.movie.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.movie.id}`);
 
                 try {
                     const response = await connection.twinkly.getCurrentMovie();
@@ -668,7 +703,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.mqtt.parent.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.mqtt.parent.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.mqtt.parent.id}`);
 
                 try {
                     const response = await connection.twinkly.getMqttConfiguration();
@@ -679,7 +714,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.name.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.name.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.name.id}`);
 
                 try {
                     const response = await connection.twinkly.getDeviceName();
@@ -690,7 +725,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.networkStatus.parent.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.networkStatus.parent.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.networkStatus.parent.id}`);
 
                 try {
                     const response = await connection.twinkly.getNetworkStatus();
@@ -701,7 +736,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.sat.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.sat.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.sat.id}`);
 
                 try {
                     const response = await connection.twinkly.getSaturation();
@@ -713,7 +748,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             if (canExecuteCommand(stateNames.timer.parent.id)) {
-                adapter.log.debug(`[poll] Polling ${connectionName}.${stateNames.timer.parent.id}`);
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.timer.parent.id}`);
 
                 try {
                     const response = await connection.twinkly.getTimer();
@@ -854,7 +889,7 @@ async function syncConfig() {
 }
 
 /**
- * prepareObjectsByConfig
+ * Konfiguration aufbereiten um die States/Objekte anzulegen
  * @returns {Promise<{}>}
  */
 async function prepareObjectsByConfig() {
@@ -901,7 +936,6 @@ async function prepareObjectsByConfig() {
     }
 
     /**
-     * TODO: Automatische Erstellung aller States
      * @param {{device: {}, states: [], channels: []}} config
      * @param {{}} states
      * @param {Boolean} root
@@ -924,8 +958,9 @@ async function prepareObjectsByConfig() {
                     device: config.device.id.device,
                     channel: prevChannel.id.channel ? prevChannel.id.channel : ''
                 },
-                common: getCommon(states[state].parent !== undefined ? states[state].parent : states[state], prevChannel),
-                native: {}
+                common  : getCommon(states[state].parent !== undefined ? states[state].parent : states[state], prevChannel),
+                native  : {},
+                exclude : []
             };
 
             if (states[state].hide === undefined || !states[state].hide) {
@@ -938,21 +973,27 @@ async function prepareObjectsByConfig() {
                             config.channels.push(stateObj);
 
                             await prepareConfig(config, states[state].subIDs, false, stateObj);
-                        // Sonst States auf Grandparent erstellen
                         } else {
+                            // Sonst States auf Grandparent erstellen
                             await prepareConfig(config, states[state].subIDs, false, prevChannel);
                         }
                     } else {
                         stateObj.id.state = states[state].parent.id;
+                        if (states[state].parent.exclude)
+                            stateObj.exclude = states[state].parent.exclude;
+
                         config.states.push(stateObj);
                     }
                 } else {
                     let canAddState = true;
-                    if (states[state].filter !== undefined)
+                    if (states[state].filter !== undefined && connections[config.device.id.device].connected)
                         canAddState = await connections[config.device.id.device].twinkly.checkDetailInfo(states[state].filter);
 
                     if (canAddState) {
                         stateObj.id.state = states[state].id;
+                        if (states[state].exclude)
+                            stateObj.exclude = states[state].exclude;
+
                         config.states.push(stateObj);
                     }
                 }
@@ -1010,7 +1051,7 @@ function prepareTasks(preparedObjects, old_objects) {
                 if (!group.device.native) group.device.native = {};
 
                 if (oldObj && oldObj.type === 'device') {
-                    if (!areStatesEqual(oldObj, group.device)) {
+                    if (!areStatesEqual(oldObj, group.device, [])) {
                         devicesToUpdate.push({
                             type : 'update_device',
                             id   : group.device.id,
@@ -1043,7 +1084,7 @@ function prepareTasks(preparedObjects, old_objects) {
                     if (!channel.native) channel.native = {};
 
                     if (oldObj && oldObj.type === 'channel') {
-                        if (!areStatesEqual(oldObj, channel)) {
+                        if (!areStatesEqual(oldObj, channel, [])) {
                             channelsToUpdate.push({
                                 type : 'update_channel',
                                 id   : channel.id,
@@ -1081,7 +1122,7 @@ function prepareTasks(preparedObjects, old_objects) {
                         subscribedStates[fullID] = {connection: state.id.device, group: state.id.channel, command: state.id.state};
 
                     if (oldObj && oldObj.type === 'state') {
-                        if (!areStatesEqual(oldObj, state)) {
+                        if (!areStatesEqual(oldObj, state, state.exclude)) {
                             statesToUpdate.push({
                                 type : 'update_state',
                                 id   : state.id,
@@ -1123,31 +1164,36 @@ function prepareTasks(preparedObjects, old_objects) {
 
 /**
  * areStatesEqual
- * @param rhs
- * @param lhs
+ * @param {{common: {}, native: {}}} rhs
+ * @param {{common: {}, native: {}}} lhs
+ * @param {String[]} exclude
  * @returns {boolean}
  */
-function areStatesEqual(rhs, lhs) {
-    return areObjectsEqual(rhs.common, lhs.common) &&
-           areObjectsEqual(rhs.native, lhs.native);
+function areStatesEqual(rhs, lhs, exclude) {
+    return areObjectsEqual(rhs.common, lhs.common, exclude) &&
+           areObjectsEqual(rhs.native, lhs.native, exclude);
 }
 
 /**
  * Check if two Objects are identical
- * @param aObj
- * @param bObj
+ * @param {{}} aObj
+ * @param {{}} bObj
+ * @param {String[]} exclude
  * @returns {boolean}
  */
-function areObjectsEqual(aObj, bObj) {
+function areObjectsEqual(aObj, bObj, exclude) {
     function doCheck(aObj, bObj) {
         let result = typeof aObj !== 'undefined' && typeof bObj !== 'undefined';
 
         if (result)
             for (const key of Object.keys(aObj)) {
+                if (exclude && exclude.length > 0 && exclude.includes(key))
+                    continue;
+
                 let equal = Object.keys(bObj).includes(key);
                 if (equal) {
                     if (typeof aObj[key] === 'object' && typeof bObj[key] === 'object')
-                        equal = areObjectsEqual(aObj[key], bObj[key]);
+                        equal = areObjectsEqual(aObj[key], bObj[key], exclude);
                     else
                         equal = aObj[key] === bObj[key];
                 }
@@ -1332,19 +1378,27 @@ async function updateEffects(connectionName) {
 
     const connection = connections[connectionName];
 
-    const data = {common: {states: {}}};
     try {
-        const response = await connection.twinkly.getLEDEffects();
-        for (let effect = 0; effect < response.effects.effects_number; effect++) {
-            data.common.states[effect] = `Effect ${effect+1}`;
+        await connection.twinkly.getListOfLEDEffects();
+
+        const obj = await adapter.getObjectAsync(connectionName + '.' + stateNames.effect.id);
+        if (obj) {
+            if (!areObjectsEqual(obj.common.states, connection.twinkly.effects, [])) {
+                obj.common.states = connection.twinkly.effects;
+                try {
+                    await adapter.setObjectAsync(connectionName + '.' + stateNames.effect.id, obj);
+                } catch (e) {
+                    adapter.log.error(`[updateMovies.${connectionName}] Cannot update effects! ${e.message}`);
+                }
+            }
+        } else {
+            await adapter.extendObject(connectionName + '.' + stateNames.effect.id, {common: {states: connection.twinkly.effects}}, err => {
+                if (err) adapter.log.error(`[updateEffects.${connectionName}] Cannot update effects! ${err}`);
+            });
         }
     } catch (e) {
-        adapter.log.error(`[updateEffects.${connectionName}] Could not get effects ${e}`);
+        adapter.log.error(`[updateEffects.${connectionName}] Could not get effects! ${e.message}`);
     }
-
-    await adapter.extendObject(connectionName + '.' + stateNames.effect.id, data, err => {
-        if (err) adapter.log.error(`[updateEffects.${connectionName}] Cannot update effects Error: ${err}`);
-    });
 }
 
 /**
@@ -1357,23 +1411,31 @@ async function updateMovies(connectionName) {
 
     const connection = connections[connectionName];
 
-    const data = {common: {states: {}}};
     try {
         const response = await connection.twinkly.getListOfMovies();
         if (statesConfig.includes(stateNames.movies.id)) {
             await adapter.setStateAsync(connectionName + '.' + stateNames.movies.id, JSON.stringify(response.movies.movies), true);
         }
-
-        for (const movie of response.movies.movies) {
-            data.common.states[movie.id] = movie.name;
-        }
     } catch (e) {
         adapter.log.error(`[updateMovies.${connectionName}] Could not get movies ${e}`);
     }
 
-    await adapter.extendObject(connectionName + '.' + stateNames.movie.id, data, err => {
-        if (err) adapter.log.error(`[updateMovies.${connectionName}] Cannot update movies Error: ${err}`);
-    });
+    const obj = await adapter.getObjectAsync(connectionName + '.' + stateNames.movie.id);
+    if (obj) {
+        if (!areObjectsEqual(obj.common.states, connection.twinkly.movies, [])) {
+            obj.common.states = connection.twinkly.movies;
+            try {
+                await adapter.setObjectAsync(connectionName + '.' + stateNames.movie.id, obj);
+            } catch (e) {
+                adapter.log.error(`[updateMovies.${connectionName}] Cannot update movies! ${e.message}`);
+            }
+        }
+    } else {
+        await adapter.extendObject(connectionName + '.' + stateNames.movie.id, {common: {states: connection.twinkly.movies}}, err => {
+            if (err)
+                adapter.log.error(`[updateMovies.${connectionName}] Cannot update movies! ${err}`);
+        });
+    }
 }
 
 /**
