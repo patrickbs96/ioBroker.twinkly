@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "news": {
       "0.2.4": {
         "en": "Handle wrong input so it does not cause exceptions",
