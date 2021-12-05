@@ -67,9 +67,9 @@ The following States are available:
 
 ## Changelog
 
-### 0.2.5 (2021-12-04)
+### 0.2.5 (2021-12-05)
 * (patrickbs96) Renamed States with led control. Now starting with "led".
-* (patrickbs96) Add new States `ledConfig` and `ledLayout`
+* (patrickbs96) Add new State `ledLayout`
 
 ### 0.2.4 (2021-12-03)
 * (patrickbs96) Handle wrong input so it does not cause exceptions
