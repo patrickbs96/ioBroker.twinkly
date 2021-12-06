@@ -6,7 +6,8 @@ const stateTools = require('./lib/stateTools');
 const tools      = require('./lib/tools');
 const inspector  = require('inspector');
 
-// TODO: uploadMovie, LEDMovieConfig, sendRealtimeFrame, getStatus
+// TODO: uploadMovie, LEDMovieConfig, sendRealtimeFrame, Summary, Mic, Music
+// TODO: Handle deprecated
 
 /**
  * The adapter instance
@@ -128,9 +129,9 @@ const stateNames = {
             movie : {
                 parent: {id: 'movie', name: 'Movie', hide: true},
                 subIDs: {
-                    name      : {id: 'activePlaylistMovie',         name: 'Active Playlist Movie'},
+                    name      : {id: 'activePlaylistMovie',         name: 'Active Playlist Movie',                           hide: true},
                     id        : {id: 'activePlaylistMovieId',       name: 'Active Playlist Movie Id',        type: 'number', hide: true},
-                    duration  : {id: 'activePlaylistMovieDuration', name: 'Active Playlist Movie Duration',  type: 'number'},
+                    duration  : {id: 'activePlaylistMovieDuration', name: 'Active Playlist Movie Duration',  type: 'number', hide: true},
                     unique_id : {id: 'activePlaylistMovieUniqueId', name: 'Active Playlist Movie Unique Id',                 hide: true},
                 },
                 expandJSON: true
@@ -165,9 +166,10 @@ const stateNames = {
         expandJSON: true
     },
 
-    ledMovie  : {id: 'ledMovie',  name: 'LED Movie',      write: true, type: 'number', exclude: ['states']},
-    ledMovies : {id: 'ledMovies', name: 'LED Movies',     role: 'json'},
-    ledSat    : {id: 'ledSat',    name: 'LED Saturation', write: true, type: 'number', role: 'level.dimmer', min: -1, max: 100},
+    ledMovie    : {id: 'ledMovie',    name: 'LED Movie',      write: true, type: 'number', exclude: ['states']},
+    ledMovies   : {id: 'ledMovies',   name: 'LED Movies',     role: 'json'},
+    ledPlaylist : {id: 'ledPlaylist', name: 'Playlist',       write: true, type: 'number'},
+    ledSat      : {id: 'ledSat',      name: 'LED Saturation', write: true, type: 'number', role: 'level.dimmer', min: -1, max: 100},
 
     mqtt : {
         parent : {id: 'mqtt', name: 'MQTT', write: true, role: 'json'},
@@ -185,7 +187,7 @@ const stateNames = {
     networkStatus : {
         parent : {id: 'network', name: 'Network', role: 'json'},
         subIDs : {
-            mode    : {id: 'mode', name: 'Mode', type: 'number'},
+            mode    : {id: 'mode', name: 'Mode', type: 'number', states: {1: 'Station', 2: 'AccessPoint'}},
             station : {
                 parent : {id: 'station', name: 'Station', role: 'json'},
                 subIDs : {
@@ -194,29 +196,30 @@ const stateNames = {
                     mask   : {id: 'subnetmask', name: 'Subnetmask'},
                     rssi   : {id: 'rssi',       name: 'RSSI',        type: 'number'},
                     ssid   : {id: 'ssid',       name: 'SSID'},
-                    status : {id: 'status',     name: 'Status'},
+                    status : {id: 'status',     name: 'Status', deprecated: '2.8.3'},
                 },
                 expandJSON: true
             },
             ap : {
                 parent : {id: 'accesspoint', name: 'AccessPoint', write: false, role: 'json'},
                 subIDs : {
-                    enc              : {id: 'encrypted',       name: 'Encrypted',        type: 'number'},
+                    enc              : {id: 'encrypted',       name: 'Encrypted',        type: 'number', states: {0: 'No encryption', 2: 'WPA1', 3: 'WPA2', 4: 'WPA1+WPA2'}},
                     ip               : {id: 'ip',              name: 'IP'},
                     channel          : {id: 'channel',         name: 'Channel',          type: 'number'},
                     max_connections  : {id: 'maxConnections',  name: 'Max Connections',  type: 'number'},
-                    password_changed : {id: 'passwordChanged', name: 'Password Changed', type: 'number'},
+                    password_changed : {id: 'passwordChanged', name: 'Password Changed', type: 'number', states: {0: 'False', 1: 'True'}},
                     ssid             : {id: 'ssid',            name: 'SSID'},
-                    ssid_hidden      : {id: 'ssidHidden',      name: 'SSID Hidden',      type: 'number'}
+                    ssid_hidden      : {id: 'ssidHidden',      name: 'SSID Hidden',      type: 'number', states: {0: 'False', 1: 'True'}}
                 },
                 expandJSON: true
             }
         },
         expandJSON: true
     },
-    on     : {id: 'on',     name: 'On',               write: true, type: 'boolean', role: 'switch', def: false},
-    paused : {id: 'paused', name: 'Pause Connection', write: true, type: 'boolean', role: 'switch', def: false},
-    reset  : {id: 'reset',  name: 'Reset',            write: true, type: 'boolean', role: 'button'},
+    on     : {id: 'on',       name: 'On',               write: true, type: 'boolean', role: 'switch', def: false},
+    paused : {id: 'paused',   name: 'Pause Connection', write: true, type: 'boolean', role: 'switch', def: false},
+    reset  : {id: 'reset',    name: 'Reset',            write: true, type: 'boolean', role: 'button'},
+    status : {id: 'status',   name: 'Status', role: 'json'},
     timer  : {
         parent : {id: 'timer', name: 'Timer', write: true, role: 'json'},
         subIDs : {
@@ -249,6 +252,7 @@ const statesConfig = [
     stateNames.name.id,
     stateNames.on.id,
     stateNames.paused.id,
+    stateNames.ledPlaylist.id,
     stateNames.timer.parent.id
 ];
 
@@ -293,7 +297,7 @@ function startAdapter(options) {
 
                 // Ist der state bekannt?
                 if (!Object.keys(subscribedStates).includes(id)) {
-                    adapter.log.warn(`${id} wird nicht verarbeitet!`);
+                    adapter.log.warn(`State ${id} unknown, will not be processed!`);
                     return;
                 }
 
@@ -340,7 +344,7 @@ function startAdapter(options) {
                             await connection.twinkly.setBrightnessDisabled();
                             startInterval(1000, connectionName, [stateNames.ledBri.id]);
                         } catch (e) {
-                            adapter.log.error(`Could not disable ${connectionName}.${command} ${e.message}`);
+                            adapter.log.error(`[${connectionName}.${command}] Could not disable! ${e.message}`);
                         }
                     } else {
                         try {
@@ -482,6 +486,21 @@ function startAdapter(options) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
 
+                // LED Playlist
+                } else if (!group && command === stateNames.ledPlaylist.id) {
+                    try {
+                        if (!Object.keys(connection.twinkly.playlist).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
+                            adapter.log.warn(`[${connectionName}.${command}] Playlist ${state.val} does not exist!`);
+                            startInterval(1000, connectionName, [stateNames.ledPlaylist.id]);
+
+                        } else {
+                            await connection.twinkly.setCurrentPlaylistEntry(state.val);
+                            startInterval(1000, connectionName);
+                        }
+                    } catch (e) {
+                        adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
+                    }
+
                 // MQTT anpassen
                 } else if (group && group === stateNames.mqtt.parent.id) {
                     /** @type {{broker_host: String, broker_port: Number, client_id: String, user: String, keep_alive_interval : Number, encryption_key_set: Boolean}} */
@@ -598,7 +617,10 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             // Nicht pollen, wenn pausiert!
-            if (connection.paused) continue;
+            if (connection.paused) {
+                adapter.log.debug(`[poll] ${connectionName} is paused!`);
+                continue;
+            }
 
             // Ping-Check
             try {
@@ -612,7 +634,7 @@ async function poll(specificConnection = '', filter = []) {
 
             // Nur ausführen, wenn Gerät verbunden ist!
             if (!connection.connected) {
-                adapter.log.debug(`[poll] ${connectionName} ist nicht verfügbar!`);
+                adapter.log.debug(`[poll] ${connectionName} is not available!`);
                 continue;
             }
 
@@ -749,6 +771,21 @@ async function poll(specificConnection = '', filter = []) {
                 }
             }
 
+            if (canExecuteCommand(stateNames.ledPlaylist.id)) {
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.ledPlaylist.id}`);
+
+                try {
+                    // First update existing Playlist...
+                    await updatePlaylist(connectionName);
+                    // ... then get current Playlist Entry
+                    const response = await connection.twinkly.getCurrentPlaylistEntry();
+                    if (response.code === twinkly.HTTPCodes.values.ok)
+                        await adapter.setStateAsync(connectionName + '.' + stateNames.ledPlaylist.id, response.playlist.id, true);
+                } catch (e) {
+                    adapter.log.error(`Could not get ${connectionName}.${stateNames.ledPlaylist.id} ${e}`);
+                }
+            }
+
             if (canExecuteCommand(stateNames.ledSat.id)) {
                 adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.ledSat.id}`);
 
@@ -795,6 +832,17 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response.status, stateNames.networkStatus);
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${stateNames.networkStatus.parent.id} ${e}`);
+                }
+            }
+
+            if (canExecuteCommand(stateNames.status.id)) {
+                adapter.log.debug(`[poll.${connectionName}] Polling ${stateNames.status.id}`);
+
+                try {
+                    const response = await connection.twinkly.getStatus();
+                    await adapter.setStateAsync(connectionName + '.' + stateNames.status.id, response.code, true);
+                } catch (e) {
+                    adapter.log.error(`Could not get ${connectionName}.${stateNames.status.id} ${e}`);
                 }
             }
 
@@ -864,8 +912,10 @@ async function syncConfig() {
     if (adapter.config.network)
         statesConfig.push(stateNames.networkStatus.parent.id);
     // Movies nur im Debugger anlegen
-    if (inspector.url() !== undefined)
+    if (inspector.url() !== undefined) {
         statesConfig.push(stateNames.ledMovies.id);
+        // statesConfig.push(stateNames.status.id);
+    }
 
     try {
         adapter.log.debug('[syncConfig] config devices: '  + JSON.stringify(adapter.config.devices));
@@ -1085,7 +1135,7 @@ async function prepareObjectsByConfig() {
  * prepareTasks
  * @param preparedObjects
  * @param old_objects
- * @returns {{id: string, type: string}[]}
+ * @returns {{id: string, type: string, data?: {common: {}, native: {}}}[]}
  */
 function prepareTasks(preparedObjects, old_objects) {
     const devicesToUpdate  = [];
@@ -1103,7 +1153,7 @@ function prepareTasks(preparedObjects, old_objects) {
                 if (!group.device.native) group.device.native = {};
 
                 if (oldObj && oldObj.type === 'device') {
-                    if (!areStatesEqual(oldObj, group.device, [])) {
+                    if (!tools.areStatesEqual(oldObj, group.device, [])) {
                         devicesToUpdate.push({
                             type : 'update_device',
                             id   : group.device.id,
@@ -1136,7 +1186,7 @@ function prepareTasks(preparedObjects, old_objects) {
                     if (!channel.native) channel.native = {};
 
                     if (oldObj && oldObj.type === 'channel') {
-                        if (!areStatesEqual(oldObj, channel, [])) {
+                        if (!tools.areStatesEqual(oldObj, channel, [])) {
                             channelsToUpdate.push({
                                 type : 'update_channel',
                                 id   : channel.id,
@@ -1174,7 +1224,7 @@ function prepareTasks(preparedObjects, old_objects) {
                         subscribedStates[fullID] = {connection: state.id.device, group: state.id.channel, command: state.id.state};
 
                     if (oldObj && oldObj.type === 'state') {
-                        if (!areStatesEqual(oldObj, state, state.exclude)) {
+                        if (!tools.areStatesEqual(oldObj, state, state.exclude)) {
                             statesToUpdate.push({
                                 type : 'update_state',
                                 id   : state.id,
@@ -1205,69 +1255,21 @@ function prepareTasks(preparedObjects, old_objects) {
     // eslint-disable-next-line no-unused-vars
     const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
     // eslint-disable-next-line no-unused-vars
-    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device') .map(([id]) => ({ type: 'delete_device', id: id }));
+    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device') .map(([id]) => ({type: 'delete_device', id: id}));
     // eslint-disable-next-line no-unused-vars
-    const channelsToDelete = oldEntries.filter(([id, object]) => object.type === 'channel').map(([id]) => ({ type: 'delete_channel', id: id }));
+    const channelsToDelete = oldEntries.filter(([id, object]) => object.type === 'channel').map(([id]) => ({type: 'delete_channel', id: id}));
     // eslint-disable-next-line no-unused-vars
-    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id]) => ({ type: 'delete_state',  id: id }));
+    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id]) => ({type: 'delete_state', id: id}));
 
     return stateToDelete.concat(devicesToUpdate, devicesToDelete, channelsToUpdate, channelsToDelete, statesToUpdate);
 }
 
 /**
- * areStatesEqual
- * @param {{common: {}, native: {}}} rhs
- * @param {{common: {}, native: {}}} lhs
- * @param {String[]} exclude
- * @returns {boolean}
- */
-function areStatesEqual(rhs, lhs, exclude) {
-    return areObjectsEqual(rhs.common, lhs.common, exclude) &&
-           areObjectsEqual(rhs.native, lhs.native, exclude);
-}
-
-/**
- * Check if two Objects are identical
- * @param {{}} aObj
- * @param {{}} bObj
- * @param {String[]} exclude
- * @returns {boolean}
- */
-function areObjectsEqual(aObj, bObj, exclude) {
-    function doCheck(aObj, bObj) {
-        let result = typeof aObj !== 'undefined' && typeof bObj !== 'undefined';
-
-        if (result)
-            for (const key of Object.keys(aObj)) {
-                if (exclude && exclude.length > 0 && exclude.includes(key))
-                    continue;
-
-                let equal = Object.keys(bObj).includes(key);
-                if (equal) {
-                    if (typeof aObj[key] === 'object' && typeof bObj[key] === 'object')
-                        equal = areObjectsEqual(aObj[key], bObj[key], exclude);
-                    else
-                        equal = aObj[key] === bObj[key];
-                }
-
-                if (!equal) {
-                    result = false;
-                    break;
-                }
-            }
-
-        return result;
-    }
-
-    return doCheck(aObj, bObj) && doCheck(bObj, aObj);
-}
-
-/**
  * processTasks
- * @param tasks
+ * @param {{id: string|{device: String, channel: String, state: String}, type: String, data?: {common: {}, native: {}}}[]} tasks
  */
 async function processTasks(tasks) {
-    if (!tasks || !tasks.length || tasks.length === 0) {
+    if (!tasks || tasks.length === 0) {
         adapter.log.debug('[processTasks] No tasks to process!');
         return;
     }
@@ -1279,61 +1281,71 @@ async function processTasks(tasks) {
 
         adapter.log.debug('[processTasks] Task: ' + JSON.stringify(task) + ', ID: ' + id);
 
-        if (task.type === 'create_device') {
+        if (task.type === 'create_device' && typeof task.id !== 'string') {
             adapter.log.debug('[processTasks] Create device id=' + id);
-            await stateTools.createDevice(adapter, task.id, task.data.common, task.data.native)
-                .catch(error => {
-                    adapter.log.error('Cannot create device: ' + id + ' Error: ' + error);
-                });
+            try {
+                await stateTools.createDevice(adapter, task.id, task.data.common, task.data.native);
+            } catch (e) {
+                adapter.log.error('Cannot create device: ' + id + ' Error: ' + e.message);
+            }
         } else if (task.type === 'update_device') {
             adapter.log.debug('[processTasks] Update device id=' + id);
-            await adapter.extendObject(id, task.data, err => {
-                if (err) adapter.log.error('Cannot update device: ' + id + ' Error: ' + err);
-            });
+            try {
+                await adapter.extendObject(id, task.data);
+            } catch (e) {
+                adapter.log.error('Cannot update device: ' + id + ' Error: ' + e.message);
+            }
         } else if (task.type === 'delete_device') {
             adapter.log.debug('[processTasks] Delete device id=' + id);
+            try {
+                await adapter.delObject(id);
+            } catch (e) {
+                adapter.log.error('Cannot delete device : ' + id + ' Error: ' + e.message);
+            }
 
-            await adapter.delObject(id, err => {
-                if (err) adapter.log.error('Cannot delete device : ' + id + ' Error: ' + err);
-            });
-
-        } else if (task.type === 'create_channel') {
+        } else if (task.type === 'create_channel' && typeof task.id !== 'string') {
             adapter.log.debug('[processTasks] Create channel id=' + id);
-            await stateTools.createChannel(adapter, task.id, task.data.common, task.data.native)
-                .catch(error => {
-                    adapter.log.error('Cannot create channel: ' + id + ' Error: ' + error);
-                });
+            try {
+                await stateTools.createChannel(adapter, task.id, task.data.common, task.data.native);
+            } catch (e) {
+                adapter.log.error('Cannot create channel: ' + id + ' Error: ' + e.message);
+            }
         } else if (task.type === 'update_channel') {
             adapter.log.debug('[processTasks] Update channel id=' + id);
-
-            await adapter.extendObject(id, task.data, err => {
-                err && adapter.log.error('Cannot update channel : ' + id + ' Error: ' + err);
-            });
+            try {
+                await adapter.extendObject(id, task.data);
+            } catch (e) {
+                adapter.log.error('Cannot update channel : ' + id + ' Error: ' + e.message);
+            }
         } else if (task.type === 'delete_channel') {
             adapter.log.debug('[processTasks] Delete channel id=' + id);
+            try {
+                await adapter.delObject(id);
+            } catch (e) {
+                adapter.log.error('Cannot delete channel : ' + id + ' Error: ' + e.message);
+            }
 
-            await adapter.delObject(id, err => {
-                err && adapter.log.error('Cannot delete channel : ' + id + ' Error: ' + err);
-            });
-
-        } else if (task.type === 'create_state') {
+        } else if (task.type === 'create_state' && typeof task.id !== 'string') {
             adapter.log.debug('[processTasks] Create state id=' + id);
-            await stateTools.createState(adapter, task.id, task.data.common, task.data.native)
-                .catch(error => {
-                    adapter.log.error('Cannot create state: ' + id + ' Error: ' + error);
-                });
+            try {
+                await stateTools.createState(adapter, task.id, task.data.common, task.data.native);
+            } catch (e) {
+                adapter.log.error('Cannot create state: ' + id + ' Error: ' + e.message);
+            }
         } else if (task.type === 'update_state') {
             adapter.log.debug('[processTasks] Update state id=' + id);
-
-            await adapter.extendObject(id, task.data, err => {
-                if (err) adapter.log.error('Cannot update state : ' + id + ' Error: ' + err);
-            });
+            try {
+                await adapter.extendObject(id, task.data);
+            } catch (e) {
+                adapter.log.error('Cannot update state : ' + id + ' Error: ' + e.message);
+            }
         } else if (task.type === 'delete_state') {
             adapter.log.debug('[processTasks] Delete state id=' + id);
-
-            await adapter.delObject(id, err => {
-                if (err) adapter.log.error('Cannot delete state : ' + id + ' Error: ' + err);
-            });
+            try {
+                await adapter.delObject(id);
+            } catch (e) {
+                adapter.log.error('Cannot delete state : ' + id + ' Error: ' + e.message);
+            }
         } else
             adapter.log.error('Unknown task type: ' + JSON.stringify(task));
     }
@@ -1433,24 +1445,15 @@ async function updateEffects(connectionName) {
 
     try {
         await connection.twinkly.getListOfLEDEffects();
-
-        const obj = await adapter.getObjectAsync(connectionName + '.' + stateNames.ledEffect.id);
-        if (obj) {
-            if (!areObjectsEqual(obj.common.states, connection.twinkly.ledEffects, [])) {
-                obj.common.states = connection.twinkly.ledEffects;
-                try {
-                    await adapter.setObjectAsync(connectionName + '.' + stateNames.ledEffect.id, obj);
-                } catch (e) {
-                    adapter.log.error(`[updateEffects.${connectionName}] Cannot update effects! ${e.message}`);
-                }
-            }
-        } else {
-            await adapter.extendObject(connectionName + '.' + stateNames.ledEffect.id, {common: {states: connection.twinkly.ledEffects}}, err => {
-                if (err) adapter.log.error(`[updateEffects.${connectionName}] Cannot update effects! ${err}`);
-            });
-        }
     } catch (e) {
         adapter.log.error(`[updateEffects.${connectionName}] Could not get effects! ${e.message}`);
+        return;
+    }
+
+    try {
+        await stateTools.addStates2Object(adapter, connectionName + '.' + stateNames.ledEffect.id, connection.twinkly.ledEffects);
+    } catch (e) {
+        adapter.log.error(`[updateEffects.${connectionName}] Cannot update effects! ${e.message}`);
     }
 }
 
@@ -1473,21 +1476,33 @@ async function updateMovies(connectionName) {
         adapter.log.error(`[updateMovies.${connectionName}] Could not get movies ${e}`);
     }
 
-    const obj = await adapter.getObjectAsync(connectionName + '.' + stateNames.ledMovie.id);
-    if (obj) {
-        if (!areObjectsEqual(obj.common.states, connection.twinkly.ledMovies, [])) {
-            obj.common.states = connection.twinkly.ledMovies;
-            try {
-                await adapter.setObjectAsync(connectionName + '.' + stateNames.ledMovie.id, obj);
-            } catch (e) {
-                adapter.log.error(`[updateMovies.${connectionName}] Cannot update movies! ${e.message}`);
-            }
-        }
-    } else {
-        await adapter.extendObject(connectionName + '.' + stateNames.ledMovie.id, {common: {states: connection.twinkly.ledMovies}}, err => {
-            if (err)
-                adapter.log.error(`[updateMovies.${connectionName}] Cannot update movies! ${err}`);
-        });
+    try {
+        await stateTools.addStates2Object(adapter, connectionName + '.' + stateNames.ledMovie.id, connection.twinkly.ledMovies);
+    } catch (e) {
+        adapter.log.error(`[updateMovies.${connectionName}] Cannot update movies! ${e.message}`);
+    }
+}
+
+/**
+ * Update DP States from playlist
+ * @param connectionName
+ * @return {Promise<void>}
+ */
+async function updatePlaylist(connectionName) {
+    if (!Object.keys(connections).includes(connectionName)) return;
+
+    const connection = connections[connectionName];
+
+    try {
+        await connection.twinkly.getPlaylist();
+    } catch (e) {
+        adapter.log.error(`[updatePlaylist.${connectionName}] Could not get playlist ${e}`);
+    }
+
+    try {
+        await stateTools.addStates2Object(adapter, connectionName + '.' + stateNames.ledPlaylist.id, connection.twinkly.playlist);
+    } catch (e) {
+        adapter.log.error(`[updatePlaylist.${connectionName}] Cannot update playlist! ${e.message}`);
     }
 }
 
