@@ -168,7 +168,7 @@ const stateNames = {
 
     ledMovie    : {id: 'ledMovie',    name: 'LED Movie',      write: true, type: 'number', exclude: ['states']},
     ledMovies   : {id: 'ledMovies',   name: 'LED Movies',     role: 'json'},
-    ledPlaylist : {id: 'ledPlaylist', name: 'Playlist',       write: true, type: 'number'},
+    ledPlaylist : {id: 'ledPlaylist', name: 'LED Playlist',   write: true, type: 'number'},
     ledSat      : {id: 'ledSat',      name: 'LED Saturation', write: true, type: 'number', role: 'level.dimmer', min: -1, max: 100},
 
     mqtt : {
@@ -744,12 +744,6 @@ async function poll(specificConnection = '', filter = []) {
                     if (response.code === twinkly.HTTPCodes.values.ok) {
                         await saveJSONinState(connectionName, connectionName, response.mode, stateNames.ledMode);
                         await adapter.setStateAsync(connectionName + '.' + stateNames.on.id, response.mode.mode !== twinkly.lightModes.value.off, true);
-
-                        // Wenn nicht im Modus Playlist, dann entfernen
-                        if (connection.twinkly.ledMode !== twinkly.lightModes.value.playlist) {
-                            await adapter.setStateAsync(connectionName + '.' + stateNames.ledMode.subIDs.movie.subIDs.name.id, '', true);
-                            await adapter.setStateAsync(connectionName + '.' + stateNames.ledMode.subIDs.movie.subIDs.duration.id, 0, true);
-                        }
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${stateNames.ledMode.parent.id} ${e}`);
