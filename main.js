@@ -72,13 +72,24 @@ const stateNames = {
             measured_frame_rate : {id: 'measuredFrameRate', name: 'Measured Frame Rate', type: 'number'},
             movie_capacity      : {id: 'movieCapacity',     name: 'Movie Capacity',      type: 'number'},
             number_of_led       : {id: 'numberOfLed',       name: 'Number of LED',       type: 'number'},
+            production_site     : {id: 'productionSite',    name: 'Production site',     type: 'number',                     newSince: '2.8.3'},
+            production_date     : {id: 'productionDate',    name: 'Production Date',     type: 'number', role: 'value.time', newSince: '2.8.3'},
             product_name        : {id: 'productName',       name: 'Product Name'},
             product_version     : {id: 'productVersion',    name: 'Product Version'},
             product_code        : {id: 'productCode',       name: 'Product Code'},
             rssi                : {id: 'rssi',              name: 'RSSI',                type: 'number'},
             uptime              : {id: 'uptime',            name: 'Uptime'},
             uuid                : {id: 'uuid',              name: 'UUID'},
-            wire_type           : {id: 'wireType',          name: 'Wire Type',           type: 'number'}
+            wire_type           : {id: 'wireType',          name: 'Wire Type',           type: 'number'},
+
+            group : {
+                parent : {id: 'group', name: 'Group', newSince: '2.8.3'},
+                subIDs : {
+                    mode       : {id: 'mode',       name: 'Name'},
+                    compat_mode: {id: 'compatMode', name: 'Compat Mode', type: 'number'}
+                },
+                expandJSON: false
+            }
         },
         expandJSON: true
     },
@@ -245,7 +256,7 @@ const statesConfig = [
     stateNames.ledColor.parent.id,
     // stateNames.ledConfig.id,
     stateNames.ledEffect.id,
-    stateNames.ledLayout.parent.id,
+    // stateNames.ledLayout.parent.id, Prüfen, weshalb es nicht klappt
     stateNames.ledMode.parent.id,
     stateNames.ledMovie.id,
     stateNames.ledSat.id,
@@ -1059,8 +1070,7 @@ async function prepareObjectsByConfig() {
                 exclude : []
             };
 
-            if (states[state].hide === undefined || !states[state].hide) {
-
+            if (!states[state].hide) {
                 if (states[state].parent !== undefined) {
                     if (states[state].subIDs !== undefined && states[state].expandJSON) {
                         // Soll der Parent angezeigt werden
@@ -1082,8 +1092,12 @@ async function prepareObjectsByConfig() {
                     }
                 } else {
                     let canAddState = true;
-                    if (states[state].filter !== undefined && connections[config.device.id.device].connected)
-                        canAddState = await connections[config.device.id.device].twinkly.checkDetailInfo(states[state].filter);
+                    if (connections[config.device.id.device].connected) {
+                        if (canAddState && states[state].filter !== undefined)
+                            canAddState = await connections[config.device.id.device].twinkly.checkDetailInfo(states[state].filter);
+                        if (canAddState && states[state].newSince !== undefined)
+                            canAddState = tools.versionGreaterEqual(states[state].newSince, connections[config.device.id.device].twinkly.firmware);
+                    }
 
                     if (canAddState) {
                         stateObj.id.state = states[state].id;
@@ -1105,6 +1119,13 @@ async function prepareObjectsByConfig() {
         } catch (error) {
             connections[connection].connected = false;
             adapter.log.error(`Could not ping ${connection} ${error}`);
+        }
+        // Interview
+        try {
+            if (connections[connection].connected)
+                await connections[connection].twinkly.interview();
+        } catch (error) {
+            adapter.log.error(`Could not interview ${connection} ${error}`);
         }
 
         const config = {
@@ -1358,6 +1379,26 @@ async function saveJSONinState(connection, state, json, mapping) {
     mapping.logItem = mapping.logItem !== undefined && mapping.logItem === true;
     if (mapping.hide) return;
 
+    /**
+     *
+     * @param {String} id
+     * @param {{hide?: Boolean; filter?: {name: String, val: any}; role?: String}} stateInfo
+     * @param {any} value
+     * @param {Boolean} stringify
+     */
+    async function writeState(id, stateInfo, value, stringify) {
+        let canSetState = !stateInfo.hide;
+        if (canSetState && stateInfo.filter !== undefined)
+            canSetState = await connections[connection].twinkly.checkDetailInfo(stateInfo.filter);
+        if (canSetState) {
+            // Unix * 1000
+            if (!stringify && stateInfo.role === 'value.time')
+                value = value * 1000;
+
+            await adapter.setStateAsync(state + '.' + id, stringify ? JSON.stringify(value) : value, true);
+        }
+    }
+
     if (mapping.expandJSON) {
         if (!mapping.parent.hide) {
             state += '.' + mapping.parent.id;
@@ -1367,12 +1408,7 @@ async function saveJSONinState(connection, state, json, mapping) {
         for (const key of Object.keys(json)) {
             if (Object.keys(mapping.subIDs).includes((key))) {
                 if (typeof json[key] !== 'object' || Array.isArray(json[key])) {
-                    let canSetState = !mapping.subIDs[key].hide;
-                    if (canSetState && mapping.subIDs[key].filter !== undefined)
-                        canSetState = await connections[connection].twinkly.checkDetailInfo(mapping.subIDs[key].filter);
-                    if (canSetState)
-                        await adapter.setStateAsync(state + '.' + mapping.subIDs[key].id, Array.isArray(json[key]) ? JSON.stringify(json[key]) : json[key], true);
-
+                    await writeState(mapping.subIDs[key].id, mapping.subIDs[key], json[key], Array.isArray(json[key]));
                 } else {
                     await saveJSONinState(connection, state, json[key], mapping.subIDs[key]);
                 }
@@ -1383,11 +1419,7 @@ async function saveJSONinState(connection, state, json, mapping) {
             }
         }
     } else {
-        let canSetState = true;
-        if (mapping.filter !== undefined)
-            canSetState = await connections[connection].twinkly.checkDetailInfo(mapping.filter);
-        if (canSetState)
-            await adapter.setStateAsync(state + '.' + mapping.parent.id, JSON.stringify(json), true);
+        await writeState(mapping.parent.id, mapping, json, true);
     }
 
     if (mapping.logItem) {

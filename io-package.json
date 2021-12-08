@@ -3,6 +3,18 @@
     "name": "twinkly",
     "version": "0.2.5",
     "news": {
+      "0.2.5": {
+        "en": "Add Playlist Feature. Renamed Datapoints",
+        "de": "Playlist-Funktion hinzufügen. Umbenannte Datenpunkte",
+        "ru": "Добавить функцию списка воспроизведения. Переименованные точки данных",
+        "pt": "Adicionar recurso de lista de reprodução. Pontos de dados renomeados",
+        "nl": "Voeg afspeellijstfunctie toe. Hernoemde datapunten",
+        "fr": "Ajouter une fonctionnalité de liste de lecture. Points de données renommés",
+        "it": "Aggiungi funzione playlist. Punti dati rinominati",
+        "es": "Agregar función de lista de reproducción. Puntos de datos renombrados",
+        "pl": "Dodaj funkcję listy odtwarzania. Zmienione nazwy punktów danych",
+        "zh-cn": "添加播放列表功能。重命名的数据点"
+      },
       "0.2.4": {
         "en": "Handle wrong input so it does not cause exceptions",
         "de": "Behandeln Sie falsche Eingaben, damit keine Ausnahmen auftreten",
