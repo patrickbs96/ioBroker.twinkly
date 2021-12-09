@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "news": {
-      "0.2.5": {
+      "0.2.6": {
         "en": "Add Playlist Feature. Renamed Datapoints",
         "de": "Playlist-Funktion hinzufügen. Umbenannte Datenpunkte",
         "ru": "Добавить функцию списка воспроизведения. Переименованные точки данных",

@@ -67,7 +67,7 @@ The following States are available:
 
 ## Changelog
 
-### 0.2.5 (2021-12-08)
+### 0.2.6 (2021-12-09)
 * (patrickbs96) Renamed States with led control. Now starting with "led".
 * (patrickbs96) Add new State `ledLayout`/`ledPlaylist`
 
