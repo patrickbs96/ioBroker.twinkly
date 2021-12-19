@@ -452,7 +452,7 @@ function startAdapter(options) {
                             adapter.log.warn(`[${connectionName}.${command}] Could not set ${state.val}! Mode does not exist!`);
                             startInterval(1000, connectionName, [stateNames.ledMode.parent.id]);
 
-                        } else if (state.val === twinkly.lightModes.value.on && Object.keys(connection.twinkly.ledMovies).length === 0) {
+                        } else if (state.val === twinkly.lightModes.value.movie && Object.keys(connection.twinkly.ledMovies).length === 0) {
                             adapter.log.warn(`[${connectionName}.${command}] Could not set Mode ${twinkly.lightModes.text.movie}! No movie available! Is a Effect/Playlist selected?`);
                             startInterval(1000, connectionName, [stateNames.ledMode.parent.id]);
 
@@ -556,7 +556,7 @@ function startAdapter(options) {
                 // Gerät ein-/ausschalten
                 } else if (!group && command === stateNames.on.id) {
                     try {
-                        await connection.twinkly.setLEDMode(state.val ? twinkly.lightModes.value.on : twinkly.lightModes.value.off);
+                        await connection.twinkly.setLEDMode(state.val ? twinkly.lightModes.value.movie : twinkly.lightModes.value.off);
                         startInterval(1000, connectionName, [stateNames.ledMode.parent.id]);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
