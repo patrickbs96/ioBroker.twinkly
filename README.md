@@ -65,6 +65,11 @@ The following States are available:
 
 [Private API information](https://xled-docs.readthedocs.io/en/latest/) by [Pavol Babinčák](https://github.com/scrool)
 
+
+## Known Issues
+* The maximum length for the movie name is 15 characters
+
+
 ## Changelog
 
 ### 0.2.7 (2021-12-19)
