@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "news": {
+      "0.2.7": {
+        "en": "Hex without hash. Option to not use ping for reachability.",
+        "de": "Hex ohne Hash. Option, Ping nicht für Erreichbarkeit zu verwenden.",
+        "ru": "Hex без хеша. Возможность не использовать пинг для доступности.",
+        "pt": "Hex sem hash. Opção de não usar ping para acessibilidade.",
+        "nl": "Hex zonder hash. Optie om ping niet te gebruiken voor bereikbaarheid.",
+        "fr": "Hex sans hachage. Option pour ne pas utiliser le ping pour l'accessibilité.",
+        "it": "Esadecimale senza hash. Opzione per non utilizzare il ping per la raggiungibilità.",
+        "es": "Hex sin hash. Opción de no usar ping para accesibilidad.",
+        "pl": "Hex bez haszyszu. Opcja nieużywania polecenia ping dla osiągalności.",
+        "zh-cn": "没有哈希的十六进制。选择不使用 ping 来实现可达性。"
+      },
       "0.2.6": {
         "en": "Add Playlist Feature. Renamed Datapoints",
         "de": "Playlist-Funktion hinzufügen. Umbenannte Datenpunkte",
