@@ -109,5 +109,17 @@ systemDictionary = {
         'es': 'Estado de la red',
         'pl': 'Status sieci',
         'zh-cn': '网络状态'
+    },
+    'Use ping for reachability': {
+        'en': 'Use ping for reachability',
+        'de': 'Ping für Erreichbarkeit verwenden',
+        'ru': 'Используйте ping для доступности',
+        'pt': 'Use ping para acessibilidade',
+        'nl': 'Gebruik ping voor bereikbaarheid',
+        'fr': 'Utiliser le ping pour être joignable',
+        'it': 'Usa il ping per la raggiungibilità',
+        'es': 'Utilice ping para accesibilidad',
+        'pl': 'Użyj polecenia ping, aby uzyskać osiągalność',
+        'zh-cn': '使用 ping 实现可达性'
     }
 };

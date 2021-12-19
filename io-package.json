@@ -175,7 +175,8 @@
     "interval": 60,
     "details": false,
     "mqtt": false,
-    "network": false
+    "network": false,
+    "usePing": true
   },
   "objects": [],
   "instanceObjects": []

@@ -343,6 +343,9 @@ function startAdapter(options) {
                     return;
                 }
 
+                // Ping-Check
+                await checkConnection(connectionName);
+
                 // Nur ausführen, wenn Gerät verbunden ist!
                 if (!connection.connected) {
                     adapter.log.debug(`[stateChange] ${connection.name} is not available!`);
@@ -636,18 +639,7 @@ async function poll(specificConnection = '', filter = []) {
             }
 
             // Ping-Check
-            try {
-                connection.connected = await connection.twinkly.ping();
-            } catch (error) {
-                connection.connected = false;
-                adapter.log.error(`Could not ping ${connectionName} ${error}`);
-            }
-
-            try {
-                await adapter.setStateAsync(connectionName + '.' + stateNames.connected.id, connection.connected, true);
-            } catch (e) {
-                //
-            }
+            await checkConnection(connectionName);
 
             // Nur ausführen, wenn Gerät verbunden ist!
             if (!connection.connected) {
@@ -718,7 +710,7 @@ async function poll(specificConnection = '', filter = []) {
                         try {
                             // Hex Version
                             await adapter.setStateAsync(connectionName + '.' + stateNames.ledColor.parent.id + '.' + stateNames.ledColor.subIDs.hex.id,
-                                tools.rgbToHex(response.color.red, response.color.green, response.color.blue), true);
+                                tools.rgbToHex(response.color.red, response.color.green, response.color.blue, false), true);
                         } catch (e) {
                             //
                         }
@@ -942,6 +934,8 @@ async function main() {
         adapter.config.mqtt = false;
     if (adapter.config.network === undefined)
         adapter.config.network = false;
+    if (adapter.config.usePing === undefined)
+        adapter.config.usePing = true;
 
     // States/Objekte anlegen...
     try {
@@ -1174,12 +1168,8 @@ async function prepareObjectsByConfig() {
     const result = [];
     for (const connection of Object.keys(connections)) {
         // Ping-Check
-        try {
-            connections[connection].connected = await connections[connection].twinkly.ping();
-        } catch (error) {
-            connections[connection].connected = false;
-            adapter.log.error(`Could not ping ${connection} ${error}`);
-        }
+        await checkConnection(connection);
+
         // Interview
         try {
             if (connections[connection].connected)
@@ -1598,6 +1588,36 @@ async function updatePlaylist(connectionName) {
         await stateTools.addStates2Object(adapter, connectionName + '.' + stateNames.ledPlaylist.id, connection.twinkly.playlist);
     } catch (e) {
         adapter.log.error(`[updatePlaylist.${connectionName}] Cannot update playlist! ${e.message}`);
+    }
+}
+
+/**
+ * Check reachability of connection
+ * @param {String} connectionName
+ * @return {Promise<void>}
+ */
+async function checkConnection(connectionName) {
+    if (!Object.keys(connections).includes(connectionName)) return;
+
+    const connection = connections[connectionName];
+
+    // Ping-Check
+    try {
+        if (adapter.config.usePing) {
+            connection.connected = await connection.twinkly.ping();
+        } else {
+            const response = await connection.twinkly.getDeviceDetails();
+            connection.connected = response.code === twinkly.HTTPCodes.values.ok;
+        }
+    } catch (e) {
+        connection.connected = false;
+        adapter.log.info(`[checkConnection] Could not ping ${connectionName}: ${e.message}`);
+    }
+
+    try {
+        await adapter.setStateAsync(connectionName + '.' + stateNames.connected.id, connection.connected, true);
+    } catch (e) {
+        //
     }
 }
 
