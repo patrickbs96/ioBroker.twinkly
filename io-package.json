@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.8",
+    "version": "0.2.9",
     "news": {
       "0.2.7": {
         "en": "Hex without hash. Option to not use ping for reachability.",
