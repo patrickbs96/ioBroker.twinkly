@@ -112,20 +112,20 @@
                     <table class="table-values">
                         <thead>
                         <tr>
-                            <th data-name="enabled"   class="translate" style="width: 100px" data-style="width: 80px" data-type="checkbox">Enabled</th>
-                            <th data-name="name"      class="translate">Name</th>
-                            <th data-name="host"      class="translate" style="width: 30%; white-space: nowrap" >IP Address</th>
-                            <th data-name="stateOn"   class="translate" style="width: 100px" data-style="width: 80px">State On
-                                <select>
-                                    <option value="color">Color</option>
-                                    <option value="effect">Effect</option>
-                                    <option value="movie">Movie</option>
-                                    <option value="playlist">Playlist</option>
-                                </select>
-                            </th>
+                            <th data-name="enabled" class="translate" style="width: 100px" data-style="width: 80px" data-type="checkbox">Enabled</th>
+                            <th data-name="name"    class="translate">Name</th>
+                            <th data-name="host"    class="translate" style="width: 30%; white-space: nowrap" >IP Address</th>
+                            <th data-name="stateOn" class="translate" style="width: 100px" data-style="width: 80px" list="modes">State On</th>
                             <th data-buttons="delete" style="width: 120px"></th>
                         </tr>
                         </thead>
+
+                        <datalist id="modes">
+                            <option value="color" class="translate">Color</option>
+                            <option value="effect" class="translate">Effect</option>
+                            <option value="movie" class="translate">Movie</option>
+                            <option value="playlist" class="translate">Playlist</option>
+                        </datalist>
                     </table>
                 </div>
             </div>
