@@ -357,21 +357,23 @@ function startAdapter(options) {
                     if (state.val === -1) {
                         try {
                             await connection.twinkly.setBrightnessDisabled();
-                            startInterval(1000, connectionName, [stateNames.ledBri.id]);
                         } catch (e) {
                             adapter.log.error(`[${connectionName}.${command}] Could not disable! ${e.message}`);
                         }
                     } else {
                         try {
                             await connection.twinkly.setBrightnessAbsolute(state.val);
-                            startInterval(1000, connectionName, [stateNames.ledBri.id]);
                         } catch (e) {
                             adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                         }
                     }
 
+                    startInterval(1000, connectionName, [stateNames.ledBri.id, stateNames.ledMode.parent.id]);
+
                 // LED Color (mode = color)
                 } else if (group && group === stateNames.ledColor.parent.id) {
+                    let changeMode = false;
+
                     try {
                         if ([stateNames.ledColor.subIDs.hue.id, stateNames.ledColor.subIDs.saturation.id, stateNames.ledColor.subIDs.value.id].includes(command)) {
                             /** @type {{hue: Number, saturation: Number, value: Number}} */
@@ -382,7 +384,7 @@ function startAdapter(options) {
                             });
 
                             await connection.twinkly.setLEDColorHSV(json.hue, json.saturation, json.value);
-                            startInterval(1000, connectionName, [stateNames.ledColor.parent.id]);
+                            changeMode = true;
 
                         } else if ([stateNames.ledColor.subIDs.red.id, stateNames.ledColor.subIDs.green.id, stateNames.ledColor.subIDs.blue.id, stateNames.ledColor.subIDs.white.id, stateNames.ledColor.subIDs.hex.id].includes(command)) {
                             /** @type {{red: Number, green: Number, blue: Number, white: Number}} */
@@ -402,35 +404,54 @@ function startAdapter(options) {
                             }
 
                             await connection.twinkly.setLEDColorRGBW(json.red, json.green, json.blue, json.white);
-                            startInterval(1000, connectionName, [stateNames.ledColor.parent.id]);
+                            changeMode = true;
                         }
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
 
+                    try {
+                        if (changeMode && adapter.config.switchMode)
+                            await connection.twinkly.setLEDMode(twinkly.lightModes.value.color);
+                    } catch (e) {
+                        adapter.log.error(`[${connectionName}.${group}.${command}] Could not change Mode! ${e.message}`);
+                    }
+
+                    startInterval(1000, connectionName, [stateNames.ledColor.parent.id, stateNames.ledMode.parent.id]);
+
                 // LED Config
                 } else if (!group && command === stateNames.ledConfig.id) {
                     try {
                         await connection.twinkly.setLEDConfig(state.val);
-                        startInterval(1000, connectionName, [stateNames.ledConfig.id]);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
 
+                    startInterval(1000, connectionName, [stateNames.ledConfig.id]);
+
                 // LED Effect
                 } else if (!group && command === stateNames.ledEffect.id) {
+                    let changeMode = false;
+
                     try {
                         if (!Object.keys(connection.twinkly.ledEffects).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
                             adapter.log.warn(`[${connectionName}.${command}] Effect ${state.val} does not exist!`);
-                            startInterval(1000, connectionName, [stateNames.ledEffect.id]);
-
                         } else {
                             await connection.twinkly.setCurrentLEDEffect(state.val);
-                            startInterval(1000, connectionName, [stateNames.ledEffect.id]);
+                            changeMode = true;
                         }
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    try {
+                        if (changeMode && adapter.config.switchMode)
+                            await connection.twinkly.setLEDMode(twinkly.lightModes.value.effect);
+                    } catch (e) {
+                        adapter.log.error(`[${connectionName}.${command}] Could not change Mode! ${e.message}`);
+                    }
+
+                    startInterval(1000, connectionName, [stateNames.ledEffect.id, stateNames.ledMode.parent.id]);
 
                 // LED Layout
                 } else if (group && group === stateNames.ledLayout.parent.id) {
@@ -440,81 +461,107 @@ function startAdapter(options) {
 
                     try {
                         await connection.twinkly.uploadLayout(json.aspectXY, json.aspectXZ, json.coordinates, json.source, json.synthesized);
-                        startInterval(1000, connectionName, [stateNames.ledLayout.parent.id]);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
 
+                    startInterval(1000, connectionName, [stateNames.ledLayout.parent.id]);
+
                 // LED Mode
                 } else if (!group && command === stateNames.ledMode.subIDs.mode.id) {
+                    const pollFilter = [stateNames.ledMode.parent.id];
+
                     try {
                         if (!Object.values(twinkly.lightModes.value).includes(state.val)) {
                             adapter.log.warn(`[${connectionName}.${command}] Could not set ${state.val}! Mode does not exist!`);
-                            startInterval(1000, connectionName, [stateNames.ledMode.parent.id]);
 
                         } else if (state.val === twinkly.lightModes.value.movie && Object.keys(connection.twinkly.ledMovies).length === 0) {
                             adapter.log.warn(`[${connectionName}.${command}] Could not set Mode ${twinkly.lightModes.text.movie}! No movie available! Is a Effect/Playlist selected?`);
-                            startInterval(1000, connectionName, [stateNames.ledMode.parent.id, stateNames.ledMovie.id]);
+                            pollFilter.push(stateNames.ledMovie.id);
 
                         } else if (state.val === twinkly.lightModes.value.playlist && Object.keys(connection.twinkly.playlist).length === 0) {
                             adapter.log.warn(`[${connectionName}.${command}] Could not set Mode ${twinkly.lightModes.text.playlist}! No movie available! Is a Playlist created?`);
-                            startInterval(1000, connectionName, [stateNames.ledMode.parent.id, stateNames.ledPlaylist.id]);
+                            pollFilter.push(stateNames.ledPlaylist.id);
 
                         } else {
                             await connection.twinkly.setLEDMode(state.val);
-                            startInterval(1000, connectionName, [stateNames.ledMode.parent.id]);
                         }
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    startInterval(1000, connectionName, pollFilter);
 
                 // LED Saturation
                 } else if (!group && command === stateNames.ledSat.id) {
                     if (state.val === -1) {
                         try {
                             await connection.twinkly.setSaturationDisabled();
-                            startInterval(1000, connectionName, [stateNames.ledSat.id]);
                         } catch (e) {
                             adapter.log.error(`[${connectionName}.${command}] Could not disable! ${e.message}`);
                         }
                     } else {
                         try {
                             await connection.twinkly.setSaturationAbsolute(state.val);
-                            startInterval(1000, connectionName, [stateNames.ledSat.id]);
                         } catch (e) {
                             adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                         }
                     }
 
+                    startInterval(1000, connectionName, [stateNames.ledSat.id]);
+
                 // LED Movie
                 } else if (!group && command === stateNames.ledMovie.id) {
+                    const pollFilter = [stateNames.ledMode.parent.id];
+                    let changeMode = false;
+
                     try {
                         if (!Object.keys(connection.twinkly.ledMovies).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
                             adapter.log.warn(`[${connectionName}.${command}] Movie ${state.val} does not exist!`);
-                            startInterval(1000, connectionName, [stateNames.ledMovie.id]);
+                            pollFilter.push(stateNames.ledMovie.id);
 
                         } else {
                             await connection.twinkly.setCurrentMovie(state.val);
-                            startInterval(1000, connectionName);
+                            changeMode = true;
                         }
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    try {
+                        if (changeMode && adapter.config.switchMode)
+                            await connection.twinkly.setLEDMode(twinkly.lightModes.value.movie);
+                    } catch (e) {
+                        adapter.log.error(`[${connectionName}.${command}] Could not change Mode! ${e.message}`);
+                    }
+
+                    startInterval(1000, connectionName, pollFilter);
 
                 // LED Playlist
                 } else if (!group && command === stateNames.ledPlaylist.id) {
+                    const pollFilter = [stateNames.ledMode.parent.id];
+                    let changeMode = false;
+
                     try {
                         if (!Object.keys(connection.twinkly.playlist).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
                             adapter.log.warn(`[${connectionName}.${command}] Playlist ${state.val} does not exist!`);
-                            startInterval(1000, connectionName, [stateNames.ledPlaylist.id]);
-
+                            pollFilter.push(stateNames.ledPlaylist.id);
                         } else {
                             await connection.twinkly.setCurrentPlaylistEntry(state.val);
-                            startInterval(1000, connectionName);
+                            changeMode = true;
                         }
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    try {
+                        if (changeMode && adapter.config.switchMode)
+                            await connection.twinkly.setLEDMode(twinkly.lightModes.value.playlist);
+                    } catch (e) {
+                        adapter.log.error(`[${connectionName}.${command}] Could not change Mode! ${e.message}`);
+                    }
+
+                    startInterval(1000, connectionName, pollFilter);
 
                 // MQTT anpassen
                 } else if (group && group === stateNames.mqtt.parent.id) {
@@ -524,19 +571,21 @@ function startAdapter(options) {
 
                     try {
                         await connection.twinkly.setMqttConfiguration(json);
-                        startInterval(1000, connectionName, [stateNames.mqtt.parent.id]);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    startInterval(1000, connectionName, [stateNames.mqtt.parent.id]);
 
                 // Namen anpassen
                 } else if (!group && command === stateNames.name.id) {
                     try {
                         await connection.twinkly.setDeviceName(state.val);
-                        startInterval(1000, connectionName, [stateNames.details.parent.id, stateNames.name.id]);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    startInterval(1000, connectionName, [stateNames.details.parent.id, stateNames.name.id]);
 
                 // NetworkStatus anpassen
                 } else if (!group && command === stateNames.networkStatus.parent.id) {
@@ -557,19 +606,21 @@ function startAdapter(options) {
                 } else if (!group && command === stateNames.on.id) {
                     try {
                         await connection.twinkly.setLEDMode(state.val ? twinkly.lightModes.value.movie : twinkly.lightModes.value.off);
-                        startInterval(1000, connectionName, [stateNames.ledMode.parent.id]);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    startInterval(1000, connectionName, [stateNames.ledMode.parent.id]);
 
                 // Reset
                 } else if (!group && command === stateNames.reset.id) {
                     try {
                         await connection.twinkly.resetLED();
-                        startInterval(1000, connectionName);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    startInterval(1000, connectionName);
 
                 // Timer anpassen
                 } else if (group && group === stateNames.timer.parent.id) {
@@ -581,12 +632,13 @@ function startAdapter(options) {
                         // Prüfen ob Daten gesendet werden können
                         if ((json.time_on > -1 && json.time_off > -1) || (json.time_on === -1 && json.time_off === -1)) {
                             await connection.twinkly.setTimer(json);
-                            startInterval(1000, connectionName, [stateNames.timer.parent.id]);
                         } else
                             adapter.log.debug(`[stateChange] Timer kann noch nicht übermittelt werden: (${json.time_on} > -1 && ${json.time_off} > -1) || (${json.time_on} === -1 && ${json.time_off} === -1)`);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
+
+                    startInterval(1000, connectionName, [stateNames.timer.parent.id]);
                 }
             } else {
                 // The state was deleted
@@ -936,6 +988,8 @@ async function main() {
         adapter.config.network = false;
     if (adapter.config.usePing === undefined)
         adapter.config.usePing = true;
+    if (adapter.config.switchMode === undefined)
+        adapter.config.switchMode = false;
 
     // States/Objekte anlegen...
     try {

@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.9",
+    "version": "0.2.10",
     "news": {
+      "0.2.10": {
+        "en": "Add setting to enable automatic switching Mode after State change (color, effect, movie, playlist)",
+        "de": "Einstellung hinzufügen, um den automatischen Wechselmodus nach Statusänderung zu aktivieren (color, effect, movie, playlist)",
+        "ru": "Добавить настройку для включения автоматического переключения режима после изменения состояния (color, effect, movie, playlist)",
+        "pt": "Adicionar configuração para ativar o modo de troca automática após a mudança de estado (color, effect, movie, playlist)",
+        "nl": "Instelling toevoegen om automatisch wisselen van modus mogelijk te maken na statuswijziging (color, effect, movie, playlist)",
+        "fr": "Ajouter un paramètre pour activer le mode de commutation automatique après le changement d'état (color, effect, movie, playlist)",
+        "it": "Aggiungi impostazione per abilitare la modalità di commutazione automatica dopo il cambio di stato (color, effect, movie, playlist)",
+        "es": "Agregue la configuración para habilitar el modo de cambio automático después del cambio de estado (color, effect, movie, playlist)",
+        "pl": "Dodaj ustawienie, aby włączyć automatyczne przełączanie trybu po zmianie stanu (color, effect, movie, playlist)",
+        "zh-cn": "添加设置以启用状态更改后的自动切换模式（color、effect、movie、playlist）"
+      },
       "0.2.7": {
         "en": "Hex without hash. Option to not use ping for reachability.",
         "de": "Hex ohne Hash. Option, Ping nicht für Erreichbarkeit zu verwenden.",
@@ -188,7 +200,8 @@
     "details": false,
     "mqtt": false,
     "network": false,
-    "usePing": true
+    "usePing": true,
+    "switchMode": false
   },
   "objects": [],
   "instanceObjects": []

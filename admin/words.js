@@ -121,5 +121,17 @@ systemDictionary = {
         'es': 'Utilice ping para accesibilidad',
         'pl': 'Użyj polecenia ping, aby uzyskać osiągalność',
         'zh-cn': '使用 ping 实现可达性'
+    },
+    'Switch Mode after State change': {
+        'en': 'Switch Mode after State change',
+        'de': 'Modus wechseln nach Zustandsänderung',
+        'ru': 'Режим переключения после изменения состояния',
+        'pt': 'Mudar de modo após mudança de estado',
+        'nl': 'Schakelmodus na verandering van status',
+        'fr': 'Changer de mode après le changement d\'état',
+        'it': 'Cambia modalità dopo il cambio di stato',
+        'es': 'Cambiar de modo después del cambio de estado',
+        'pl': 'Przełącz tryb po zmianie stanu',
+        'zh-cn': '状态改变后切换模式'
     }
 };
