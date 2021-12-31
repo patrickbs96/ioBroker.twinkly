@@ -58,15 +58,12 @@
 
                 const $value = $('#' + key + '.value');
                 if ($value.attr('type') === 'checkbox') {
-                    $value.prop('checked', settings[key]).on('change', function() {
-                        onChange();
-                    });
+                    $value.prop('checked', settings[key])
+                        .on('change', onChange);
                 } else {
-                    $value.val(settings[key]).on('change', function() {
-                        onChange();
-                    }).keyup(function() {
-                        onChange();
-                    });
+                    $value.val(settings[key])
+                        .on('change', onChange)
+                        .keyup(onChange);
                 }
             }
 
@@ -109,13 +106,13 @@
             <div class="col s12 m8" id="devices">
                 <a class="btn-floating waves-effect waves-light blue table-button-add"><i class="material-icons">add</i></a>
                 <div class="table-values-div">
-                    <table class="table-values">
+                    <table class="table-values" id="deviceList">
                         <thead>
                         <tr>
                             <th data-name="enabled" class="translate" style="width: 100px" data-style="width: 80px" data-type="checkbox">Enabled</th>
                             <th data-name="name"    class="translate">Name</th>
                             <th data-name="host"    class="translate" style="width: 30%; white-space: nowrap" >IP Address</th>
-                            <th data-name="stateOn" class="translate" style="width: 100px" data-style="width: 80px" list="modes">State On</th>
+                            <th data-name="stateOn" class="translate" style="width: 100px" data-style="width: 80px" data-type="combobox" list="modes">State On</th>
                             <th data-buttons="delete" style="width: 120px"></th>
                         </tr>
                         </thead>
