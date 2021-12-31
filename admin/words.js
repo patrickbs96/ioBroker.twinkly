@@ -133,5 +133,65 @@ systemDictionary = {
         'es': 'Cambiar de modo después del cambio de estado',
         'pl': 'Przełącz tryb po zmianie stanu',
         'zh-cn': '状态改变后切换模式'
+    },
+    'State On': {
+        'en': 'State On',
+        'de': 'Status an',
+        'ru': 'Состояние включено',
+        'pt': 'Estado Ligado',
+        'nl': 'Staat Aan',
+        'fr': 'État activé',
+        'it': 'Stato attivo',
+        'es': 'Estado encendido',
+        'pl': 'Stan włączony',
+        'zh-cn': '状态开启'
+    },
+    'Color': {
+        'en': 'Color',
+        'de': 'Farbe',
+        'ru': 'Цвет',
+        'pt': 'Cor',
+        'nl': 'Kleur',
+        'fr': 'Couleur',
+        'it': 'Colore',
+        'es': 'Color',
+        'pl': 'Kolor',
+        'zh-cn': '颜色'
+    },
+    'Effect': {
+        'en': 'Effect',
+        'de': 'Effekt',
+        'ru': 'Эффект',
+        'pt': 'Efeito',
+        'nl': 'Effect',
+        'fr': 'Effet',
+        'it': 'Effetto',
+        'es': 'Efecto',
+        'pl': 'Efekt',
+        'zh-cn': '影响'
+    },
+    'Movie': {
+        'en': 'Movie',
+        'de': 'Film',
+        'ru': 'Кино',
+        'pt': 'Filme',
+        'nl': 'Film',
+        'fr': 'Film',
+        'it': 'Film',
+        'es': 'Película',
+        'pl': 'Film',
+        'zh-cn': '电影'
+    },
+    'Playlist': {
+        'en': 'Playlist',
+        'de': 'Wiedergabeliste',
+        'ru': 'Плейлист',
+        'pt': 'Lista de reprodução',
+        'nl': 'afspeellijst',
+        'fr': 'Playlist',
+        'it': 'elenco di riproduzione',
+        'es': 'Lista de reproducción',
+        'pl': 'Lista odtwarzania',
+        'zh-cn': '播放列表'
     }
 };
