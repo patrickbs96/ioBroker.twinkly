@@ -22,7 +22,7 @@ let pollingInterval = null;
 
 /**
  * Twinkly-Verbindungen
- * @type {{[x: string]: {enabled: Boolean, paused: Boolean, name: String, host: String, connected: Boolean, twinkly: Twinkly}}}
+ * @type {{[x: string]: {enabled: Boolean, paused: Boolean, name: String, host: String, stateOn: String, connected: Boolean, twinkly: Twinkly}}}
  */
 const connections = {};
 
@@ -605,7 +605,7 @@ function startAdapter(options) {
                 // Gerät ein-/ausschalten
                 } else if (!group && command === stateNames.on.id) {
                     try {
-                        await connection.twinkly.setLEDMode(state.val ? twinkly.lightModes.value.movie : twinkly.lightModes.value.off);
+                        await connection.twinkly.setLEDMode(state.val ? connection.stateOn : twinkly.lightModes.value.off);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
@@ -1065,6 +1065,7 @@ async function syncConfig() {
                         paused    : false,
                         name      : deviceName,
                         host      : device.host,
+                        stateOn   : device.stateOn && Object.keys(twinkly.lightModes.value).includes(device.stateOn) ? device.stateOn : twinkly.lightModes.value.movie,
                         connected : false,
                         twinkly   : new twinkly.Twinkly(adapter, deviceName, device.host, handleSentryMessage)
                     };

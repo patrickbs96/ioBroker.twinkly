@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.10",
+    "version": "0.2.11",
     "news": {
+      "0.2.11": {
+        "en": "Add setting to select which ledMode should be activated",
+        "de": "Einstellung hinzufügen, um auszuwählen, welcher LEDMode aktiviert werden soll",
+        "ru": "Добавьте настройку, чтобы выбрать, какой ledMode должен быть активирован",
+        "pt": "Adicionar configuração para selecionar qual ledMode deve ser ativado",
+        "nl": "Instelling toevoegen om te selecteren welke ledMode moet worden geactiveerd",
+        "fr": "Ajouter un paramètre pour sélectionner quel ledMode doit être activé",
+        "it": "Aggiungi impostazione per selezionare quale ledMode deve essere attivato",
+        "es": "Agregar configuración para seleccionar qué ledMode debe activarse",
+        "pl": "Dodaj ustawienie, aby wybrać, który tryb led powinien być aktywowany",
+        "zh-cn": "添加设置以选择应激活哪个 ledMode"
+      },
       "0.2.10": {
         "en": "Add setting to enable automatic switching Mode after State change (color, effect, movie, playlist)",
         "de": "Einstellung hinzufügen, um den automatischen Wechselmodus nach Statusänderung zu aktivieren (color, effect, movie, playlist)",
