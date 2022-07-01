@@ -78,6 +78,9 @@ The following States are available:
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+* (patrickbs96) Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
+* (patrickbs96) Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)
+* (patrickbs96) Add new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)
 
 ### 0.2.13 (2022-07-01)
 * (patrickbs96) Update dependencies

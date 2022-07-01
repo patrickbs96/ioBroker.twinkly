@@ -68,6 +68,7 @@ const stateNames = {
             led_type            : {id: 'ledType',           name: 'LED Type',            type: 'number'},
             led_version         : {id: 'ledVersion',        name: 'LED Version',         type: 'number'},
             mac                 : {id: 'mac',               name: 'MAC'},
+            max_movies          : {id: 'maxMovies',         name: 'Max Movies',          type: 'number',                     newSince: '2.8.9'},
             max_supported_led   : {id: 'maxSupportedLed',   name: 'Max Supported LED',   type: 'number'},
             measured_frame_rate : {id: 'measuredFrameRate', name: 'Measured Frame Rate', type: 'number'},
             movie_capacity      : {id: 'movieCapacity',     name: 'Movie Capacity',      type: 'number'},
@@ -203,12 +204,14 @@ const stateNames = {
             station : {
                 parent : {id: 'station', name: 'Station', role: 'json'},
                 subIDs : {
-                    ip     : {id: 'ip',         name: 'IP'},
-                    gw     : {id: 'gateway',    name: 'Gateway'},
-                    mask   : {id: 'subnetmask', name: 'Subnetmask'},
-                    rssi   : {id: 'rssi',       name: 'RSSI',        type: 'number'},
-                    ssid   : {id: 'ssid',       name: 'SSID'},
-                    status : {id: 'status',     name: 'Status', deprecated: '2.8.3'},
+                    connected_bssid : {id: 'connectedBssid', name: 'Connected BSSID', newSince: '2.8.9'},
+                    ip              : {id: 'ip',             name: 'IP'},
+                    gw              : {id: 'gateway',        name: 'Gateway'},
+                    mask            : {id: 'subnetmask',     name: 'Subnetmask'},
+                    monitor_enabled : {id: 'monitorEnabled', name: 'Monitor Enabled', type: 'boolean', newSince: '2.8.9'},
+                    rssi            : {id: 'rssi',           name: 'RSSI',            type: 'number'},
+                    ssid            : {id: 'ssid',           name: 'SSID'},
+                    status          : {id: 'status',         name: 'Status', deprecated: '2.8.3'},
                 },
                 expandJSON: true
             },
@@ -1223,7 +1226,7 @@ async function prepareObjectsByConfig() {
     const result = [];
     for (const connection of Object.keys(connections)) {
         // Ping-Check
-        await checkConnection(connection);
+        await checkConnection(connection, false);
 
         // Interview
         try {
@@ -1487,7 +1490,7 @@ async function saveJSONinState(connection, state, json, mapping) {
     /**
      *
      * @param {String} id
-     * @param {{hide?: Boolean; filter?: {name: String, val: any}; role?: String}} stateInfo
+     * @param {{hide?: Boolean; filter?: {name: String, val: any}; role?: String; type?: String}} stateInfo
      * @param {any} value
      * @param {Boolean} stringify
      */
@@ -1501,7 +1504,13 @@ async function saveJSONinState(connection, state, json, mapping) {
                 value = value * 1000;
 
             try {
-                await adapter.setStateAsync(id === state ? state : state + '.' + id, stringify ? JSON.stringify(value) : value, true);
+                let stateValue = stringify ? JSON.stringify(value) : value;
+                if (!stringify) {
+                    if (stateInfo.type === 'boolean' && typeof value === 'number')
+                        stateValue = value === 1;
+                }
+
+                await adapter.setStateAsync(id === state ? state : state + '.' + id, stateValue, true);
             } catch (e) {
                 //
             }
@@ -1649,9 +1658,10 @@ async function updatePlaylist(connectionName) {
 /**
  * Check reachability of connection
  * @param {String} connectionName
+ * @param {boolean} writeState
  * @return {Promise<void>}
  */
-async function checkConnection(connectionName) {
+async function checkConnection(connectionName, writeState = true) {
     if (!Object.keys(connections).includes(connectionName)) return;
 
     const connection = connections[connectionName];
@@ -1670,7 +1680,8 @@ async function checkConnection(connectionName) {
     }
 
     try {
-        await adapter.setStateAsync(connectionName + '.' + stateNames.connected.id, connection.connected, true);
+        if (writeState)
+            await adapter.setStateAsync(connectionName + '.' + stateNames.connected.id, connection.connected, true);
     } catch (e) {
         //
     }
