@@ -73,6 +73,14 @@ The following States are available:
 
 ## Changelog
 
+<!--
+  Placeholder for the next version (at the beginning of the line):
+  ### **WORK IN PROGRESS**
+-->
+
+### **WORK IN PROGRESS**
+
+
 ### 0.2.11 (2022-01-02)
 * (patrickbs96) Add setting to select which ledMode should be activated
 

@@ -1479,7 +1479,7 @@ async function processTasks(tasks) {
  * @param mapping <{parent: {id: string, name: string}, subIDs: {[x: string]: {id: string, name: string}}, expandJSON: boolean, logItem?: boolean, hide: boolean}>
  */
 async function saveJSONinState(connection, state, json, mapping) {
-    if (typeof json === undefined) return;
+    if (typeof json === 'undefined') return;
 
     mapping.logItem = mapping.logItem !== undefined && mapping.logItem === true;
     if (mapping.hide) return;
