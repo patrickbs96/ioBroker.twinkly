@@ -78,6 +78,7 @@ The following States are available:
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+* (patrickbs96) Enable last used Mode on switch-on
 
 ### 0.2.14 (2022-07-01)
 * (patrickbs96) Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)

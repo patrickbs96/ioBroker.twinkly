@@ -54,8 +54,7 @@
     "release": "release-script",
     "release-major": "release-script major --yes",
     "release-minor": "release-script minor --yes",
-    "release-patch": "release-script patch --yes",
-    "release-patch-dry": "release-script patch --yes --dry"
+    "release-patch": "release-script patch --yes"
   },
   "bugs": {
     "url": "https://github.com/patrickbs96/ioBroker.twinkly/issues"

@@ -134,17 +134,17 @@ systemDictionary = {
         'pl': 'Przełącz tryb po zmianie stanu',
         'zh-cn': '状态改变后切换模式'
     },
-    'State On': {
-        'en': 'State On',
-        'de': 'Status an',
-        'ru': 'Состояние включено',
-        'pt': 'Estado Ligado',
-        'nl': 'Staat Aan',
-        'fr': 'État activé',
-        'it': 'Stato attivo',
-        'es': 'Estado encendido',
-        'pl': 'Stan włączony',
-        'zh-cn': '状态开启'
+    'Mode': {
+        'en': 'Mode',
+        'de': 'Modus',
+        'ru': 'Режим',
+        'pt': 'Modo',
+        'nl': 'Mode',
+        'fr': 'Mode',
+        'it': 'Modalità',
+        'es': 'Modo',
+        'pl': 'Mode Mode Mode',
+        'zh-cn': '导 言'
     },
     'Color': {
         'en': 'Color',
@@ -193,5 +193,17 @@ systemDictionary = {
         'es': 'Lista de reproducción',
         'pl': 'Lista odtwarzania',
         'zh-cn': '播放列表'
+    },
+    'Last Mode': {
+        'en': 'Last Mode',
+        'de': 'Letzter Modus',
+        'ru': 'Последний режим',
+        'pt': 'Último modo',
+        'nl': 'Laatste Mode',
+        'fr': 'Dernier mode',
+        'it': 'Ultima modalità',
+        'es': 'Último Modo',
+        'pl': 'Przełomowy',
+        'zh-cn': '上次辩论'
     }
 };

@@ -22,7 +22,7 @@ let pollingInterval = null;
 
 /**
  * Twinkly-Verbindungen
- * @type {{[x: string]: {enabled: Boolean, paused: Boolean, name: String, host: String, stateOn: String, connected: Boolean, twinkly: Twinkly}}}
+ * @type {{[x: string]: {enabled: Boolean, paused: Boolean, name: String, host: String, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly}}}
  */
 const connections = {};
 
@@ -608,7 +608,18 @@ function startAdapter(options) {
                 // Gerät ein-/ausschalten
                 } else if (!group && command === stateNames.on.id) {
                     try {
-                        await connection.twinkly.setLEDMode(state.val ? connection.stateOn : twinkly.lightModes.value.off);
+                        let newMode;
+                        if (state.val) {
+                            if (connection.modeOn === twinkly.STATE_ON_LASTMODE) {
+                                newMode = connection.lastModeOn;
+                            } else {
+                                newMode = connection.modeOn;
+                            }
+                        } else {
+                            newMode = twinkly.lightModes.value.off;
+                        }
+
+                        await connection.twinkly.setLEDMode(newMode);
                     } catch (e) {
                         adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e.message}`);
                     }
@@ -1062,16 +1073,21 @@ async function syncConfig() {
                 // Verbindung anlegen
                 if (Object.keys(connections).includes(deviceName))
                     adapter.log.warn(`Objects with same id = ${stateTools.buildId({device: deviceName, channel: null, state: null}, adapter)} created for two connections ${JSON.stringify(device)}`);
-                else
+                else {
+                    const lastModeOn = await getLastModeOn(deviceName, twinkly.lightModes.value.movie);
+
                     connections[deviceName] = {
-                        enabled   : device.enabled,
-                        paused    : false,
-                        name      : deviceName,
-                        host      : device.host,
-                        stateOn   : device.stateOn && Object.keys(twinkly.lightModes.value).includes(device.stateOn) ? device.stateOn : twinkly.lightModes.value.movie,
-                        connected : false,
-                        twinkly   : new twinkly.Twinkly(adapter, deviceName, device.host, handleSentryMessage)
+                        enabled    : device.enabled,
+                        paused     : false,
+                        name       : deviceName,
+                        host       : device.host,
+                        modeOn     : device.stateOn && (Object.keys(twinkly.lightModes.value).includes(device.stateOn) || twinkly.STATE_ON_LASTMODE === device.stateOn) ?
+                            device.stateOn : twinkly.lightModes.value.movie,
+                        lastModeOn : lastModeOn,
+                        connected  : false,
+                        twinkly    : new twinkly.Twinkly(adapter, deviceName, device.host, handleSentryMessage, onModeChange)
                     };
+                }
             }
 
         // Prüfung ob aktive Verbindungen verfügbar sind
@@ -1653,6 +1669,51 @@ async function updatePlaylist(connectionName) {
     } catch (e) {
         adapter.log.error(`[updatePlaylist.${connectionName}] Cannot update playlist! ${e.message}`);
     }
+}
+
+/**
+ * Mode Change
+ * @param connectionName
+ * @param oldMode
+ * @param newMode
+ * @return {Promise<void>}
+ */
+async function onModeChange(connectionName, oldMode, newMode) {
+    if (!Object.keys(connections).includes(connectionName)) return;
+
+    const connection = connections[connectionName];
+
+    if (oldMode !== '' && newMode !== twinkly.lightModes.value.off) {
+        connection.lastModeOn = newMode;
+
+        try {
+            await stateTools.updateObjectNative(adapter, connectionName + '.' + stateNames.ledMode.subIDs.mode.id, {lastModeOn: newMode});
+        } catch (e) {
+            adapter.log.error(`[updatePlaylist.${connectionName}] Cannot update playlist! ${e.message}`);
+        }
+    }
+}
+
+/**
+ * Get lastModeOn
+ * @param connectionName
+ * @param defaultMode
+ * @return {Promise<String>}
+ */
+async function getLastModeOn(connectionName, defaultMode) {
+    let result = defaultMode;
+    try {
+        const obj = await adapter.getObjectAsync(connectionName + '.' + stateNames.ledMode.subIDs.mode.id);
+        if (obj) {
+            const lastModeOn = obj.native['lastModeOn'];
+            if (typeof lastModeOn === 'string')
+                result = lastModeOn;
+        }
+    } catch (e) {
+        adapter.log.error(`[updatePlaylist.${connectionName}] Cannot update playlist! ${e.message}`);
+    }
+
+    return result;
 }
 
 /**
