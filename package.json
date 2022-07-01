@@ -52,9 +52,10 @@
     "test": "npm run test:js && npm run test:package",
     "lint": "eslint",
     "release": "release-script",
-    "release-patch": "release-script patch --yes --dry",
+    "release-major": "release-script major --yes",
     "release-minor": "release-script minor --yes",
-    "release-major": "release-script major --yes"
+    "release-patch": "release-script patch --yes",
+    "release-patch-dry": "release-script patch --yes --dry"
   },
   "bugs": {
     "url": "https://github.com/patrickbs96/ioBroker.twinkly/issues"
