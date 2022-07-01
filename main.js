@@ -222,9 +222,9 @@ const stateNames = {
                     ip               : {id: 'ip',              name: 'IP'},
                     channel          : {id: 'channel',         name: 'Channel',          type: 'number'},
                     max_connections  : {id: 'maxConnections',  name: 'Max Connections',  type: 'number'},
-                    password_changed : {id: 'passwordChanged', name: 'Password Changed', type: 'number', states: {0: 'False', 1: 'True'}},
+                    password_changed : {id: 'passwordChanged', name: 'Password Changed', type: 'boolean'},
                     ssid             : {id: 'ssid',            name: 'SSID'},
-                    ssid_hidden      : {id: 'ssidHidden',      name: 'SSID Hidden',      type: 'number', states: {0: 'False', 1: 'True'}}
+                    ssid_hidden      : {id: 'ssidHidden',      name: 'SSID Hidden',      type: 'boolean'}
                 },
                 expandJSON: true
             }

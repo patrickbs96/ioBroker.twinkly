@@ -77,6 +77,8 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
 ### 0.2.14 (2022-07-01)
 * (patrickbs96) Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
 * (patrickbs96) Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)
