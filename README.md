@@ -77,7 +77,7 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### 0.2.12 (2022-07-01)
+### **WORK IN PROGRESS**
 * (patrickbs96) Update dependencies
 
 ### 0.2.11 (2022-01-02)
