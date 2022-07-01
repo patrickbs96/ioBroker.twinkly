@@ -79,7 +79,7 @@ The following States are available:
 -->
 
 ### **WORK IN PROGRESS**
-
+* (patrickbs96) Update dependencies
 
 ### 0.2.11 (2022-01-02)
 * (patrickbs96) Add setting to select which ledMode should be activated
