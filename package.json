@@ -22,6 +22,8 @@
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.5.9",
+    "@alcalzone/release-script-plugin-iobroker": "^3.5.9",
+    "@alcalzone/release-script-plugin-license": "^3.5.9",
     "@iobroker/testing": "^3.0.2",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
@@ -50,7 +52,7 @@
     "test": "npm run test:js && npm run test:package",
     "lint": "eslint",
     "release": "release-script",
-    "release-patch": "release-script patch --yes",
+    "release-patch": "release-script patch --yes --dry",
     "release-minor": "release-script minor --yes",
     "release-major": "release-script major --yes"
   },
