@@ -77,7 +77,7 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.3.0 (2022-07-01)
 * (patrickbs96) Enable last used Mode on switch-on
 
 ### 0.2.14 (2022-07-01)
@@ -110,11 +110,6 @@ The following States are available:
 
 ### 0.2.2 (2021-11-30)
 * (patrickbs96) Add new State `ledColor`
-
-### 0.2.0 (2021-11-28)
-* (patrickbs96) Add new Value `color` from API-Response (Sentry IOBROKER-TWINKLY-J, IOBROKER-TWINKLY-K, IOBROKER-TWINKLY-M, IOBROKER-TWINKLY-N, IOBROKER-TWINKLY-P)
-* (patrickbs96) Add Pause-Feature, to work with app. (Twinkly only allows one active connection...)
-* (patrickbs96) Add Feature, activate uploaded Movies (Playlist)
 
 ## License
 MIT License

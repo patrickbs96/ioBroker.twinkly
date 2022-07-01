@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.14",
+    "version": "0.3.0",
     "news": {
+      "0.3.0": {
+        "en": "Enable last used Mode on switch-on",
+        "de": "Aktivieren Sie den zuletzt verwendeten Modus beim Einschalten",
+        "ru": "Включить последний используемый режим на Switch-on",
+        "pt": "Habilite o último modo usado no interruptor-on",
+        "nl": "De laatste gebruikte Mode op de knop",
+        "fr": "Activer le dernier mode utilisé sur le commutateur",
+        "it": "Abilitare l'ultima modalità utilizzata su switch-on",
+        "es": "Activar el último modo usado en conmutador",
+        "pl": "Ostatni raz używany był w trybie przełącznikowym",
+        "zh-cn": "最后一个用途的动向"
+      },
       "0.2.14": {
         "en": "Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)\nAdd new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)\nAdd new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)",
         "de": "Neues Value network.station.monitor hinzufügen Aktiviert von API-Response (Sentry IOBROKER-TWINKLY-13)\nFügen Sie neues Wertnetzwerk.station.connected_bssid von API-Response (Sentry IOBROKER-TWINKLY-14) hinzu\nFügen Sie neue Wertedetails hinzu. maxMovies von API-Response (Sentry IOBROKER-TWINKLY-18)",
@@ -74,18 +86,6 @@
         "es": "Hex sin hash. Opción de no usar ping para accesibilidad.",
         "pl": "Hex bez haszyszu. Opcja nieużywania polecenia ping dla osiągalności.",
         "zh-cn": "没有哈希的十六进制。选择不使用 ping 来实现可达性。"
-      },
-      "0.2.6": {
-        "en": "Add Playlist Feature. Renamed Datapoints",
-        "de": "Playlist-Funktion hinzufügen. Umbenannte Datenpunkte",
-        "ru": "Добавить функцию списка воспроизведения. Переименованные точки данных",
-        "pt": "Adicionar recurso de lista de reprodução. Pontos de dados renomeados",
-        "nl": "Voeg afspeellijstfunctie toe. Hernoemde datapunten",
-        "fr": "Ajouter une fonctionnalité de liste de lecture. Points de données renommés",
-        "it": "Aggiungi funzione playlist. Punti dati rinominati",
-        "es": "Agregar función de lista de reproducción. Puntos de datos renombrados",
-        "pl": "Dodaj funkcję listy odtwarzania. Zmienione nazwy punktów danych",
-        "zh-cn": "添加播放列表功能。重命名的数据点"
       }
     },
     "title": "Twinkly",
