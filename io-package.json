@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.12",
+    "version": "0.2.13",
     "news": {
+      "0.2.13": {
+        "en": "Update dependencies",
+        "de": "Abhängigkeiten aktualisieren",
+        "ru": "Обновить зависимости",
+        "pt": "Dependências de atualização",
+        "nl": "Update afhankelijkheid",
+        "fr": "Mettre à jour les dépendances",
+        "it": "Dipendenze di aggiornamento",
+        "es": "Actualizar las dependencias",
+        "pl": "Zależności aktualnej",
+        "zh-cn": "最新依赖"
+      },
       "0.2.12": {
         "en": "Update dependencies",
         "de": "Abhängigkeiten aktualisieren",
@@ -74,18 +86,6 @@
         "es": "Maneje la entrada incorrecta para que no cause excepciones",
         "pl": "Obsługuj nieprawidłowe dane wejściowe, aby nie powodowały wyjątków",
         "zh-cn": "处理错误的输入，以免引起异常"
-      },
-      "0.2.2": {
-        "en": "Add Feature to change Color",
-        "de": "Funktion hinzufügen, um die Farbe zu ändern",
-        "ru": "Добавить функцию, чтобы изменить цвет",
-        "pt": "Adicionar característica para mudar a cor",
-        "nl": "Functie toevoegen om kleur te wijzigen",
-        "fr": "Ajouter une fonctionnalité pour changer la couleur",
-        "it": "Aggiungi funzionalità per cambiare colore",
-        "es": "Agregar función para cambiar el color",
-        "pl": "Dodaj funkcję, aby zmienić kolor",
-        "zh-cn": "添加功能以更改颜色"
       }
     },
     "title": "Twinkly",
