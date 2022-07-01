@@ -77,7 +77,7 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.2.14 (2022-07-01)
 * (patrickbs96) Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
 * (patrickbs96) Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)
 * (patrickbs96) Add new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)
@@ -96,6 +96,22 @@ The following States are available:
 
 ### 0.2.7 (2021-12-19)
 * (patrickbs96) Hex without Hash. Option to not use ping for reachability.
+
+### 0.2.6 (2021-12-09)
+* (patrickbs96) Renamed States with led control. Now starting with "led".
+* (patrickbs96) Add new State `ledLayout`/`ledPlaylist`
+
+### 0.2.4 (2021-12-03)
+* (patrickbs96) Handle wrong input so it does not cause exceptions
+* (patrickbs96) Add new State `ledEffect`
+
+### 0.2.2 (2021-11-30)
+* (patrickbs96) Add new State `ledColor`
+
+### 0.2.0 (2021-11-28)
+* (patrickbs96) Add new Value `color` from API-Response (Sentry IOBROKER-TWINKLY-J, IOBROKER-TWINKLY-K, IOBROKER-TWINKLY-M, IOBROKER-TWINKLY-N, IOBROKER-TWINKLY-P)
+* (patrickbs96) Add Pause-Feature, to work with app. (Twinkly only allows one active connection...)
+* (patrickbs96) Add Feature, activate uploaded Movies (Playlist)
 
 ## License
 MIT License

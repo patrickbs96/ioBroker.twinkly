@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "0.2.13",
+    "version": "0.2.14",
     "news": {
+      "0.2.14": {
+        "en": "Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)\nAdd new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)\nAdd new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)",
+        "de": "Neues Value network.station.monitor hinzufügen Aktiviert von API-Response (Sentry IOBROKER-TWINKLY-13)\nFügen Sie neues Wertnetzwerk.station.connected_bssid von API-Response (Sentry IOBROKER-TWINKLY-14) hinzu\nFügen Sie neue Wertedetails hinzu. maxMovies von API-Response (Sentry IOBROKER-TWINKLY-18)",
+        "ru": "Добавить новую сеть Value.station.monitor Включено из API-Response (Sentry IOBROKER-TWINKLY-13)\nДобавить новую сеть Value.station.connected_bssid из API-Response (Sentry IOBROKER-TWINKLY-14)\nДобавить новые детали ценности. maxMovies от API-Response (Вход IOBROKER-TWINKLY-18)",
+        "pt": "Adicionar nova rede Valor.station.monitor Activado a partir de API-Response (Sentry IOBROKER-TWINKLY-13)\nAdicionar nova rede Value.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAdicione novos detalhes do Valor. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
+        "nl": "Voeg nieuwe Value netwerk toe. API-Response (Sentry IOBROKER-TWINKEL-13)\nVoeg nieuwe Value netwerk toe. Verbinding met API-Response (Sentry IOBROKER-TWINKER-14)\nVoeg nieuwe Value details toe. Quality over Quantity (QoQ) Releases Vertaling:",
+        "fr": "Ajouter un nouveau réseau de valeur.station.monitor Enabled from API-Response (Sentry IOBROKER-TWINKLY-13)\nAjouter un nouveau réseau de valeur.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAjoutez de nouveaux détails de valeur. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
+        "it": "Aggiungi nuovo Value network.station.monitor Abilitato da API-Response (Sentry IOBROKER-TWINKLY-13)\nAggiungi nuova rete di valore.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAggiungi nuovi dettagli Valore. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
+        "es": "Añadir nuevo valor network.station.monitor Activado desde API-Response (Sentry IOBROKER-TWINKLY-13)\nAñada nueva red de valor.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAñadir nuevos detalles de valor. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
+        "pl": "Addd new Value network (ang.). Pochodzi z API-Response (Sentry IOBROKER-TWINKLY-13)\nAddd new Value network.station.connected_bssid from API-Response (Sentry IOBROKER-TWINKLY-14) (ang.)\nNowe szczegóły. maxMovies from the API-Response (Sentry IOBROKER-TWINKLY-18) (ang.)",
+        "zh-cn": "增加新的价值网络。 API-Response(Sentry IPOKER-TWINKLY-13)\n增加新的价值网络,连接了来自最惠国责任的补贴(Sentry IPOKER-TWINKLY-14)\n增加新的价值细节。 API-Response(Sentry IPOKER-TWINKLY-18)"
+      },
       "0.2.13": {
         "en": "Update dependencies",
         "de": "Abhängigkeiten aktualisieren",
@@ -74,18 +86,6 @@
         "es": "Agregar función de lista de reproducción. Puntos de datos renombrados",
         "pl": "Dodaj funkcję listy odtwarzania. Zmienione nazwy punktów danych",
         "zh-cn": "添加播放列表功能。重命名的数据点"
-      },
-      "0.2.4": {
-        "en": "Handle wrong input so it does not cause exceptions",
-        "de": "Behandeln Sie falsche Eingaben, damit keine Ausnahmen auftreten",
-        "ru": "Обрабатывать неправильный ввод, чтобы не вызывать исключений",
-        "pt": "Trate a entrada errada para não causar exceções",
-        "nl": "Omgaan met verkeerde invoer zodat het geen uitzonderingen veroorzaakt",
-        "fr": "Gérer les entrées erronées afin qu'elles ne provoquent pas d'exceptions",
-        "it": "Gestire l'input sbagliato in modo che non causi eccezioni",
-        "es": "Maneje la entrada incorrecta para que no cause excepciones",
-        "pl": "Obsługuj nieprawidłowe dane wejściowe, aby nie powodowały wyjątków",
-        "zh-cn": "处理错误的输入，以免引起异常"
       }
     },
     "title": "Twinkly",

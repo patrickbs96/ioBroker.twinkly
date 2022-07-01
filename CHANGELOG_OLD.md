@@ -1,20 +1,4 @@
 # Older changes
-## 0.2.6 (2021-12-09)
-* (patrickbs96) Renamed States with led control. Now starting with "led".
-* (patrickbs96) Add new State `ledLayout`/`ledPlaylist`
-
-## 0.2.4 (2021-12-03)
-* (patrickbs96) Handle wrong input so it does not cause exceptions
-* (patrickbs96) Add new State `ledEffect`
-
-## 0.2.2 (2021-11-30)
-* (patrickbs96) Add new State `ledColor`
-
-## 0.2.0 (2021-11-28)
-* (patrickbs96) Add new Value `color` from API-Response (Sentry IOBROKER-TWINKLY-J, IOBROKER-TWINKLY-K, IOBROKER-TWINKLY-M, IOBROKER-TWINKLY-N, IOBROKER-TWINKLY-P)
-* (patrickbs96) Add Pause-Feature, to work with app. (Twinkly only allows one active connection...)
-* (patrickbs96) Add Feature, activate uploaded Movies (Playlist)
-
 ## 0.1.15 (2021-10-26)
 * (patrickbs96) Add new Value `network.accesspoint.password_changed` from API-Response (Sentry IOBROKER-TWINKLY-A)
 
