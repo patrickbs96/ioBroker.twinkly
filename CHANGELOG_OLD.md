@@ -1,4 +1,18 @@
 # Older changes
+## 0.2.7 (2021-12-19)
+* Hex without Hash. Option to not use ping for reachability.
+
+## 0.2.6 (2021-12-09)
+* Renamed States with led control. Now starting with "led".
+* Add new State `ledLayout`/`ledPlaylist`
+
+## 0.2.4 (2021-12-03)
+* Handle wrong input so it does not cause exceptions
+* Add new State `ledEffect`
+
+## 0.2.2 (2021-11-30)
+* Add new State `ledColor`
+
 ## 0.2.0 (2021-11-28)
 * Add new Value `color` from API-Response (Sentry IOBROKER-TWINKLY-J, IOBROKER-TWINKLY-K, IOBROKER-TWINKLY-M, IOBROKER-TWINKLY-N, IOBROKER-TWINKLY-P)
 * Add Pause-Feature, to work with app. (Twinkly only allows one active connection...)

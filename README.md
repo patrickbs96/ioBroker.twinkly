@@ -77,7 +77,7 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.3.1 (2022-07-02)
 * Update translations logic i18n
 
 ### 0.3.0 (2022-07-01)
@@ -99,20 +99,6 @@ The following States are available:
 
 ### 0.2.8 (2021-12-20)
 * Rename mode On to movie as it's a better representation
-
-### 0.2.7 (2021-12-19)
-* Hex without Hash. Option to not use ping for reachability.
-
-### 0.2.6 (2021-12-09)
-* Renamed States with led control. Now starting with "led".
-* Add new State `ledLayout`/`ledPlaylist`
-
-### 0.2.4 (2021-12-03)
-* Handle wrong input so it does not cause exceptions
-* Add new State `ledEffect`
-
-### 0.2.2 (2021-11-30)
-* Add new State `ledColor`
 
 ## License
 MIT License
