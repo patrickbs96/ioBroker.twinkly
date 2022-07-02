@@ -77,6 +77,10 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Change refresh logic after State-Change
+* Added depcrecated logic to remove states when no longer filled with data from api
+
 ### 0.3.1 (2022-07-02)
 * Update translations logic i18n
 
