@@ -1,5 +1,5 @@
 {
   "plugins": ["iobroker", "license"],
-  "numChangelogEntries": 10,
+  "numChangelogEntries": 7,
   "addPlaceholder": true
 }

@@ -1,0 +1,19 @@
+{
+    "Additional Information": "附加信息",
+    "Color": "颜色",
+    "Device Info": "设备信息",
+    "Effect": "影响",
+    "Enabled": "已启用",
+    "IP Address": "IP地址",
+    "Interval [s]": "间隔[s]",
+    "Last Mode": "上次辩论",
+    "MQTT": "MQTT",
+    "Mode": "导 言",
+    "Movie": "电影",
+    "Name": "名称",
+    "Network Status": "网络状态",
+    "Playlist": "播放列表",
+    "Switch Mode after State change": "状态改变后切换模式",
+    "Use ping for reachability": "使用 ping 实现可达性",
+    "twinkly adapter settings": "twinkly的适配器设置"
+}

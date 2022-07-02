@@ -77,39 +77,42 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Update translations logic i18n
+
 ### 0.3.0 (2022-07-01)
-* (patrickbs96) Enable last used Mode on switch-on
+* Enable last used Mode on switch-on
 
 ### 0.2.14 (2022-07-01)
-* (patrickbs96) Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
-* (patrickbs96) Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)
-* (patrickbs96) Add new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)
+* Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
+* Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)
+* Add new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)
 
 ### 0.2.13 (2022-07-01)
-* (patrickbs96) Update dependencies
+* Update dependencies
 
 ### 0.2.11 (2022-01-02)
-* (patrickbs96) Add setting to select which ledMode should be activated
+* Add setting to select which ledMode should be activated
 
 ### 0.2.10 (2021-12-31)
-* (patrickbs96) Add setting to enable automatically switching of Mode after State change (color, effect, movie, playlist)
+* Add setting to enable automatically switching of Mode after State change (color, effect, movie, playlist)
 
 ### 0.2.8 (2021-12-20)
-* (patrickbs96) Rename mode On to movie as it's a better representation
+* Rename mode On to movie as it's a better representation
 
 ### 0.2.7 (2021-12-19)
-* (patrickbs96) Hex without Hash. Option to not use ping for reachability.
+* Hex without Hash. Option to not use ping for reachability.
 
 ### 0.2.6 (2021-12-09)
-* (patrickbs96) Renamed States with led control. Now starting with "led".
-* (patrickbs96) Add new State `ledLayout`/`ledPlaylist`
+* Renamed States with led control. Now starting with "led".
+* Add new State `ledLayout`/`ledPlaylist`
 
 ### 0.2.4 (2021-12-03)
-* (patrickbs96) Handle wrong input so it does not cause exceptions
-* (patrickbs96) Add new State `ledEffect`
+* Handle wrong input so it does not cause exceptions
+* Add new State `ledEffect`
 
 ### 0.2.2 (2021-11-30)
-* (patrickbs96) Add new State `ledColor`
+* Add new State `ledColor`
 
 ## License
 MIT License

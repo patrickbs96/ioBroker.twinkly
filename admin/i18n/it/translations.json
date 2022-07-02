@@ -1,0 +1,19 @@
+{
+    "Additional Information": "Informazioni aggiuntive",
+    "Color": "Colore",
+    "Device Info": "Informazioni sul dispositivo",
+    "Effect": "Effetto",
+    "Enabled": "Abilitato",
+    "IP Address": "Indirizzo IP",
+    "Interval [s]": "Intervallo [i]",
+    "Last Mode": "Ultima modalità",
+    "MQTT": "MQTT",
+    "Mode": "Modalità",
+    "Movie": "Film",
+    "Name": "Nome",
+    "Network Status": "Stato della rete",
+    "Playlist": "elenco di riproduzione",
+    "Switch Mode after State change": "Cambia modalità dopo il cambio di stato",
+    "Use ping for reachability": "Usa il ping per la raggiungibilità",
+    "twinkly adapter settings": "Impostazioni dell'adattatore per twinkly"
+}

@@ -1,0 +1,19 @@
+{
+    "Additional Information": "Дополнительная информация",
+    "Color": "Цвет",
+    "Device Info": "Информация об устройстве",
+    "Effect": "Эффект",
+    "Enabled": "Включено",
+    "IP Address": "Айпи адрес",
+    "Interval [s]": "Интервал [с]",
+    "Last Mode": "Последний режим",
+    "MQTT": "MQTT",
+    "Mode": "Режим",
+    "Movie": "Кино",
+    "Name": "название",
+    "Network Status": "Состояние сети",
+    "Playlist": "Плейлист",
+    "Switch Mode after State change": "Режим переключения после изменения состояния",
+    "Use ping for reachability": "Используйте ping для доступности",
+    "twinkly adapter settings": "Настройки адаптера для twinkly"
+}
