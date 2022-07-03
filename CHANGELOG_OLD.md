@@ -1,4 +1,7 @@
 # Older changes
+## 0.2.8 (2021-12-20)
+* Rename mode On to movie as it's a better representation
+
 ## 0.2.7 (2021-12-19)
 * Hex without Hash. Option to not use ping for reachability.
 
