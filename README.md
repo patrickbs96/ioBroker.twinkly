@@ -76,7 +76,7 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.1 (2022-07-05)
 * Remove deprecated values from mode
 
 ### 1.0.0 (2022-07-03)
@@ -100,9 +100,6 @@ The following States are available:
 
 ### 0.2.11 (2022-01-02)
 * Add setting to select which ledMode should be activated
-
-### 0.2.10 (2021-12-31)
-* Add setting to enable automatically switching of Mode after State change (color, effect, movie, playlist)
 
 ## License
 MIT License
