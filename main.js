@@ -1388,15 +1388,15 @@ async function checkTwinklyResponseNewSince(connectionName, name, response, mapp
                     continueCheck = typeof mapping.child[key].deprecated === 'undefined';
 
                 if (continueCheck)
-                    await checkTwinklyResponseNewSince(connectionName, name, response[key], mapping.child[key]);
+                    await checkTwinklyResponseNewSince(connectionName, name + '.' + key, response[key], mapping.child[key]);
                 else
                     handleSentryMessage(connectionName, 'checkTwinklyResponse',
-                        `${connectionName}:${name}:${key}`,
+                        `reintroduced:${connectionName}:${name}:${key}`,
                         `Item reintroduced! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`);
             }
         } else {
             handleSentryMessage(connectionName, 'checkTwinklyResponse',
-                `${connectionName}:${name}:${key}`,
+                `newSince:${connectionName}:${name}:${key}`,
                 `New Item detected! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`);
         }
     }
@@ -1417,7 +1417,7 @@ async function checkTwinklyResponseDeprecated(connectionName, name, response, ma
 
     for (const child of Object.keys(mapping.child)) {
         if (Object.keys(response).includes(child)) {
-            await checkTwinklyResponseDeprecated(connectionName, name, response[child], mapping.child[child]);
+            await checkTwinklyResponseDeprecated(connectionName, name + '.' + child, response[child], mapping.child[child]);
         } else {
             let canHandle = true;
             if (mapping.child[child].parent !== undefined)
@@ -1427,7 +1427,7 @@ async function checkTwinklyResponseDeprecated(connectionName, name, response, ma
 
             if (canHandle)
                 handleSentryMessage(connectionName, 'checkTwinklyResponse',
-                    `${connectionName}:${name}:${child}`,
+                    `deprecated:${connectionName}:${name}:${child}`,
                     `Item deprecated: ${connectionName}.${name}.${child}`);
         }
     }
@@ -1665,36 +1665,28 @@ async function checkConnection(connectionName, writeState = true) {
  * @param {String} message
  */
 function handleSentryMessage(connectionName, functionName, key, message) {
+    // Anonymize Connection-Name
     key = key.replace(connectionName, '####');
     message = message.replace(connectionName, '');
 
-    adapter.log.debug(`[${functionName}] ${key} - ${message}`);
-
-    const sentryKey = `${functionName}:${key}`;
-
     if (Object.keys(connections).includes(connectionName)) {
         const connection = connections[connectionName];
-
         message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}`;
     }
 
+    const sentryKey = `${functionName}:${key}`;
     if (!Object.keys(sentryMessages).includes(sentryKey)) {
         sentryMessages[sentryKey] = message;
 
-        let canSendSentry = false;
-        if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
-            const sentryInstance = adapter.getPluginInstance('sentry');
-            if (sentryInstance && sentryInstance.getSentryObject()) {
-                canSendSentry = true;
-                // noinspection JSUnresolvedFunction
-                sentryInstance.getSentryObject().captureException(`[${functionName}] ${message}`);
-                adapter.log.debug(`[${functionName}] ${message}`);
-            }
-        }
-
-        if (!canSendSentry)
+        const sentryObject = getSentryObject();
+        if (typeof sentryObject !== 'undefined') {
+            sentryObject.captureMessage(`[${functionName}] ${message}`);
+        } else {
             adapter.log.info(`[${functionName}] ${message} --> Please notify the developer!`);
+        }
     }
+
+    adapter.log.debug(`[${sentryKey}] ${message}`);
 }
 
 /**
@@ -1717,6 +1709,19 @@ function clearInterval() {
     if (pollingInterval) {
         clearTimeout(pollingInterval);
         pollingInterval = null;
+    }
+}
+
+/**
+ * Get Sentry Object
+ * @returns {{captureMessage: function(message: String), captureException: function(message: String)} | undefined}
+ */
+function getSentryObject() {
+    if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
+        const sentryInstance = adapter.getPluginInstance('sentry');
+        if (sentryInstance && sentryInstance.getSentryObject()) {
+            return sentryInstance.getSentryObject();
+        }
     }
 }
 

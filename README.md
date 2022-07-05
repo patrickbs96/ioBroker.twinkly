@@ -76,6 +76,9 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Remove deprecated values from mode
+
 ### 1.0.0 (2022-07-03)
 * Change refresh logic after State-Change
 * Added depcrecated logic to remove states when no longer filled with data from api

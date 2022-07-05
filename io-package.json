@@ -1,160 +1,160 @@
 {
-  "common": {
-    "name": "twinkly",
-    "version": "1.0.0",
-    "news": {
-      "1.0.0": {
-        "en": "Change refresh logic after State-Change\nAdded depcrecated logic to remove states when no longer filled with data from api\nCheck new and deprecated values from api response to update state information",
-        "de": "Ändern Sie die Refresh-Logik nach State-Change\nHinzugefügt depcrecated Logik, um Zustände zu entfernen, wenn nicht mehr mit Daten von api gefüllt\nÜberprüfen Sie neue und deprecierte Werte von api Antwort auf die Aktualisierung von Zustandsinformationen",
-        "ru": "Изменить обновленную логику после State-Change\nДобавлена depcrecated логика для удаления штатов, когда больше не заполнены данными из api\nПроверьте новые и определённые значения от api ответа до обновления государственной информации",
-        "pt": "Alterar a lógica de atualização após a mudança de estado\nAdicionado lógica depcrecated para remover estados quando não mais preenchido com dados de api\nVerificar valores novos e depreciados da resposta api para atualizar as informações do estado",
-        "nl": "Verfrissende logica na State-Chang\nVertaling:\nControleer nieuwe en gedepreceerde waarden van api-reactie tot update informatie",
-        "fr": "Changer de logique après State-Change\nAjout d'une logique depcrecated pour supprimer les états lorsqu'ils ne sont plus remplis de données de api\nVérifiez les valeurs nouvelles et obsolètes de la réponse api à la mise à jour des informations de l'état",
-        "it": "Cambia la logica di aggiornamento dopo State-Change\nAggiunto logica depcrecated per rimuovere gli stati quando non più riempito di dati da api\nControllare i valori nuovi e deprecati dalla risposta api per aggiornare le informazioni di stato",
-        "es": "Cambiar la lógica refrescante después del cambio de estado\nAñadido lógica depcrecada para eliminar estados cuando ya no se llenan con datos de api\nCompruebe los valores nuevos y deprecatados de la respuesta api para actualizar la información del estado",
-        "pl": "Zmiana odświeżona po State-Chang\nTechnologia wydzielania stanów, gdy nie wypełniają już danych z api\nCheck new and curse values from api response to aktualizacji informacji stanowej",
-        "zh-cn": "A. 国家-Changh逻辑的改变\n在不再装有从配件中填写数据时,添加包装的排气。\n更新国家资料的管道答复中录取新的和预测的数值"
-      },
-      "0.3.1": {
-        "en": "Update translations logic i18n",
-        "de": "Übersetzungslogik i18n aktualisieren",
-        "ru": "Обновление переводов логика i18n",
-        "pt": "Actualizar traduções lógica i18n",
-        "nl": "Vertaling:",
-        "fr": "Mettre à jour les traductions logique i18n",
-        "it": "Aggiornare le traduzioni logica i18n",
-        "es": "Traducción actualizada lógica i18n",
-        "pl": "Przekład logiczny i18n",
-        "zh-cn": "最新译文"
-      },
-      "0.3.0": {
-        "en": "Enable last used Mode on switch-on",
-        "de": "Aktivieren Sie den zuletzt verwendeten Modus beim Einschalten",
-        "ru": "Включить последний используемый режим на Switch-on",
-        "pt": "Habilite o último modo usado no interruptor-on",
-        "nl": "De laatste gebruikte Mode op de knop",
-        "fr": "Activer le dernier mode utilisé sur le commutateur",
-        "it": "Abilitare l'ultima modalità utilizzata su switch-on",
-        "es": "Activar el último modo usado en conmutador",
-        "pl": "Ostatni raz używany był w trybie przełącznikowym",
-        "zh-cn": "最后一个用途的动向"
-      },
-      "0.2.14": {
-        "en": "Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)\nAdd new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)\nAdd new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "de": "Neues Value network.station.monitor hinzufügen Aktiviert von API-Response (Sentry IOBROKER-TWINKLY-13)\nFügen Sie neues Wertnetzwerk.station.connected_bssid von API-Response (Sentry IOBROKER-TWINKLY-14) hinzu\nFügen Sie neue Wertedetails hinzu. maxMovies von API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "ru": "Добавить новую сеть Value.station.monitor Включено из API-Response (Sentry IOBROKER-TWINKLY-13)\nДобавить новую сеть Value.station.connected_bssid из API-Response (Sentry IOBROKER-TWINKLY-14)\nДобавить новые детали ценности. maxMovies от API-Response (Вход IOBROKER-TWINKLY-18)",
-        "pt": "Adicionar nova rede Valor.station.monitor Activado a partir de API-Response (Sentry IOBROKER-TWINKLY-13)\nAdicionar nova rede Value.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAdicione novos detalhes do Valor. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "nl": "Voeg nieuwe Value netwerk toe. API-Response (Sentry IOBROKER-TWINKEL-13)\nVoeg nieuwe Value netwerk toe. Verbinding met API-Response (Sentry IOBROKER-TWINKER-14)\nVoeg nieuwe Value details toe. Quality over Quantity (QoQ) Releases Vertaling:",
-        "fr": "Ajouter un nouveau réseau de valeur.station.monitor Enabled from API-Response (Sentry IOBROKER-TWINKLY-13)\nAjouter un nouveau réseau de valeur.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAjoutez de nouveaux détails de valeur. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "it": "Aggiungi nuovo Value network.station.monitor Abilitato da API-Response (Sentry IOBROKER-TWINKLY-13)\nAggiungi nuova rete di valore.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAggiungi nuovi dettagli Valore. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "es": "Añadir nuevo valor network.station.monitor Activado desde API-Response (Sentry IOBROKER-TWINKLY-13)\nAñada nueva red de valor.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAñadir nuevos detalles de valor. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "pl": "Addd new Value network (ang.). Pochodzi z API-Response (Sentry IOBROKER-TWINKLY-13)\nAddd new Value network.station.connected_bssid from API-Response (Sentry IOBROKER-TWINKLY-14) (ang.)\nNowe szczegóły. maxMovies from the API-Response (Sentry IOBROKER-TWINKLY-18) (ang.)",
-        "zh-cn": "增加新的价值网络。 API-Response(Sentry IPOKER-TWINKLY-13)\n增加新的价值网络,连接了来自最惠国责任的补贴(Sentry IPOKER-TWINKLY-14)\n增加新的价值细节。 API-Response(Sentry IPOKER-TWINKLY-18)"
-      },
-      "0.2.13": {
-        "en": "Update dependencies",
-        "de": "Abhängigkeiten aktualisieren",
-        "ru": "Обновить зависимости",
-        "pt": "Dependências de atualização",
-        "nl": "Update afhankelijkheid",
-        "fr": "Mettre à jour les dépendances",
-        "it": "Dipendenze di aggiornamento",
-        "es": "Actualizar las dependencias",
-        "pl": "Zależności aktualnej",
-        "zh-cn": "最新依赖"
-      },
-      "0.2.12": {
-        "en": "Update dependencies",
-        "de": "Abhängigkeiten aktualisieren",
-        "ru": "Обновить зависимости",
-        "pt": "Dependências de atualização",
-        "nl": "Update afhankelijkheid",
-        "fr": "Mettre à jour les dépendances",
-        "it": "Dipendenze di aggiornamento",
-        "es": "Actualizar las dependencias",
-        "pl": "Zależności aktualnej",
-        "zh-cn": "最新依赖"
-      },
-      "0.2.11": {
-        "en": "Add setting to select which ledMode should be activated",
-        "de": "Einstellung hinzufügen, um auszuwählen, welcher LEDMode aktiviert werden soll",
-        "ru": "Добавьте настройку, чтобы выбрать, какой ledMode должен быть активирован",
-        "pt": "Adicionar configuração para selecionar qual ledMode deve ser ativado",
-        "nl": "Instelling toevoegen om te selecteren welke ledMode moet worden geactiveerd",
-        "fr": "Ajouter un paramètre pour sélectionner quel ledMode doit être activé",
-        "it": "Aggiungi impostazione per selezionare quale ledMode deve essere attivato",
-        "es": "Agregar configuración para seleccionar qué ledMode debe activarse",
-        "pl": "Dodaj ustawienie, aby wybrać, który tryb led powinien być aktywowany",
-        "zh-cn": "添加设置以选择应激活哪个 ledMode"
-      }
+    "common": {
+        "name": "twinkly",
+        "version": "1.0.0",
+        "news": {
+            "1.0.0": {
+                "en": "Change refresh logic after State-Change\nAdded depcrecated logic to remove states when no longer filled with data from api\nCheck new and deprecated values from api response to update state information",
+                "de": "Ändern Sie die Refresh-Logik nach State-Change\nHinzugefügt depcrecated Logik, um Zustände zu entfernen, wenn nicht mehr mit Daten von api gefüllt\nÜberprüfen Sie neue und deprecierte Werte von api Antwort auf die Aktualisierung von Zustandsinformationen",
+                "ru": "Изменить обновленную логику после State-Change\nДобавлена depcrecated логика для удаления штатов, когда больше не заполнены данными из api\nПроверьте новые и определённые значения от api ответа до обновления государственной информации",
+                "pt": "Alterar a lógica de atualização após a mudança de estado\nAdicionado lógica depcrecated para remover estados quando não mais preenchido com dados de api\nVerificar valores novos e depreciados da resposta api para atualizar as informações do estado",
+                "nl": "Verfrissende logica na State-Chang\nVertaling:\nControleer nieuwe en gedepreceerde waarden van api-reactie tot update informatie",
+                "fr": "Changer de logique après State-Change\nAjout d'une logique depcrecated pour supprimer les états lorsqu'ils ne sont plus remplis de données de api\nVérifiez les valeurs nouvelles et obsolètes de la réponse api à la mise à jour des informations de l'état",
+                "it": "Cambia la logica di aggiornamento dopo State-Change\nAggiunto logica depcrecated per rimuovere gli stati quando non più riempito di dati da api\nControllare i valori nuovi e deprecati dalla risposta api per aggiornare le informazioni di stato",
+                "es": "Cambiar la lógica refrescante después del cambio de estado\nAñadido lógica depcrecada para eliminar estados cuando ya no se llenan con datos de api\nCompruebe los valores nuevos y deprecatados de la respuesta api para actualizar la información del estado",
+                "pl": "Zmiana odświeżona po State-Chang\nTechnologia wydzielania stanów, gdy nie wypełniają już danych z api\nCheck new and curse values from api response to aktualizacji informacji stanowej",
+                "zh-cn": "A. 国家-Changh逻辑的改变\n在不再装有从配件中填写数据时,添加包装的排气。\n更新国家资料的管道答复中录取新的和预测的数值"
+            },
+            "0.3.1": {
+                "en": "Update translations logic i18n",
+                "de": "Übersetzungslogik i18n aktualisieren",
+                "ru": "Обновление переводов логика i18n",
+                "pt": "Actualizar traduções lógica i18n",
+                "nl": "Vertaling:",
+                "fr": "Mettre à jour les traductions logique i18n",
+                "it": "Aggiornare le traduzioni logica i18n",
+                "es": "Traducción actualizada lógica i18n",
+                "pl": "Przekład logiczny i18n",
+                "zh-cn": "最新译文"
+            },
+            "0.3.0": {
+                "en": "Enable last used Mode on switch-on",
+                "de": "Aktivieren Sie den zuletzt verwendeten Modus beim Einschalten",
+                "ru": "Включить последний используемый режим на Switch-on",
+                "pt": "Habilite o último modo usado no interruptor-on",
+                "nl": "De laatste gebruikte Mode op de knop",
+                "fr": "Activer le dernier mode utilisé sur le commutateur",
+                "it": "Abilitare l'ultima modalità utilizzata su switch-on",
+                "es": "Activar el último modo usado en conmutador",
+                "pl": "Ostatni raz używany był w trybie przełącznikowym",
+                "zh-cn": "最后一个用途的动向"
+            },
+            "0.2.14": {
+                "en": "Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)\nAdd new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)\nAdd new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)",
+                "de": "Neues Value network.station.monitor hinzufügen Aktiviert von API-Response (Sentry IOBROKER-TWINKLY-13)\nFügen Sie neues Wertnetzwerk.station.connected_bssid von API-Response (Sentry IOBROKER-TWINKLY-14) hinzu\nFügen Sie neue Wertedetails hinzu. maxMovies von API-Response (Sentry IOBROKER-TWINKLY-18)",
+                "ru": "Добавить новую сеть Value.station.monitor Включено из API-Response (Sentry IOBROKER-TWINKLY-13)\nДобавить новую сеть Value.station.connected_bssid из API-Response (Sentry IOBROKER-TWINKLY-14)\nДобавить новые детали ценности. maxMovies от API-Response (Вход IOBROKER-TWINKLY-18)",
+                "pt": "Adicionar nova rede Valor.station.monitor Activado a partir de API-Response (Sentry IOBROKER-TWINKLY-13)\nAdicionar nova rede Value.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAdicione novos detalhes do Valor. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
+                "nl": "Voeg nieuwe Value netwerk toe. API-Response (Sentry IOBROKER-TWINKEL-13)\nVoeg nieuwe Value netwerk toe. Verbinding met API-Response (Sentry IOBROKER-TWINKER-14)\nVoeg nieuwe Value details toe. Quality over Quantity (QoQ) Releases Vertaling:",
+                "fr": "Ajouter un nouveau réseau de valeur.station.monitor Enabled from API-Response (Sentry IOBROKER-TWINKLY-13)\nAjouter un nouveau réseau de valeur.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAjoutez de nouveaux détails de valeur. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
+                "it": "Aggiungi nuovo Value network.station.monitor Abilitato da API-Response (Sentry IOBROKER-TWINKLY-13)\nAggiungi nuova rete di valore.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAggiungi nuovi dettagli Valore. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
+                "es": "Añadir nuevo valor network.station.monitor Activado desde API-Response (Sentry IOBROKER-TWINKLY-13)\nAñada nueva red de valor.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAñadir nuevos detalles de valor. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
+                "pl": "Addd new Value network (ang.). Pochodzi z API-Response (Sentry IOBROKER-TWINKLY-13)\nAddd new Value network.station.connected_bssid from API-Response (Sentry IOBROKER-TWINKLY-14) (ang.)\nNowe szczegóły. maxMovies from the API-Response (Sentry IOBROKER-TWINKLY-18) (ang.)",
+                "zh-cn": "增加新的价值网络。 API-Response(Sentry IPOKER-TWINKLY-13)\n增加新的价值网络,连接了来自最惠国责任的补贴(Sentry IPOKER-TWINKLY-14)\n增加新的价值细节。 API-Response(Sentry IPOKER-TWINKLY-18)"
+            },
+            "0.2.13": {
+                "en": "Update dependencies",
+                "de": "Abhängigkeiten aktualisieren",
+                "ru": "Обновить зависимости",
+                "pt": "Dependências de atualização",
+                "nl": "Update afhankelijkheid",
+                "fr": "Mettre à jour les dépendances",
+                "it": "Dipendenze di aggiornamento",
+                "es": "Actualizar las dependencias",
+                "pl": "Zależności aktualnej",
+                "zh-cn": "最新依赖"
+            },
+            "0.2.12": {
+                "en": "Update dependencies",
+                "de": "Abhängigkeiten aktualisieren",
+                "ru": "Обновить зависимости",
+                "pt": "Dependências de atualização",
+                "nl": "Update afhankelijkheid",
+                "fr": "Mettre à jour les dépendances",
+                "it": "Dipendenze di aggiornamento",
+                "es": "Actualizar las dependencias",
+                "pl": "Zależności aktualnej",
+                "zh-cn": "最新依赖"
+            },
+            "0.2.11": {
+                "en": "Add setting to select which ledMode should be activated",
+                "de": "Einstellung hinzufügen, um auszuwählen, welcher LEDMode aktiviert werden soll",
+                "ru": "Добавьте настройку, чтобы выбрать, какой ledMode должен быть активирован",
+                "pt": "Adicionar configuração para selecionar qual ledMode deve ser ativado",
+                "nl": "Instelling toevoegen om te selecteren welke ledMode moet worden geactiveerd",
+                "fr": "Ajouter un paramètre pour sélectionner quel ledMode doit être activé",
+                "it": "Aggiungi impostazione per selezionare quale ledMode deve essere attivato",
+                "es": "Agregar configuración para seleccionar qué ledMode debe activarse",
+                "pl": "Dodaj ustawienie, aby wybrać, który tryb led powinien być aktywowany",
+                "zh-cn": "添加设置以选择应激活哪个 ledMode"
+            }
+        },
+        "title": "Twinkly",
+        "titleLang": {
+            "en": "Twinkly",
+            "de": "Twinkly",
+            "ru": "Твинкли",
+            "pt": "Twinkly",
+            "nl": "Twinkly",
+            "fr": "Twinkly",
+            "it": "Twinkly",
+            "es": "Twinkly",
+            "pl": "Twinkly",
+            "zh-cn": "Twinkly"
+        },
+        "desc": {
+            "en": "Adapter to communicate with the Twinkly lights.",
+            "de": "Adapter zur Kommunikation mit den Twinkly-Lichtern.",
+            "ru": "Адаптер для связи с Twinkly lights.",
+            "pt": "Adaptador para se comunicar com as luzes Twinkly.",
+            "nl": "Adapter om te communiceren met de Twinkly Lights.",
+            "fr": "Adaptateur pour communiquer avec les lumières Twinkly.",
+            "it": "Adattatore per comunicare con le luci Twinkly.",
+            "es": "Adaptador para comunicarse con las luces Twinkly.",
+            "pl": "Adapter do komunikacji ze światłami Twinkly.",
+            "zh-cn": "适配器与Twinkly灯通信。"
+        },
+        "authors": [
+            "patrickbs96 <patrickbsimon96@gmail.com>"
+        ],
+        "keywords": [
+            "control",
+            "lights"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "twinkly.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/patrickbs96/ioBroker.twinkly/master/admin/twinkly.png",
+        "readme": "https://github.com/patrickbs96/ioBroker.twinkly/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "lighting",
+        "connectionType": "local",
+        "dataSource": "poll",
+        "compact": true,
+        "materialize": true,
+        "materializeTab": true,
+        "dependencies": [
+            {
+                "js-controller": ">=2.0.0"
+            }
+        ],
+        "plugins": {
+            "sentry": {
+                "dsn": "https://3b050a32f5f74a32968fab1c58a7afad@o490501.ingest.sentry.io/5554454"
+            }
+        }
     },
-    "title": "Twinkly",
-    "titleLang": {
-      "en": "Twinkly",
-      "de": "Twinkly",
-      "ru": "Твинкли",
-      "pt": "Twinkly",
-      "nl": "Twinkly",
-      "fr": "Twinkly",
-      "it": "Twinkly",
-      "es": "Twinkly",
-      "pl": "Twinkly",
-      "zh-cn": "Twinkly"
+    "native": {
+        "devices": [],
+        "interval": 60,
+        "details": false,
+        "mqtt": false,
+        "network": false,
+        "usePing": true,
+        "switchMode": false
     },
-    "desc": {
-      "en": "Adapter to communicate with the Twinkly lights.",
-      "de": "Adapter zur Kommunikation mit den Twinkly-Lichtern.",
-      "ru": "Адаптер для связи с Twinkly lights.",
-      "pt": "Adaptador para se comunicar com as luzes Twinkly.",
-      "nl": "Adapter om te communiceren met de Twinkly Lights.",
-      "fr": "Adaptateur pour communiquer avec les lumières Twinkly.",
-      "it": "Adattatore per comunicare con le luci Twinkly.",
-      "es": "Adaptador para comunicarse con las luces Twinkly.",
-      "pl": "Adapter do komunikacji ze światłami Twinkly.",
-      "zh-cn": "适配器与Twinkly灯通信。"
-    },
-    "authors": [
-      "patrickbs96 <patrickbsimon96@gmail.com>"
-    ],
-    "keywords": [
-      "control",
-      "lights"
-    ],
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "main": "main.js",
-    "icon": "twinkly.png",
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/patrickbs96/ioBroker.twinkly/master/admin/twinkly.png",
-    "readme": "https://github.com/patrickbs96/ioBroker.twinkly/blob/master/README.md",
-    "loglevel": "info",
-    "mode": "daemon",
-    "type": "lighting",
-    "connectionType": "local",
-    "dataSource": "poll",
-    "compact": true,
-    "materialize": true,
-    "materializeTab": true,
-    "dependencies": [
-      {
-        "js-controller": ">=2.0.0"
-      }
-    ],
-    "plugins": {
-      "sentry": {
-        "dsn": "https://3b050a32f5f74a32968fab1c58a7afad@o490501.ingest.sentry.io/5554454"
-      }
-    }
-  },
-  "native": {
-    "devices": [],
-    "interval": 60,
-    "details": false,
-    "mqtt": false,
-    "network": false,
-    "usePing": true,
-    "switchMode": false
-  },
-  "objects": [],
-  "instanceObjects": []
+    "objects": [],
+    "instanceObjects": []
 }
