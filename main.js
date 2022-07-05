@@ -1341,7 +1341,8 @@ async function saveJSONinState(connectionName, state, json, mapping) {
     if (mapping.logItem) {
         handleSentryMessage(connectionName, 'saveJSONinState',
             `LogItem:${connectionName}:${mapping.parent.id}`,
-            `LogItem (${connectionName}.${mapping.parent.id}, ${JSON.stringify(json)})`);
+            `LogItem (${connectionName}.${mapping.parent.id}, ${JSON.stringify(json)})`,
+            'info');
     }
 }
 
@@ -1392,12 +1393,14 @@ async function checkTwinklyResponseNewSince(connectionName, name, response, mapp
                 else
                     handleSentryMessage(connectionName, 'checkTwinklyResponse',
                         `reintroduced:${connectionName}:${name}:${key}`,
-                        `Item reintroduced! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`);
+                        `Item reintroduced! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`,
+                        'warning');
             }
         } else {
             handleSentryMessage(connectionName, 'checkTwinklyResponse',
                 `newSince:${connectionName}:${name}:${key}`,
-                `New Item detected! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`);
+                `New Item detected! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`,
+                'warning');
         }
     }
 }
@@ -1428,7 +1431,8 @@ async function checkTwinklyResponseDeprecated(connectionName, name, response, ma
             if (canHandle)
                 handleSentryMessage(connectionName, 'checkTwinklyResponse',
                     `deprecated:${connectionName}:${name}:${child}`,
-                    `Item deprecated: ${connectionName}.${name}.${child}`);
+                    `Item deprecated: ${connectionName}.${name}.${child}`,
+                    'warning');
         }
     }
 }
@@ -1663,8 +1667,9 @@ async function checkConnection(connectionName, writeState = true) {
  * @param {String} functionName
  * @param {String} key
  * @param {String} message
+ * @param {'fatal'|'error'|'warning'|'log'|'info'|'debug'} level?
  */
-function handleSentryMessage(connectionName, functionName, key, message) {
+function handleSentryMessage(connectionName, functionName, key, message, level) {
     // Anonymize Connection-Name
     key = key.replace(connectionName, '####');
     message = message.replace(connectionName, '');
@@ -1680,7 +1685,7 @@ function handleSentryMessage(connectionName, functionName, key, message) {
 
         const sentryObject = getSentryObject();
         if (typeof sentryObject !== 'undefined') {
-            sentryObject.captureMessage(`[${functionName}] ${message}`);
+            sentryObject.captureMessage(`[${functionName}] ${message}`, level);
         } else {
             adapter.log.info(`[${functionName}] ${message} --> Please notify the developer!`);
         }
@@ -1714,7 +1719,8 @@ function clearInterval() {
 
 /**
  * Get Sentry Object
- * @returns {{captureMessage: function(message: String), captureException: function(message: String)} | undefined}
+ * @returns {{captureMessage  : function(message: string, level?: 'fatal'|'error'|'warning'|'log'|'info'|'debug'),
+ *            captureException: function(exception: string|Error)} | undefined}
  */
 function getSentryObject() {
     if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
