@@ -76,7 +76,7 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.2 (2022-07-07)
 * Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)
 
 ### 1.0.1 (2022-07-05)
@@ -100,9 +100,6 @@ The following States are available:
 
 ### 0.2.13 (2022-07-01)
 * Update dependencies
-
-### 0.2.11 (2022-01-02)
-* Add setting to select which ledMode should be activated
 
 ## License
 MIT License

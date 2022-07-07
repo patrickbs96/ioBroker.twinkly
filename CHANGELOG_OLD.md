@@ -1,4 +1,7 @@
 # Older changes
+## 0.2.11 (2022-01-02)
+* Add setting to select which ledMode should be activated
+
 ## 0.2.10 (2021-12-31)
 * Add setting to enable automatically switching of Mode after State change (color, effect, movie, playlist)
 

@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "news": {
+      "1.0.2": {
+        "en": "Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
+        "de": "Fügen Sie neue Werte details.uid und details.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N) hinzu",
+        "ru": "Добавить новые значения details.uid и details.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
+        "pt": "Adicionar novos valores details.uid e details.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
+        "nl": "Voeg nieuwe waarden toe aan details en details",
+        "fr": "Ajouter de nouvelles valeurs details.uid and details.group.uid fw évangélis= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
+        "it": "Aggiungi nuovi valori dettagli.uid e dettagli.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
+        "es": "Añada nuevos valores detalles.uid y detalles.group.uid fw ≤ 2,8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
+        "pl": "Addd new value details.uid and details group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N) (ang.)",
+        "zh-cn": "增加新的数值细节,详见G.uid fw >=2.8.4, fwFamily=G(IOBROKER-TWINKLY-1G, IPOKER-TWINKLY-1N)"
+      },
       "1.0.1": {
         "en": "Remove deprecated values from mode",
         "de": "Entfernen von deprecierten Werten aus dem Modus",
@@ -64,18 +76,6 @@
         "zh-cn": "增加新的价值网络。 API-Response(Sentry IPOKER-TWINKLY-13)\n增加新的价值网络,连接了来自最惠国责任的补贴(Sentry IPOKER-TWINKLY-14)\n增加新的价值细节。 API-Response(Sentry IPOKER-TWINKLY-18)"
       },
       "0.2.13": {
-        "en": "Update dependencies",
-        "de": "Abhängigkeiten aktualisieren",
-        "ru": "Обновить зависимости",
-        "pt": "Dependências de atualização",
-        "nl": "Update afhankelijkheid",
-        "fr": "Mettre à jour les dépendances",
-        "it": "Dipendenze di aggiornamento",
-        "es": "Actualizar las dependencias",
-        "pl": "Zależności aktualnej",
-        "zh-cn": "最新依赖"
-      },
-      "0.2.12": {
         "en": "Update dependencies",
         "de": "Abhängigkeiten aktualisieren",
         "ru": "Обновить зависимости",
