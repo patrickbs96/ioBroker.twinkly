@@ -88,7 +88,6 @@
         "zh-cn": "最新依赖"
       }
     },
-    "title": "Twinkly",
     "titleLang": {
       "en": "Twinkly",
       "de": "Twinkly",
@@ -135,6 +134,9 @@
     "compact": true,
     "materialize": true,
     "materializeTab": true,
+    "adminUI": {
+      "config": "materialize"
+    },
     "dependencies": [
       {
         "js-controller": ">=2.0.0"
