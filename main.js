@@ -1467,7 +1467,7 @@ async function getJSONStates(connectionName, stateId, json, mapping, lastState) 
 
 /**
  * @param {String} connectionName
- * @param {{hide: Boolean, filter?: {name: String, val: any}, deprecated?: String, newSince?: String, ignore?: Boolean}} stateInfo
+ * @param {{hide: Boolean, ignore?: Boolean, filter?: {name: String, val: any}, deprecated?: String, newSince?: String, family?: String}} stateInfo
  * @param {Boolean} ignoreHide
  * @param {Boolean} checkIgnore
  */
@@ -1483,6 +1483,8 @@ async function allowState(connectionName, stateInfo, ignoreHide = false, checkIg
         result = !tools.versionGreaterEqual(stateInfo.deprecated, connection.twinkly.firmware);
     if (result && stateInfo.newSince !== undefined)
         result = tools.versionGreaterEqual(stateInfo.newSince, connection.twinkly.firmware);
+    if (result && stateInfo.family !== undefined)
+        result = stateInfo.family === connection.twinkly.details.fw_family;
 
     return result;
 }
