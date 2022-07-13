@@ -1043,7 +1043,9 @@ async function prepareObjectsByConfig() {
         const config = {
             device: {
                 id     : {device : connectionName},
-                common : {name   : connection.twinkly.name},
+                common : {name   : connection.twinkly.name, statusStates: {
+                    onlineId: `${adapter.namespace}.${connectionName}.${apiObjectsMap.connected.id}`
+                }},
                 native : {host   : connection.twinkly.host}
             },
             states   : [],
