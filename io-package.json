@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "news": {
+      "1.0.3": {
+        "en": "Add Online-Status to object-view\nIgnore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)",
+        "de": "Online-Status zur Objektansicht hinzufügen\nIgnorieren .*uid-Werte, unbekannt, in denen sie freigeben (IOBROKER-TWINKLY-1Q)",
+        "ru": "Добавить Online-Status в объект-просмотр\nИгнорировать значения .*uid, неизвестные в какой версии они доступны (IOBROKER-TWINKLY-1Q)",
+        "pt": "Adicionar Online-Status a object-view\nIgnorar valores .*uid, desconhecidos em que versão estão disponíveis (IOBROKER-TWINKLY-1Q)",
+        "nl": "Voeg Online-Status toe aan object-view\nIgnore ",
+        "fr": "Ajouter Online-Status à object-view\nIgnore .*uid values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)",
+        "it": "Aggiungi Online-Status a object-view\nIgnora i valori .*uid, sconosciuti in cui sono disponibili (IOBROKER-TWINKLY-1Q)",
+        "es": "Añadir Online-Status a la vista del objeto\nIgnorar valores .*uid, desconocidos en los que se liberan están disponibles (IOBROKER-TWINKLY-1Q)",
+        "pl": "Add Online-Status to object-view (ang.)\nIgnore .*uid value, nieznana, w której są dostępne (IOBROKER-TWINKLY-1Q)",
+        "zh-cn": "添加网上调查\nIgnore .*uid数值,不详,可予以释放(OBROKER-TWINY-1Q)。"
+      },
       "1.0.2": {
         "en": "Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
         "de": "Fügen Sie neue Werte details.uid und details.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N) hinzu",
@@ -74,18 +86,6 @@
         "es": "Añadir nuevo valor network.station.monitor Activado desde API-Response (Sentry IOBROKER-TWINKLY-13)\nAñada nueva red de valor.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAñadir nuevos detalles de valor. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
         "pl": "Addd new Value network (ang.). Pochodzi z API-Response (Sentry IOBROKER-TWINKLY-13)\nAddd new Value network.station.connected_bssid from API-Response (Sentry IOBROKER-TWINKLY-14) (ang.)\nNowe szczegóły. maxMovies from the API-Response (Sentry IOBROKER-TWINKLY-18) (ang.)",
         "zh-cn": "增加新的价值网络。 API-Response(Sentry IPOKER-TWINKLY-13)\n增加新的价值网络,连接了来自最惠国责任的补贴(Sentry IPOKER-TWINKLY-14)\n增加新的价值细节。 API-Response(Sentry IPOKER-TWINKLY-18)"
-      },
-      "0.2.13": {
-        "en": "Update dependencies",
-        "de": "Abhängigkeiten aktualisieren",
-        "ru": "Обновить зависимости",
-        "pt": "Dependências de atualização",
-        "nl": "Update afhankelijkheid",
-        "fr": "Mettre à jour les dépendances",
-        "it": "Dipendenze di aggiornamento",
-        "es": "Actualizar las dependencias",
-        "pl": "Zależności aktualnej",
-        "zh-cn": "最新依赖"
       }
     },
     "titleLang": {

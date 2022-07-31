@@ -76,7 +76,7 @@ The following States are available:
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.3 (2022-07-31)
 * Add Online-Status to object-view
 * Ignore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)
 
@@ -101,9 +101,6 @@ The following States are available:
 * Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
 * Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)
 * Add new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)
-
-### 0.2.13 (2022-07-01)
-* Update dependencies
 
 ## License
 MIT License
