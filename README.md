@@ -71,11 +71,74 @@ The following States are available:
 * The maximum length for the movie name is 15 characters
 
 
+## Code Expamples
+
+### Upload Movie
+```
+sendTo('twinkly.0', 'uploadMovie', {
+    connection: 'Fenster',
+    movie: {
+        frames: [
+            [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
+            [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
+            ...
+        ],
+        delay: 250
+    }
+});
+```
+
+### Upload Template Movie
+```
+sendTo('twinkly.0', 'uploadTemplateMovie', {
+    connection: 'Fenster',
+    index: 0,1
+});
+```
+
+<!--
+### Send Realtime Frame
+```
+sendTo('twinkly.0', 'sendrealtimeframe', {
+    connection: 'Fenster',
+    frame: [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...]
+});
+```
+-->
+
+### Generate Full Frame in one color
+```
+sendTo('twinkly.0', 'generateFullFrame', {
+    connection: 'Fenster',
+    color : '#dd0055' // or {r: 221, g: 0, b: 85}
+}, response => {
+    // [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...]
+    ...
+});
+```
+
+### Generate Frames in colors
+```
+sendTo('twinkly.0', 'generateFullFrames', {
+    connection: 'Fenster',
+    colors : ['#dd0055', ...] // or [{r: 221, g: 0, b: 85}, ...]
+}, response => {
+    // [[{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...], ..]
+    ...
+});
+```
+
 ## Changelog
 <!--
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Upload Movies
+* Upload Generated Movies
+* --Send Realtime Frame
+* Generate Full Frame in one color (create own frames)
+
 ### 1.0.3 (2022-07-31)
 * Add Online-Status to object-view
 * Ignore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)

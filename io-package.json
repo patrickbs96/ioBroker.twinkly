@@ -128,6 +128,7 @@
     "readme": "https://github.com/patrickbs96/ioBroker.twinkly/blob/master/README.md",
     "loglevel": "info",
     "mode": "daemon",
+    "messagebox": true,
     "type": "lighting",
     "connectionType": "local",
     "dataSource": "poll",
