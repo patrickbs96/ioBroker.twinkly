@@ -89,6 +89,9 @@ sendTo('twinkly.0', 'uploadMovie', {
 ```
 
 ### Upload Template Movie
+Upload a predefined movie.
+- 0: Twinkle Blue-White
+- 1: Twinkle Christmas-Green-Red
 ```
 sendTo('twinkly.0', 'uploadTemplateMovie', {
     connection: 'Fenster',
@@ -106,9 +109,10 @@ sendTo('twinkly.0', 'sendrealtimeframe', {
 ```
 -->
 
-### Generate Full Frame in one color
+### Generate Frame in one color
+Returns a full frame in one color.
 ```
-sendTo('twinkly.0', 'generateFullFrame', {
+sendTo('twinkly.0', 'generateFrame', {
     connection: 'Fenster',
     color : '#dd0055' // or {r: 221, g: 0, b: 85}
 }, response => {
@@ -117,9 +121,10 @@ sendTo('twinkly.0', 'generateFullFrame', {
 });
 ```
 
-### Generate Frames in colors
+### Generate Multiple Frames in colors
+Returns multiple frames in different colors.
 ```
-sendTo('twinkly.0', 'generateFullFrames', {
+sendTo('twinkly.0', 'generateFrame', {
     connection: 'Fenster',
     colors : ['#dd0055', ...] // or [{r: 221, g: 0, b: 85}, ...]
 }, response => {

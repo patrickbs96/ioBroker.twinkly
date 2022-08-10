@@ -836,17 +836,14 @@ async function processMessage(obj) {
                 }
                 break;
             }
-            case 'generatefullframe': {
+            case 'generateframe': {
                 const connection = await getConnectionObj({checkPaused: false, ignoreConnected: true});
-                if (connection && typeof obj.message === 'object' && obj.message.color) {
-                    returnMsg = connection.twinkly.generateFullFrame(obj.message.color);
-                }
-                break;
-            }
-            case 'generatefullframes': {
-                const connection = await getConnectionObj({checkPaused: false, ignoreConnected: true});
-                if (connection && typeof obj.message === 'object' && obj.message.colors) {
-                    returnMsg = connection.twinkly.generateFullFrames(obj.message.colors);
+                if (connection && typeof obj.message === 'object') {
+                    if (obj.message.color) {
+                        returnMsg = connection.twinkly.generateFrame(obj.message.color);
+                    } else if (obj.message.colors) {
+                        returnMsg = connection.twinkly.generateFrames(obj.message.colors);
+                    }
                 }
                 break;
             }
@@ -1672,7 +1669,7 @@ async function uploadTemplateMovie(connectionName, index) {
     let frames;
     switch (index) {
         case 0:
-            frames = twinklyMovies.generateBlueWhiteTwinkle(connection.twinkly);
+            frames = twinklyMovies.generateTwinkleBlueWhite(connection.twinkly);
             break;
         case 1:
             frames = twinklyMovies.generateTwinkleChristmasGreenRed(connection.twinkly);
