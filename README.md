@@ -143,6 +143,7 @@ sendTo('twinkly.0', 'generateFrame', {
 * Upload Generated Movies
 * --Send Realtime Frame
 * Generate Full Frame in one color (create own frames)
+* Update deprecated states to fw 2.7.1
 
 ### 1.0.3 (2022-07-31)
 * Add Online-Status to object-view
