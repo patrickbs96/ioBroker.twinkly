@@ -1403,7 +1403,7 @@ async function saveJSONinState(connectionName, state, json, mapping) {
         await writeState(mapping.parent.id, mapping, json, true);
     }
 
-    if (mapping.logItem) {
+    if (mapping.logItem && !initializing) { // Don't handle Sentry Messages during startup) {
         await handleSentryMessage(connectionName, 'saveJSONinState',
             `LogItem:${connectionName}:${mapping.parent.id}`,
             `LogItem (${connectionName}.${mapping.parent.id}, ${JSON.stringify(json)})`,
@@ -1448,20 +1448,22 @@ async function checkTwinklyResponseNewSince(connectionName, name, response, mapp
         if (mapping.child && Object.keys(mapping.child).includes(key)) {
             if (typeof response[key] === 'object' && !Array.isArray(response[key])) {
                 let continueCheck = true;
-                if (typeof mapping.child[key].parent !== 'undefined')
+                if (typeof mapping.child[key].parent !== 'undefined') {
                     continueCheck = typeof mapping.child[key].parent.deprecated === 'undefined';
-                else
+                } else {
                     continueCheck = typeof mapping.child[key].deprecated === 'undefined';
+                }
 
-                if (continueCheck)
+                if (continueCheck) {
                     await checkTwinklyResponseNewSince(connectionName, name + '.' + key, response[key], mapping.child[key]);
-                else
+                } else if (!initializing) { // Don't handle Sentry Messages during startup
                     await handleSentryMessage(connectionName, 'checkTwinklyResponse',
                         `reintroduced:${connectionName}:${name}:${key}`,
                         `Item reintroduced! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`,
                         'warning');
+                }
             }
-        } else {
+        } else if (!initializing) { // Don't handle Sentry Messages during startup{
             await handleSentryMessage(connectionName, 'checkTwinklyResponse',
                 `newSince:${connectionName}:${name}:${key}`,
                 `New Item detected! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`,
@@ -1488,16 +1490,18 @@ async function checkTwinklyResponseDeprecated(connectionName, name, response, ma
             await checkTwinklyResponseDeprecated(connectionName, name + '.' + child, response[child], mapping.child[child]);
         } else {
             let canHandle = true;
-            if (mapping.child[child].parent !== undefined)
+            if (mapping.child[child].parent !== undefined) {
                 canHandle = await allowState(connectionName, mapping.child[child].parent, true, true);
-            else
+            } else {
                 canHandle = await allowState(connectionName, mapping.child[child], true, true);
+            }
 
-            if (canHandle)
+            if (canHandle && !initializing) { // Don't handle Sentry Messages during startup
                 await handleSentryMessage(connectionName, 'checkTwinklyResponse',
                     `deprecated:${connectionName}:${name}:${child}`,
                     `Item deprecated: ${connectionName}.${name}.${child}`,
                     'warning');
+            }
         }
     }
 }
