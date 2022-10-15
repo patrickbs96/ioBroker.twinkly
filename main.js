@@ -6,7 +6,6 @@ const apiObjectsMap = require('./lib/twinklyApi2Objects').apiObjectsMap;
 const twinklyMovies = require('./lib/twinklyMovies');
 const stateTools    = require('./lib/stateTools');
 const tools         = require('./lib/tools');
-const inspector     = require('inspector');
 
 // TODO: uploadMovie, LEDMovieConfig, sendRealtimeFrame, Summary, Mic, Music
 
@@ -881,10 +880,8 @@ async function syncConfig() {
     if (adapter.config.network)
         statesConfig.push(apiObjectsMap.networkStatus.parent.id);
     // Movies nur im Debugger anlegen
-    if (inspector.url() !== undefined) {
-        statesConfig.push(apiObjectsMap.ledMovies.id);
-        // statesConfig.push(apiObjectsMap.status.id);
-    }
+    statesConfig.push(apiObjectsMap.ledMovies.id);
+    // statesConfig.push(apiObjectsMap.status.id);
 
     try {
         adapter.log.debug('[syncConfig] config devices: '  + JSON.stringify(adapter.config.devices));
