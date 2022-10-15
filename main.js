@@ -1821,6 +1821,16 @@ async function handleSentryMessage(connectionName, functionName, key, message, l
     try {
         const connection = await getConnection(connectionName, {checkPaused: false, ignoreConnected: true});
         message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}`;
+
+        // Export more information if unsure of the reason for deprecated/newSince
+        if (key.includes('deprecated:')) {
+            if (key.includes(':mode:movie')) {
+                message += `, installedMovies=${Object.keys(connection.twinkly.ledMovies).length}`;
+            }
+            if (key.includes(':mode:color_config')) {
+                message += `, ledProfile=${JSON.stringify(connection.twinkly.details.led_profile)}`;
+            }
+        }
     } catch (e) {
         //
     }
