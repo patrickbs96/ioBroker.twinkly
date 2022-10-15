@@ -109,8 +109,9 @@ sendTo('twinkly.0', 'sendrealtimeframe', {
 ```
 -->
 
-### Generate Frame in one color
+### Generate Frame in a specific color
 Returns a full frame in one color.
+By sending the colors in the property `colors` you get an array of frames returned.
 ```
 sendTo('twinkly.0', 'generateFrame', {
     connection: 'Fenster',
@@ -119,11 +120,7 @@ sendTo('twinkly.0', 'generateFrame', {
     // [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...]
     ...
 });
-```
 
-### Generate Multiple Frames in colors
-Returns multiple frames in different colors.
-```
 sendTo('twinkly.0', 'generateFrame', {
     connection: 'Fenster',
     colors : ['#dd0055', ...] // or [{r: 221, g: 0, b: 85}, ...]
@@ -143,7 +140,8 @@ sendTo('twinkly.0', 'generateFrame', {
 * Upload Generated Movies
 * --Send Realtime Frame
 * Generate Full Frame in one color (create own frames)
-* Update deprecated states to fw 2.7.1
+* Update deprecated states to fw 2.6.6
+* Update twinkly API Issues from Sentry
 
 ### 1.0.3 (2022-07-31)
 * Add Online-Status to object-view
