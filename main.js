@@ -123,7 +123,7 @@ async function stateChange(id, state) {
         const pollFilter = [];
 
         // LED Brightness
-        if (!group && command === apiObjectsMap.ledBri.id) {
+        if (!group && command === apiObjectsMap.ledBri.parent.id) {
             pollFilter.push(command);
 
             if (state.val === -1) {
@@ -190,7 +190,6 @@ async function stateChange(id, state) {
                 adapter.log.error(`[${connectionName}.${group}.${command}] Could not change Mode! ${e}`);
             }
 
-
             // LED Config
         } else if (!group && command === apiObjectsMap.ledConfig.id) {
             pollFilter.push(command);
@@ -250,7 +249,7 @@ async function stateChange(id, state) {
 
                 } else if (state.val === twinkly.lightModes.value.movie && Object.keys(connection.twinkly.ledMovies).length === 0) {
                     adapter.log.warn(`[${connectionName}.${command}] Could not set Mode ${twinkly.lightModes.text.movie}! No movie available! Is a Effect/Playlist selected?`);
-                    pollFilter.push(apiObjectsMap.ledMovie.id);
+                    pollFilter.push(apiObjectsMap.ledMovie.parent.id);
 
                 } else if (state.val === twinkly.lightModes.value.playlist && Object.keys(connection.twinkly.playlist).length === 0) {
                     adapter.log.warn(`[${connectionName}.${command}] Could not set Mode ${twinkly.lightModes.text.playlist}! No movie available! Is a Playlist created?`);
@@ -282,14 +281,14 @@ async function stateChange(id, state) {
             }
 
             // LED Movie
-        } else if (!group && command === apiObjectsMap.ledMovie.id) {
+        } else if (!group && command === apiObjectsMap.ledMovie.parent.id) {
             pollFilter.push('');
             let changeMode = false;
 
             try {
                 if (!Object.keys(connection.twinkly.ledMovies).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
                     adapter.log.warn(`[${connectionName}.${command}] Movie ${state.val} does not exist!`);
-                    pollFilter.push(apiObjectsMap.ledMovie.id);
+                    pollFilter.push(apiObjectsMap.ledMovie.parent.id);
 
                 } else {
                     await connection.twinkly.setCurrentMovie(state.val);
@@ -449,6 +448,7 @@ async function poll(specificConnection = '', filter = []) {
     }
 
     adapter.log.debug(`[poll] Start polling...`);
+    adapter.log.silly(`[poll] specificConnection: ${specificConnection}, filter: ${filter}`);
     try {
         for (const connectionName of Object.keys(connections)) {
             // Falls gefüllt nur bestimmte Connection abfragen...
@@ -495,8 +495,8 @@ async function poll(specificConnection = '', filter = []) {
                 }
             }
 
-            if (canExecuteCommand(apiObjectsMap.ledBri.id)) {
-                adapter.log.debug(`[poll.${connectionName}] Polling ${apiObjectsMap.ledBri.id}`);
+            if (canExecuteCommand(apiObjectsMap.ledBri.parent.id)) {
+                adapter.log.debug(`[poll.${connectionName}] Polling ${apiObjectsMap.ledBri.parent.id}`);
 
                 try {
                     const response = await connection.twinkly.getBrightness();
@@ -510,7 +510,7 @@ async function poll(specificConnection = '', filter = []) {
                         }
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledBri.id} ${e}`);
+                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledBri.parent.id} ${e}`);
                 }
             }
 
@@ -564,7 +564,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response.effect, apiObjectsMap.ledEffect);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledEffect.id} ${e}`);
+                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledEffect.parent.id} ${e}`);
                 }
             }
 
@@ -880,8 +880,8 @@ async function syncConfig() {
     if (adapter.config.network)
         statesConfig.push(apiObjectsMap.networkStatus.parent.id);
     // Movies nur im Debugger anlegen
-    statesConfig.push(apiObjectsMap.ledMovies.id);
-    // statesConfig.push(apiObjectsMap.status.id);
+    // statesConfig.push(apiObjectsMap.ledMovies.id);
+    // // statesConfig.push(apiObjectsMap.status.id);
 
     try {
         adapter.log.debug('[syncConfig] config devices: '  + JSON.stringify(adapter.config.devices));
