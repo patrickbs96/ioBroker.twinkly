@@ -135,7 +135,7 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### 1.0.4 (2022-10-15)
+### **WORK IN PROGRESS**
 * Upload Movies
 * Upload Generated Movies
 * --Send Realtime Frame
