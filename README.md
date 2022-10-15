@@ -135,7 +135,7 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.4 (2022-10-15)
 * Upload Movies
 * Upload Generated Movies
 * --Send Realtime Frame
@@ -163,11 +163,6 @@ sendTo('twinkly.0', 'generateFrame', {
 
 ### 0.3.0 (2022-07-01)
 * Enable last used Mode on switch-on
-
-### 0.2.14 (2022-07-01)
-* Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
-* Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)
-* Add new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)
 
 ## License
 MIT License

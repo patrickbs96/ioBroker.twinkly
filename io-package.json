@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "news": {
+      "1.0.4": {
+        "en": "Upload Movies\nUpload Generated Movies\n--Send Realtime Frame\nGenerate Full Frame in one color (create own frames)\nUpdate deprecated states to fw 2.6.6\nUpdate twinkly API Issues from Sentry",
+        "de": "Filme hochladen\nGenerierte Filme hochladen\n-Senden Realtime Frame\nVollbild in einer Farbe generieren (eigene Frames erstellen)\nAktualisieren von deprecierten Zuständen auf fw 2.6.6\nUpdate twinkly API Probleme von Sentry",
+        "ru": "Загрузить фильмы\nЗагрузить Generated Фильмы\n-Отправить раму в режиме реального времени\nГенерировать полную раму в одном цвете (создание собственных кадров)\nОбновить устаревшие состояния на fw 2.6.6\nОбновить twinkly API проблемы от Sentry",
+        "pt": "Carregar filmes\nCarregar Filmes Gerados\n-Enviar quadro em tempo real\nGerar quadro completo em uma cor (criar quadros próprios)\nAtualização de estados deprecated para fw 2.6.6\nAtualizar questões de API twinkly da Sentry",
+        "nl": "Upload Movies\nUpload gegenereerde films\n- Stuur Realtime Frame\nGenereer Full Frame in een kleur (create eigen frames)\nVertaling:\nQuality over Quantity (QoQ) Releases Vertaling:",
+        "fr": "Télécharger des films\nTélécharger des films générés\n-Send Realtime Frame\nGénérer Full Frame en une couleur (créer des cadres propres)\nMettre à jour les états dépréciés au fw 2.6.6\nMettre à jour les problèmes d'API bikly de Sentry",
+        "it": "Caricare film\nCaricare Film Generati\n-Invia cornice in tempo reale\nGenerare Full Frame in un colore (creare cornici proprie)\nAggiornamento stati deprecati a fw 2.6.6\nAggiornare i problemi API twinkly da Sentry",
+        "es": "Subir películas\nSubir Películas Generadas\n-Enviar el marco en tiempo real\nGenerar el marco completo en un solo color (crear marcos propios)\nActualizar estados deprecatados a fw 2.6.6\nActualizar problemas de API gemelos de Sentry",
+        "pl": "Upload Movies (ang.)\nUpload Generated Movies (ang.)\nSend Realtime Frame (ang.)\nGenerate Full Frame in one color (create own frames) (ang.)\nUpdates imports to fw 2.6.6\nUlepszenie API z Sentry",
+        "uk": "Завантажити кіно\nЗавантажити Generated Movies\n-Закінчення в режимі реального часу\nГенерувати повну рамку в одному кольорі (створити власні кадри)\nUpdate deprecated стани для fw 2.6.6\nUpdate twinkly API Питання з Sentry",
+        "zh-cn": "载 录\n装载的摩维斯\n- 假日\n在一个色彩(形成自己的框架)中形成全面欺诈\n最新编排国家\n二. 来自Sentry的“新生动”问题"
+      },
       "1.0.3": {
         "en": "Add Online-Status to object-view\nIgnore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)",
         "de": "Online-Status zur Objektansicht hinzufügen\nIgnorieren .*uid-Werte, unbekannt, in denen sie freigeben (IOBROKER-TWINKLY-1Q)",
@@ -74,18 +87,6 @@
         "es": "Activar el último modo usado en conmutador",
         "pl": "Ostatni raz używany był w trybie przełącznikowym",
         "zh-cn": "最后一个用途的动向"
-      },
-      "0.2.14": {
-        "en": "Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)\nAdd new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)\nAdd new Value `details.maxMovies` from API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "de": "Neues Value network.station.monitor hinzufügen Aktiviert von API-Response (Sentry IOBROKER-TWINKLY-13)\nFügen Sie neues Wertnetzwerk.station.connected_bssid von API-Response (Sentry IOBROKER-TWINKLY-14) hinzu\nFügen Sie neue Wertedetails hinzu. maxMovies von API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "ru": "Добавить новую сеть Value.station.monitor Включено из API-Response (Sentry IOBROKER-TWINKLY-13)\nДобавить новую сеть Value.station.connected_bssid из API-Response (Sentry IOBROKER-TWINKLY-14)\nДобавить новые детали ценности. maxMovies от API-Response (Вход IOBROKER-TWINKLY-18)",
-        "pt": "Adicionar nova rede Valor.station.monitor Activado a partir de API-Response (Sentry IOBROKER-TWINKLY-13)\nAdicionar nova rede Value.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAdicione novos detalhes do Valor. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "nl": "Voeg nieuwe Value netwerk toe. API-Response (Sentry IOBROKER-TWINKEL-13)\nVoeg nieuwe Value netwerk toe. Verbinding met API-Response (Sentry IOBROKER-TWINKER-14)\nVoeg nieuwe Value details toe. Quality over Quantity (QoQ) Releases Vertaling:",
-        "fr": "Ajouter un nouveau réseau de valeur.station.monitor Enabled from API-Response (Sentry IOBROKER-TWINKLY-13)\nAjouter un nouveau réseau de valeur.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAjoutez de nouveaux détails de valeur. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "it": "Aggiungi nuovo Value network.station.monitor Abilitato da API-Response (Sentry IOBROKER-TWINKLY-13)\nAggiungi nuova rete di valore.station.connected_bssid da API-Response (Sentry IOBROKER-TWINKLY-14)\nAggiungi nuovi dettagli Valore. maxMovies da API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "es": "Añadir nuevo valor network.station.monitor Activado desde API-Response (Sentry IOBROKER-TWINKLY-13)\nAñada nueva red de valor.station.connected_bssid de API-Response (Sentry IOBROKER-TWINKLY-14)\nAñadir nuevos detalles de valor. maxMovies from API-Response (Sentry IOBROKER-TWINKLY-18)",
-        "pl": "Addd new Value network (ang.). Pochodzi z API-Response (Sentry IOBROKER-TWINKLY-13)\nAddd new Value network.station.connected_bssid from API-Response (Sentry IOBROKER-TWINKLY-14) (ang.)\nNowe szczegóły. maxMovies from the API-Response (Sentry IOBROKER-TWINKLY-18) (ang.)",
-        "zh-cn": "增加新的价值网络。 API-Response(Sentry IPOKER-TWINKLY-13)\n增加新的价值网络,连接了来自最惠国责任的补贴(Sentry IPOKER-TWINKLY-14)\n增加新的价值细节。 API-Response(Sentry IPOKER-TWINKLY-18)"
       }
     },
     "titleLang": {
