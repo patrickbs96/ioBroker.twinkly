@@ -1,4 +1,7 @@
 # Older changes
+## 0.3.0 (2022-07-01)
+* Enable last used Mode on switch-on
+
 ## 0.2.14 (2022-07-01)
 * Add new Value `network.station.monitorEnabled` from API-Response (Sentry IOBROKER-TWINKLY-13)
 * Add new Value `network.station.connected_bssid` from API-Response (Sentry IOBROKER-TWINKLY-14)

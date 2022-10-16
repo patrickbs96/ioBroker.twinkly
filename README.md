@@ -135,7 +135,7 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.5 (2022-10-16)
 * Fixed error when changing active movie (#173)
 
 ### 1.0.4 (2022-10-15)
@@ -163,9 +163,6 @@ sendTo('twinkly.0', 'generateFrame', {
 
 ### 0.3.1 (2022-07-02)
 * Update translations logic i18n
-
-### 0.3.0 (2022-07-01)
-* Enable last used Mode on switch-on
 
 ## License
 MIT License
