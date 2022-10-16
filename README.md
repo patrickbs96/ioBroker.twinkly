@@ -135,6 +135,9 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Fixed error when changing active movie (#173)
+
 ### 1.0.4 (2022-10-15)
 * Upload Movies
 * Upload Generated Movies
