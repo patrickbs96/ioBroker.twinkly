@@ -1370,7 +1370,7 @@ async function saveJSONinState(connectionName, state, json, mapping) {
 
         if (!stringify) {
             // Unix * 1000
-            if (!stringify && stateInfo.role === 'value.time')
+            if (stateInfo.role === 'value.time')
                 value = value * 1000;
             // number -> boolean
             if (stateInfo.type === 'boolean' && typeof value === 'number')
@@ -1447,7 +1447,7 @@ async function checkTwinklyResponseNewSince(connectionName, name, response, mapp
     for (const key of Object.keys(response)) {
         if (mapping.child && Object.keys(mapping.child).includes(key)) {
             if (typeof response[key] === 'object' && !Array.isArray(response[key])) {
-                let continueCheck = true;
+                let continueCheck;
                 if (typeof mapping.child[key].parent !== 'undefined') {
                     continueCheck = typeof mapping.child[key].parent.deprecated === 'undefined';
                 } else {
@@ -1489,7 +1489,7 @@ async function checkTwinklyResponseDeprecated(connectionName, name, response, ma
         if (Object.keys(response).includes(child)) {
             await checkTwinklyResponseDeprecated(connectionName, name + '.' + child, response[child], mapping.child[child]);
         } else {
-            let canHandle = true;
+            let canHandle;
             if (mapping.child[child].parent !== undefined) {
                 canHandle = await allowState(connectionName, mapping.child[child].parent, true, true);
             } else {
