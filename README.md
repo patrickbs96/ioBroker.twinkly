@@ -20,21 +20,21 @@ Adapter to communicate with the [Twinkly lights](https://www.twinkly.com/).
 
 ## Settings
 The following Settings are available:
-![admin.png](img/admin.png)
+![Admin Settings](img/admin.png)
 
 In the table you can add all the Twinkly lights you want to control. 
 
-| Column       | Description                                                    |
-|--------------|----------------------------------------------------------------|
-| `Enabled`    | Shall this connection be accessed                              |
-| `Name`       | Name of the connection in ioBroker                             |
-| `IP Address` | IP-Address to the Twinkly Lights                               |
-| `State On`   | Which `ledMode` should be activated when state `on` is enabled |
+| Column       | Description                                                                                                     |
+|--------------|-----------------------------------------------------------------------------------------------------------------|
+| `Enabled`    | Shall this connection be accessed                                                                               |
+| `Name`       | Name of the connection in ioBroker                                                                              |
+| `IP Address` | IP-Address to the Twinkly Lights                                                                                |
+| `Mode On`    | Which `ledMode` should be activated when state `on` is enabled.<br/>Color, Effect, Movie, Playlist or last Mode |
 
 The following additionals States are created per device when checked:
 * Device Info
-* Network Status
 * MQTT
+* Network Status
 
 
 The following States are available:
