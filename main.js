@@ -503,7 +503,7 @@ async function poll(specificConnection = '', filter = []) {
                     if (response.code === twinkly.HTTPCodes.values.ok) {
                         await checkTwinklyResponse(connectionName, response.bri, apiObjectsMap.ledBri);
                         try {
-                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledBri.child.bri.id,
+                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledBri.child.value.id,
                                 response.bri.mode !== 'disabled' ? response.bri.value : -1, true);
                         } catch (e) {
                             //
@@ -643,7 +643,7 @@ async function poll(specificConnection = '', filter = []) {
                     if (response.code === twinkly.HTTPCodes.values.ok) {
                         await checkTwinklyResponse(connectionName, response.sat, apiObjectsMap.ledSat);
                         try {
-                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledSat.child.sat.id,
+                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledSat.child.value.id,
                                 response.sat.mode !== 'disabled' ? response.sat.value : -1, true);
                         } catch (e) {
                             //
@@ -1693,36 +1693,36 @@ async function loadTwinklyDataFromObjects(connectionName) {
 
     try {
         // Does Connection exist?
-        if (await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.connected.id)) {
-            // paused
-            const paused = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.paused.id);
-            if (paused)
-                connection.paused = paused.val;
+        if (!await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.connected.id)) return;
 
-            // lastModeOn
-            const obj = await adapter.getObjectAsync(connectionName + '.' + apiObjectsMap.ledMode.child.mode.id);
-            if (obj) {
-                const lastModeOn = obj.native['lastModeOn'];
-                if (typeof lastModeOn === 'string')
-                    connection.lastModeOn = lastModeOn;
-            }
+        // paused
+        const paused = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.paused.id);
+        if (paused)
+            connection.paused = paused.val;
 
-            // firmware
-            const firmware = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.firmware.child.version.id);
-            if (firmware) {
-                connection.twinkly.firmware = firmware.val;
-            }
-
-            // details
-            const details = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.details.parent.id);
-            if (details) {
-                const detailsJson = JSON.parse(details.val);
-                if (detailsJson)
-                    tools.cloneObject(detailsJson, connection.twinkly.details);
-            }
-
-            connection.dataLoadedOnInit = true;
+        // lastModeOn
+        const obj = await adapter.getObjectAsync(connectionName + '.' + apiObjectsMap.ledMode.child.mode.id);
+        if (obj) {
+            const lastModeOn = obj.native['lastModeOn'];
+            if (typeof lastModeOn === 'string')
+                connection.lastModeOn = lastModeOn;
         }
+
+        // firmware
+        const firmware = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.firmware.child.version.id);
+        if (firmware) {
+            connection.twinkly.firmware = firmware.val;
+        }
+
+        // details
+        const details = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.details.parent.id);
+        if (details) {
+            const detailsJson = JSON.parse(details.val);
+            if (detailsJson)
+                tools.cloneObject(detailsJson, connection.twinkly.details);
+        }
+
+        connection.dataLoadedOnInit = true;
     } catch (e) {
         adapter.log.error(`[loadTwinklyDataFromObjects.${connectionName}] Cannot load data! ${e.message}`);
     }
@@ -1774,7 +1774,7 @@ async function getConnection(connectionName, options = {}) {
         throw new Error(`${connectionName} is paused!`);
     }
     if (options.checkConnected) {
-        await checkConnection(connectionName, (typeof options.writeConnectedState === 'undefined' || options.writeConnectedState));
+        await checkConnection(connectionName, options.writeConnectedState);
     }
     if (!options.ignoreConnected && !connection.connected) {
         throw new Error(`${connectionName} not connected!`);

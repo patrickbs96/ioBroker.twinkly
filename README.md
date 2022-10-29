@@ -133,6 +133,9 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Fixed polling (ledBri, ledSat)
+
 ### 1.0.5 (2022-10-16)
 * Fixed error when changing active movie (#173)
 
