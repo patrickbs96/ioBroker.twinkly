@@ -958,6 +958,9 @@ async function syncConfig() {
         adapter.log.debug('[syncConfig] Get existing objects');
         const _objects = await adapter.getAdapterObjectsAsync();
 
+        adapter.log.debug('[syncConfig] Remove instance objects from list');
+        removeInstanceObjects(_objects);
+
         adapter.log.debug('[syncConfig] Prepare tasks of objects update');
         const tasks = prepareTasks(preparedObjects, _objects);
 
@@ -1135,9 +1138,30 @@ async function prepareObjectsByConfig() {
 }
 
 /**
+ * @param {Record<string, AdapterScopedObject>} objects
+ */
+function removeInstanceObjects(objects) {
+    const instanceObjects = [];
+
+    // Identify instance objects
+    if (typeof adapter.ioPack.instanceObjects === 'object') {
+        adapter.ioPack.instanceObjects.forEach(obj => {
+            instanceObjects.push(adapter.namespace + '.' + obj._id);
+        });
+    }
+
+    // Remove instance objects
+    if (instanceObjects.length > 0) {
+        Object.keys(objects)
+            .filter (id => instanceObjects.includes(id))
+            .forEach(id => delete objects[id]);
+    }
+}
+
+/**
  * prepareTasks
  * @param preparedObjects
- * @param old_objects
+ * @param {Record<string, AdapterScopedObject>} old_objects
  * @returns {{id: string, type: string, data?: {common: {}, native: {}}}[]}
  */
 function prepareTasks(preparedObjects, old_objects) {
@@ -1256,15 +1280,15 @@ function prepareTasks(preparedObjects, old_objects) {
     }
 
     // eslint-disable-next-line no-unused-vars
-    const oldEntries       = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
+    const oldEntries = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
     // eslint-disable-next-line no-unused-vars
     const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device') .map(([id]) => ({type: 'delete_device', id: id}));
     // eslint-disable-next-line no-unused-vars
     const channelsToDelete = oldEntries.filter(([id, object]) => object.type === 'channel').map(([id]) => ({type: 'delete_channel', id: id}));
     // eslint-disable-next-line no-unused-vars
-    const stateToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id]) => ({type: 'delete_state', id: id}));
+    const statesToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id]) => ({type: 'delete_state', id: id}));
 
-    return stateToDelete.concat(devicesToUpdate, devicesToDelete, channelsToUpdate, channelsToDelete, statesToUpdate);
+    return statesToDelete.concat(devicesToUpdate, devicesToDelete, channelsToUpdate, channelsToDelete, statesToUpdate);
 }
 
 /**
