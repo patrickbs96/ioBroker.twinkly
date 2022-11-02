@@ -447,6 +447,8 @@ async function poll(specificConnection = '', filter = []) {
         return statesConfig.includes(command) && (filter.length === 0 || filter.includes(command));
     }
 
+    let deviceConnected = false;
+
     adapter.log.debug(`[poll] Start polling...`);
     adapter.log.silly(`[poll] specificConnection: ${specificConnection}, filter: ${filter}`);
     try {
@@ -461,6 +463,8 @@ async function poll(specificConnection = '', filter = []) {
                 adapter.log.debug(`[poll] ${e.message}`);
                 continue;
             }
+
+            deviceConnected = true;
 
             // Only load at startup
             if (initializing) {
@@ -728,11 +732,18 @@ async function poll(specificConnection = '', filter = []) {
 
     adapter.log.debug(`[poll] Finished polling...`);
 
+    // Set Connection Status, at least one connection is active
+    if (specificConnection !== '') {
+        adapter.setState('info.connection', deviceConnected, true);
+    }
+
     startInterval(adapter.config.interval * 1000);
 }
 
 async function main() {
     adapter.subscribeStates('*');
+
+    adapter.setState('info.connection', false, true);
 
     // Set Config Default Values
     adapter.config.interval = adapter.config.interval < 15 ? 15 : adapter.config.interval;
