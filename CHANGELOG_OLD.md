@@ -1,4 +1,7 @@
 # Older changes
+## 0.3.1 (2022-07-02)
+* Update translations logic i18n
+
 ## 0.3.0 (2022-07-01)
 * Enable last used Mode on switch-on
 

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "news": {
+      "1.0.6": {
+        "en": "Fixed polling (ledBri, ledSat)\nAdded Connection-Info",
+        "de": "Feste Bestäubung (ledBri, ledSat)\nVerbindungs-Info hinzugefügt",
+        "ru": "Фиксированный опрос (ledBri, ledSat)\nДобавлено Connection-Info",
+        "pt": "Pesquisa fixa (ledBri, ledSat)\nAdicionado Conexão-Info",
+        "nl": "Gerepareerde polling (leBri)\nVertaling:",
+        "fr": "Polling fixe (ledBri, ledSat)\nAjouté Connection-Info",
+        "it": "Inquinamento fisso (ledBri, ledSat)\nAggiunto Connessione-Info",
+        "es": "Votación fija (ledBri, ledSat)\nConexión adicional-info",
+        "pl": "BadSat (ang.)\nAdded Connection-Info",
+        "uk": "Виправлено опитування (ledBri, ledSat)\nДодано підключення-Info",
+        "zh-cn": "混合投票(由领先的Bri)\nA. 增加免疫接种-信息"
+      },
       "1.0.5": {
         "en": "Fixed error when changing active movie (#173)",
         "de": "Fehler beim Wechsel des aktiven Films behoben (#173)",
@@ -76,18 +89,6 @@
         "es": "Cambiar la lógica refrescante después del cambio de estado\nAñadido lógica depcrecada para eliminar estados cuando ya no se llenan con datos de api\nCompruebe los valores nuevos y deprecatados de la respuesta api para actualizar la información del estado",
         "pl": "Zmiana odświeżona po State-Chang\nTechnologia wydzielania stanów, gdy nie wypełniają już danych z api\nCheck new and curse values from api response to aktualizacji informacji stanowej",
         "zh-cn": "A. 国家-Changh逻辑的改变\n在不再装有从配件中填写数据时,添加包装的排气。\n更新国家资料的管道答复中录取新的和预测的数值"
-      },
-      "0.3.1": {
-        "en": "Update translations logic i18n",
-        "de": "Übersetzungslogik i18n aktualisieren",
-        "ru": "Обновление переводов логика i18n",
-        "pt": "Actualizar traduções lógica i18n",
-        "nl": "Vertaling:",
-        "fr": "Mettre à jour les traductions logique i18n",
-        "it": "Aggiornare le traduzioni logica i18n",
-        "es": "Traducción actualizada lógica i18n",
-        "pl": "Przekład logiczny i18n",
-        "zh-cn": "最新译文"
       }
     },
     "titleLang": {
