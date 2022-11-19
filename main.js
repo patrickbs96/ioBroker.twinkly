@@ -155,7 +155,7 @@ async function stateChange(id, state) {
                     });
 
                     await connection.twinkly.setLEDColorHSV(json.hue, json.saturation, json.value);
-                    changeMode = true;
+                    changeMode = connection.twinkly.ledMode !== twinkly.lightModes.value.color;
 
                 } else if ([apiObjectsMap.ledColor.child.red.id, apiObjectsMap.ledColor.child.green.id, apiObjectsMap.ledColor.child.blue.id, apiObjectsMap.ledColor.child.white.id, apiObjectsMap.ledColor.child.hex.id].includes(command)) {
                     /** @type {{red: Number, green: Number, blue: Number, white: Number}} */
@@ -175,7 +175,7 @@ async function stateChange(id, state) {
                     }
 
                     await connection.twinkly.setLEDColorRGBW(json.red, json.green, json.blue, json.white);
-                    changeMode = true;
+                    changeMode = connection.twinkly.ledMode !== twinkly.lightModes.value.color;
                 }
             } catch (e) {
                 adapter.log.error(`[${connectionName}.${group}.${command}] Could not set ${state.val}! ${e}`);
@@ -210,7 +210,7 @@ async function stateChange(id, state) {
                     adapter.log.warn(`[${connectionName}.${command}] Effect ${state.val} does not exist!`);
                 } else {
                     await connection.twinkly.setCurrentLEDEffect(state.val);
-                    changeMode = true;
+                    changeMode = connection.twinkly.ledMode !== twinkly.lightModes.value.effect;
                 }
             } catch (e) {
                 adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
@@ -290,7 +290,7 @@ async function stateChange(id, state) {
                     adapter.log.warn(`[${connectionName}.${command}] Movie ${state.val} does not exist!`);
                 } else {
                     await connection.twinkly.setCurrentMovie(state.val);
-                    changeMode = true;
+                    changeMode = connection.twinkly.ledMode !== twinkly.lightModes.value.movie;
                 }
             } catch (e) {
                 adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
@@ -315,7 +315,7 @@ async function stateChange(id, state) {
                     adapter.log.warn(`[${connectionName}.${command}] Playlist ${state.val} does not exist!`);
                 } else {
                     await connection.twinkly.setCurrentPlaylistEntry(state.val);
-                    changeMode = true;
+                    changeMode = connection.twinkly.ledMode !== twinkly.lightModes.value.playlist;
                 }
             } catch (e) {
                 adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);

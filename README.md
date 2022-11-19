@@ -133,6 +133,10 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Fixed deprecated messages from Sentry with api-validations
+* Automatic switch mode had an error with playlists. Playlist item could never be selected.
+
 ### 1.0.6 (2022-11-19)
 * Fixed polling (ledBri, ledSat)
 * Added Connection-Info
