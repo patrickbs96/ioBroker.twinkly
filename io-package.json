@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "news": {
+      "1.0.7": {
+        "en": "Fixed deprecated messages from Sentry with api-validations\nAutomatic switch mode had an error with playlists. Playlist item could never be selected.",
+        "de": "Behobene deprecated Nachrichten von Sentry mit api-validierungen\nDer automatische Schaltermodus hatte einen Fehler mit Wiedergabelisten. Playlist Artikel konnte nie ausgewählt werden.",
+        "ru": "Фиксированные обесцененные сообщения от Сентри с апи-валидациями\nАвтоматический режим переключателя имел ошибку с плейлистами. Пункт плейлиста никогда не может быть выбран.",
+        "pt": "Corrigido mensagens deprecated de Sentry com api-validations\nO modo de interruptor automático teve um erro com listas de reprodução. item da lista de reprodução nunca poderia ser selecionado.",
+        "nl": "Vertaling:\nAutomatische schakelaar had een fout met speellijsten. Playlist item kan nooit geselecteerd worden.",
+        "fr": "Messages dépréciés fixes de Sentry avec api-validations\nLe mode de commutation automatique avait une erreur avec des playlists. L'élément Playlist ne pourrait jamais être sélectionné.",
+        "it": "Fisso messaggi deprecati da Sentry con api-validations\nLa modalità di commutazione automatica ha avuto un errore con le playlist. La voce della lista di gioco non potrebbe mai essere selezionata.",
+        "es": "Mensajes deprecatados fijos de Sentry con api-validaciones\nEl modo de conmutación automático tuvo un error con listas de reproducción. El artículo de la lista de reproducción nunca podría ser seleccionado.",
+        "pl": "Zabronione wiadomości od Sentry z api-validation\nTryb automatycznego przełącznika miał błąd z listami odtwarzaczymi. Nie można było wybierać żadnego elementu.",
+        "uk": "Фіксовані депресовані повідомлення від Sentry з api-validations\nАвтоматичний режим вимикача мав помилку зі списками відтворення. Плейлистовий елемент не можна вибрати.",
+        "zh-cn": "Sentry有固定的电传器\n自动转换模式有误导者。 不能选择项目。."
+      },
       "1.0.6": {
         "en": "Fixed polling (ledBri, ledSat)\nAdded Connection-Info",
         "de": "Feste Bestäubung (ledBri, ledSat)\nVerbindungs-Info hinzugefügt",
@@ -77,18 +90,6 @@
         "es": "Eliminar los valores deprecatados del modo",
         "pl": "Remove niewłaściwe wartości od trybu",
         "zh-cn": "取消按模式推测的价值"
-      },
-      "1.0.0": {
-        "en": "Change refresh logic after State-Change\nAdded depcrecated logic to remove states when no longer filled with data from api\nCheck new and deprecated values from api response to update state information",
-        "de": "Ändern Sie die Refresh-Logik nach State-Change\nHinzugefügt depcrecated Logik, um Zustände zu entfernen, wenn nicht mehr mit Daten von api gefüllt\nÜberprüfen Sie neue und deprecierte Werte von api Antwort auf die Aktualisierung von Zustandsinformationen",
-        "ru": "Изменить обновленную логику после State-Change\nДобавлена depcrecated логика для удаления штатов, когда больше не заполнены данными из api\nПроверьте новые и определённые значения от api ответа до обновления государственной информации",
-        "pt": "Alterar a lógica de atualização após a mudança de estado\nAdicionado lógica depcrecated para remover estados quando não mais preenchido com dados de api\nVerificar valores novos e depreciados da resposta api para atualizar as informações do estado",
-        "nl": "Verfrissende logica na State-Chang\nVertaling:\nControleer nieuwe en gedepreceerde waarden van api-reactie tot update informatie",
-        "fr": "Changer de logique après State-Change\nAjout d'une logique depcrecated pour supprimer les états lorsqu'ils ne sont plus remplis de données de api\nVérifiez les valeurs nouvelles et obsolètes de la réponse api à la mise à jour des informations de l'état",
-        "it": "Cambia la logica di aggiornamento dopo State-Change\nAggiunto logica depcrecated per rimuovere gli stati quando non più riempito di dati da api\nControllare i valori nuovi e deprecati dalla risposta api per aggiornare le informazioni di stato",
-        "es": "Cambiar la lógica refrescante después del cambio de estado\nAñadido lógica depcrecada para eliminar estados cuando ya no se llenan con datos de api\nCompruebe los valores nuevos y deprecatados de la respuesta api para actualizar la información del estado",
-        "pl": "Zmiana odświeżona po State-Chang\nTechnologia wydzielania stanów, gdy nie wypełniają już danych z api\nCheck new and curse values from api response to aktualizacji informacji stanowej",
-        "zh-cn": "A. 国家-Changh逻辑的改变\n在不再装有从配件中填写数据时,添加包装的排气。\n更新国家资料的管道答复中录取新的和预测的数值"
       }
     },
     "titleLang": {

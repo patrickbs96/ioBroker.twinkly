@@ -133,7 +133,7 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.7 (2022-11-19)
 * Fixed deprecated messages from Sentry with api-validations
 * Automatic switch mode had an error with playlists. Playlist item could never be selected.
 
@@ -161,11 +161,6 @@ sendTo('twinkly.0', 'generateFrame', {
 
 ### 1.0.1 (2022-07-05)
 * Remove deprecated values from mode
-
-### 1.0.0 (2022-07-03)
-* Change refresh logic after State-Change
-* Added depcrecated logic to remove states when no longer filled with data from api
-* Check new and deprecated values from api response to update state information
 
 ## License
 MIT License
