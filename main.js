@@ -733,7 +733,7 @@ async function poll(specificConnection = '', filter = []) {
     adapter.log.debug(`[poll] Finished polling...`);
 
     // Set Connection Status, at least one connection is active
-    if (specificConnection !== '') {
+    if (specificConnection === '') {
         adapter.setState('info.connection', deviceConnected, true);
     }
 
@@ -743,7 +743,11 @@ async function poll(specificConnection = '', filter = []) {
 async function main() {
     adapter.subscribeStates('*');
 
-    adapter.setState('info.connection', false, true);
+    adapter.getState('info.connection', (err, state) => {
+        if (state) {
+            adapter.setState('info.connection', false, true);
+        }
+    });
 
     // Set Config Default Values
     adapter.config.interval = adapter.config.interval < 15 ? 15 : adapter.config.interval;
