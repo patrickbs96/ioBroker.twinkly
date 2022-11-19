@@ -282,14 +282,12 @@ async function stateChange(id, state) {
 
             // LED Movie
         } else if (!group && command === apiObjectsMap.ledMovie.parent.id) {
-            pollFilter.push('');
+            pollFilter.push(command);
             let changeMode = false;
 
             try {
                 if (!Object.keys(connection.twinkly.ledMovies).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
                     adapter.log.warn(`[${connectionName}.${command}] Movie ${state.val} does not exist!`);
-                    pollFilter.push(apiObjectsMap.ledMovie.parent.id);
-
                 } else {
                     await connection.twinkly.setCurrentMovie(state.val);
                     changeMode = true;
@@ -309,13 +307,12 @@ async function stateChange(id, state) {
 
             // LED Playlist
         } else if (!group && command === apiObjectsMap.ledPlaylist.parent.id) {
-            pollFilter.push('');
+            pollFilter.push(command);
             let changeMode = false;
 
             try {
                 if (!Object.keys(connection.twinkly.playlist).includes(typeof state.val === 'number' ? String(state.val) : state.val)) {
                     adapter.log.warn(`[${connectionName}.${command}] Playlist ${state.val} does not exist!`);
-                    pollFilter.push(apiObjectsMap.ledPlaylist.parent.id);
                 } else {
                     await connection.twinkly.setCurrentPlaylistEntry(state.val);
                     changeMode = true;
@@ -1415,7 +1412,7 @@ async function saveJSONinState(connectionName, state, json, mapping) {
     /**
      *
      * @param {String} id
-     * @param {{hide?: Boolean; filter?: {name: String, val: any}; role?: String; type?: String}} stateInfo
+     * @param {{hide?: Boolean; filter?: {detail?: {name: String, val: any}, mode?: string}, role?: string, type?: string}} stateInfo
      * @param {any} value
      * @param {Boolean} stringify
      */
@@ -1454,7 +1451,7 @@ async function saveJSONinState(connectionName, state, json, mapping) {
             }
         }
     } else {
-        await writeState(mapping.parent.id, mapping, json, true);
+        await writeState(mapping.parent.id, mapping.parent, json, true);
     }
 
     if (mapping.logItem && !initializing) { // Don't handle Sentry Messages during startup) {
@@ -1502,10 +1499,10 @@ async function checkTwinklyResponseNewSince(connectionName, name, response, mapp
         if (mapping.child && Object.keys(mapping.child).includes(key)) {
             if (typeof response[key] === 'object' && !Array.isArray(response[key])) {
                 let continueCheck;
-                if (typeof mapping.child[key].parent !== 'undefined') {
-                    continueCheck = typeof mapping.child[key].parent.deprecated === 'undefined';
+                if (mapping.child[key].parent !== undefined) {
+                    continueCheck = await allowState(connectionName, mapping.child[key].parent, {hide: true, ignoreDeprecated: true, ignoreNewSince: true, filter: false, newSince: false, family: false});
                 } else {
-                    continueCheck = typeof mapping.child[key].deprecated === 'undefined';
+                    continueCheck = await allowState(connectionName, mapping.child[key], {hide: true, ignoreDeprecated: true, ignoreNewSince: true, filter: false, newSince: false, family: false});
                 }
 
                 if (continueCheck) {
@@ -1545,9 +1542,9 @@ async function checkTwinklyResponseDeprecated(connectionName, name, response, ma
         } else {
             let canHandle;
             if (mapping.child[child].parent !== undefined) {
-                canHandle = await allowState(connectionName, mapping.child[child].parent, true, true);
+                canHandle = await allowState(connectionName, mapping.child[child].parent, {hide: true, ignoreDeprecated: true});
             } else {
-                canHandle = await allowState(connectionName, mapping.child[child], true, true);
+                canHandle = await allowState(connectionName, mapping.child[child], {hide: true, ignoreDeprecated: true});
             }
 
             if (canHandle && !initializing) { // Don't handle Sentry Messages during startup
@@ -1590,11 +1587,10 @@ async function getJSONStates(connectionName, stateId, json, mapping, lastState) 
 
 /**
  * @param {String} connectionName
- * @param {{hide: Boolean, ignore?: Boolean, filter?: {name: String, val: any}, deprecated?: String, newSince?: String, family?: String}} stateInfo
- * @param {Boolean} ignoreHide
- * @param {Boolean} checkIgnore
+ * @param {{hide: Boolean, ignore?: {deprecated?: boolean, newSince?: boolean}, filter?: {detail?: {name: String, val: any}, mode?: string}, deprecated?: String, newSince?: String, family?: String}} stateInfo
+ * @param {{hide?: boolean, ignoreDeprecated?: boolean, ignoreNewSince?: boolean, filter?: boolean, deprecated?: boolean, newSince?: boolean, family?: boolean}} checks
  */
-async function allowState(connectionName, stateInfo, ignoreHide = false, checkIgnore = false) {
+async function allowState(connectionName, stateInfo, checks = {}) {
     let connection;
     try {
         connection = await getConnection(connectionName, {checkPaused: false, ignoreConnected: true});
@@ -1603,16 +1599,30 @@ async function allowState(connectionName, stateInfo, ignoreHide = false, checkIg
         return false;
     }
 
-    let result = ignoreHide || !stateInfo.hide;
-    if (result && checkIgnore)
-        result = !stateInfo.ignore;
-    if (result && stateInfo.filter !== undefined)
-        result = await connection.twinkly.checkDetailInfo(stateInfo.filter);
-    if (result && stateInfo.deprecated !== undefined)
-        result = !tools.versionGreaterEqual(stateInfo.deprecated, connection.twinkly.firmware);
-    if (result && stateInfo.newSince !== undefined)
-        result = tools.versionGreaterEqual(stateInfo.newSince, connection.twinkly.firmware);
-    if (result && stateInfo.family !== undefined)
+    checks.hide = typeof checks.hide !== 'undefined' ? checks.hide : false;
+    checks.ignoreDeprecated = typeof checks.ignoreDeprecated !== 'undefined' ? checks.ignoreDeprecated : false;
+    checks.ignoreNewSince = typeof checks.ignoreNewSince !== 'undefined' ? checks.ignoreNewSince : false;
+    checks.filter = typeof checks.filter !== 'undefined' ? checks.filter : true;
+    checks.deprecated = typeof checks.deprecated !== 'undefined' ? checks.deprecated : true;
+    checks.newSince = typeof checks.newSince !== 'undefined' ? checks.newSince : true;
+    checks.family = typeof checks.family !== 'undefined' ? checks.family : true;
+
+    let result = checks.hide || !stateInfo.hide;
+    if (result && checks.ignoreDeprecated && stateInfo.ignore)
+        result = !stateInfo.ignore.deprecated;
+    if (result && checks.ignoreNewSince && stateInfo.ignore)
+        result = !stateInfo.ignore.newSince;
+    if (result && checks.filter && stateInfo.filter) {
+        if (stateInfo.filter.detail)
+            result = await connection.twinkly.checkDetailInfo(stateInfo.filter.detail);
+        if (result && stateInfo.filter.mode)
+            result = connection.twinkly.ledMode === stateInfo.filter.mode;
+    }
+    if (result && checks.deprecated && stateInfo.deprecated)
+        result = tools.versionGreaterEqual(connection.twinkly.firmware, stateInfo.deprecated);
+    if (result && checks.newSince && stateInfo.newSince)
+        result = tools.versionLower(connection.twinkly.firmware, stateInfo.newSince);
+    if (result && checks.family && stateInfo.family)
         result = stateInfo.family === connection.twinkly.details.fw_family;
 
     return result;
@@ -1878,7 +1888,7 @@ async function handleSentryMessage(connectionName, functionName, key, message, l
 
     try {
         const connection = await getConnection(connectionName, {checkPaused: false, ignoreConnected: true});
-        message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}`;
+        message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}, model=${connection.twinkly.ledMode}`;
 
         // Export more information if unsure of the reason for deprecated/newSince
         if (key.includes('deprecated:')) {
