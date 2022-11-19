@@ -958,9 +958,6 @@ async function syncConfig() {
         adapter.log.debug('[syncConfig] Get existing objects');
         const _objects = await adapter.getAdapterObjectsAsync();
 
-        adapter.log.debug('[syncConfig] Remove instance objects from list');
-        removeInstanceObjects(_objects);
-
         adapter.log.debug('[syncConfig] Prepare tasks of objects update');
         const tasks = prepareTasks(preparedObjects, _objects);
 
@@ -978,7 +975,9 @@ async function syncConfig() {
 
 /**
  * Konfiguration aufbereiten um die States/Objekte anzulegen
- * @returns {Promise<{}>}
+ * @returns {Promise<{device: {id: {device: String}, common: {}, native: {}},
+ * states: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[],
+ * channels: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[]}[]>}
  */
 async function prepareObjectsByConfig() {
     /**
@@ -1092,7 +1091,46 @@ async function prepareObjectsByConfig() {
         }
     }
 
+    /**
+     * @type {{device?: {id: {device: String}, common: {}, native: {}},
+     * states: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[],
+     * channels: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[]}[]}
+     */
     const result = [];
+
+    // Get Instance Objects
+    const instanceConfig = {channels: [], states: []};
+    if (typeof adapter.ioPack.instanceObjects === 'object') {
+        adapter.ioPack.instanceObjects.forEach(obj => {
+            /** @type {{id: {device?: String, channel?: String, state?: String}, common: {}, native: {}, exclude: []}} */
+            const instanceObject = {
+                id: {},
+                common: {},
+                native: {},
+                exclude: []
+            };
+
+            tools.cloneObject(obj.common, instanceObject.common);
+            tools.cloneObject(obj.native, instanceObject.native);
+
+            if (obj.type === 'channel') {
+                instanceObject.id.channel = obj._id;
+                instanceConfig.channels.push(instanceObject);
+            } else if (obj.type === 'state') {
+                const parts = obj._id.split('.');
+
+                instanceObject.id.channel = parts.slice(0, -1).join('.');
+                instanceObject.id.state = parts[parts.length - 1];
+                instanceConfig.states.push(instanceObject);
+            }
+        });
+    }
+
+    if (instanceConfig.channels.length > 0 || instanceConfig.states.length > 0) {
+        result.push(instanceConfig);
+    }
+
+    // Add Connections Objects
     for (const connectionName of Object.keys(connections)) {
         let connection;
         try {
@@ -1138,29 +1176,10 @@ async function prepareObjectsByConfig() {
 }
 
 /**
- * @param {Record<string, AdapterScopedObject>} objects
- */
-function removeInstanceObjects(objects) {
-    const instanceObjects = [];
-
-    // Identify instance objects
-    if (typeof adapter.ioPack.instanceObjects === 'object') {
-        adapter.ioPack.instanceObjects.forEach(obj => {
-            instanceObjects.push(adapter.namespace + '.' + obj._id);
-        });
-    }
-
-    // Remove instance objects
-    if (instanceObjects.length > 0) {
-        Object.keys(objects)
-            .filter (id => instanceObjects.includes(id))
-            .forEach(id => delete objects[id]);
-    }
-}
-
-/**
  * prepareTasks
- * @param preparedObjects
+ * @param {{device: {id: {device: String}, common: {}, native: {}},
+ * states: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[],
+ * channels: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[]}[]} preparedObjects
  * @param {Record<string, AdapterScopedObject>} old_objects
  * @returns {{id: string, type: string, data?: {common: {}, native: {}}}[]}
  */
@@ -1204,29 +1223,17 @@ function prepareTasks(preparedObjects, old_objects) {
             }
 
             // Channels prüfen
-            if (group.channels) {
-                for (const channel of group.channels) {
-                    const fullID = stateTools.buildId(channel.id, adapter);
-                    const oldObj = old_objects[fullID];
+            for (const channel of group.channels) {
+                const fullID = stateTools.buildId(channel.id, adapter);
+                const oldObj = old_objects[fullID];
 
-                    // Native ergänzen falls nicht vorhanden
-                    if (!channel.native) channel.native = {};
+                // Native ergänzen falls nicht vorhanden
+                if (!channel.native) channel.native = {};
 
-                    if (oldObj && oldObj.type === 'channel') {
-                        if (!tools.areStatesEqual(oldObj, channel, [])) {
-                            channelsToUpdate.push({
-                                type : 'update_channel',
-                                id   : channel.id,
-                                data : {
-                                    common : channel.common,
-                                    native : channel.native
-                                }
-                            });
-                        }
-                        old_objects[fullID] = undefined;
-                    } else {
+                if (oldObj && oldObj.type === 'channel') {
+                    if (!tools.areStatesEqual(oldObj, channel, [])) {
                         channelsToUpdate.push({
-                            type : 'create_channel',
+                            type : 'update_channel',
                             id   : channel.id,
                             data : {
                                 common : channel.common,
@@ -1234,37 +1241,35 @@ function prepareTasks(preparedObjects, old_objects) {
                             }
                         });
                     }
+                    old_objects[fullID] = undefined;
+                } else {
+                    channelsToUpdate.push({
+                        type : 'create_channel',
+                        id   : channel.id,
+                        data : {
+                            common : channel.common,
+                            native : channel.native
+                        }
+                    });
                 }
             }
 
             // States prüfen
-            if (group.states) {
-                for (const state of group.states) {
-                    const fullID = stateTools.buildId(state.id, adapter);
-                    const oldObj = old_objects[fullID];
+            for (const state of group.states) {
+                const fullID = stateTools.buildId(state.id, adapter);
+                const oldObj = old_objects[fullID];
 
-                    // Native ergänzen falls nicht vorhanden
-                    if (!state.native) state.native = {};
+                // Native ergänzen falls nicht vorhanden
+                if (!state.native) state.native = {};
 
-                    // Nur wenn der State bearbeitet werden darf hinzufügen
-                    if (state.common.write)
-                        subscribedStates[fullID] = {connection: state.id.device, group: state.id.channel, command: state.id.state};
+                // Nur wenn der State bearbeitet werden darf hinzufügen
+                if (state.common.write)
+                    subscribedStates[fullID] = {connection: state.id.device, group: state.id.channel, command: state.id.state};
 
-                    if (oldObj && oldObj.type === 'state') {
-                        if (!tools.areStatesEqual(oldObj, state, state.exclude)) {
-                            statesToUpdate.push({
-                                type : 'update_state',
-                                id   : state.id,
-                                data : {
-                                    common : state.common,
-                                    native : state.native
-                                }
-                            });
-                        }
-                        old_objects[fullID] = undefined;
-                    } else {
+                if (oldObj && oldObj.type === 'state') {
+                    if (!tools.areStatesEqual(oldObj, state, state.exclude)) {
                         statesToUpdate.push({
-                            type : 'create_state',
+                            type : 'update_state',
                             id   : state.id,
                             data : {
                                 common : state.common,
@@ -1272,6 +1277,16 @@ function prepareTasks(preparedObjects, old_objects) {
                             }
                         });
                     }
+                    old_objects[fullID] = undefined;
+                } else {
+                    statesToUpdate.push({
+                        type : 'create_state',
+                        id   : state.id,
+                        data : {
+                            common : state.common,
+                            native : state.native
+                        }
+                    });
                 }
             }
         }
