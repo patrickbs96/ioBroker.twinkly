@@ -46,7 +46,7 @@ let initializing = true;
 
 /**
  * Anzulegende States
- * @type {[]}
+ * @type {String[]}
  */
 const statesConfig = [
     apiObjectsMap.connected.id,
@@ -1888,7 +1888,7 @@ async function handleSentryMessage(connectionName, functionName, key, message, l
 
     try {
         const connection = await getConnection(connectionName, {checkPaused: false, ignoreConnected: true});
-        message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}, model=${connection.twinkly.ledMode}`;
+        message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}, ledMode=${connection.twinkly.ledMode}`;
 
         // Export more information if unsure of the reason for deprecated/newSince
         if (key.includes('deprecated:')) {
