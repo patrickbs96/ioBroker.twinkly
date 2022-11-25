@@ -133,6 +133,10 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Add `musicreactive` Mode
+* Add Ukrainian translation
+
 ### 1.0.7 (2022-11-19)
 * Fixed deprecated messages from Sentry with api-validations
 * Automatic switch mode had an error with playlists. Playlist item could never be selected.

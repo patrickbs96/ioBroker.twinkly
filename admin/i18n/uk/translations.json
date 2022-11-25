@@ -1,0 +1,20 @@
+{
+    "Additional Information": "Додаткова інформація",
+    "Color": "колір",
+    "Device Info": "Інформація про пристрій",
+    "Effect": "Ефект",
+    "Enabled": "Увімкнено",
+    "IP Address": "IP-адреса",
+    "Interval [s]": "Інтервал [с]",
+    "Last Mode": "Останній режим",
+    "MQTT": "MQTT",
+    "Mode": "Режим",
+    "Movie": "фільм",
+    "Music Reactive": "Реактивна музика",
+    "Name": "Ім'я",
+    "Network Status": "Стан мережі",
+    "Playlist": "Список відтворення",
+    "Switch Mode after State change": "Переключити режим після зміни стану",
+    "Use ping for reachability": "Використовуйте ping для доступності",
+    "twinkly adapter settings": "Налаштування адаптера для twinkly"
+}

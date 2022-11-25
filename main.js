@@ -1795,11 +1795,11 @@ async function loadTwinklyDataFromObjects(connectionName) {
 /**
  * Mode Change
  * @param connectionName
- * @param oldMode
  * @param newMode
+ * @param oldMode
  * @return {Promise<void>}
  */
-async function onModeChange(connectionName, oldMode, newMode) {
+async function onModeChange(connectionName, newMode, oldMode) {
     try {
         const connection = await getConnection(connectionName);
 
@@ -1811,6 +1811,14 @@ async function onModeChange(connectionName, oldMode, newMode) {
             } catch (e) {
                 adapter.log.error(`[updatePlaylist.${connectionName}] Cannot update playlist! ${e.message}`);
             }
+        }
+
+        // Check if it is a new ledMode
+        if (newMode !== '' && !Object.values(twinkly.lightModes.values).includes(newMode)) {
+            await handleSentryMessage(connectionName, 'onModeChange',
+                `ledMode:${connectionName}:${newMode}`,
+                `New ledMode found: ${connectionName} ${newMode}`,
+                'warning');
         }
     } catch (e) {
         adapter.log.error(`[onModeChange.${connectionName}] ${e.message}`);
