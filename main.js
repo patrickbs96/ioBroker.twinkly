@@ -1619,9 +1619,9 @@ async function allowState(connectionName, stateInfo, checks = {}) {
             result = connection.twinkly.ledMode === stateInfo.filter.mode;
     }
     if (result && checks.deprecated && stateInfo.deprecated)
-        result = tools.versionGreaterEqual(connection.twinkly.firmware, stateInfo.deprecated);
+        result = connection.twinkly.firmware !== '' && tools.versionGreater(connection.twinkly.firmware, stateInfo.deprecated);
     if (result && checks.newSince && stateInfo.newSince)
-        result = tools.versionLower(connection.twinkly.firmware, stateInfo.newSince);
+        result = connection.twinkly.firmware !== '' && tools.versionLowerEquals(connection.twinkly.firmware, stateInfo.newSince);
     if (result && checks.family && stateInfo.family)
         result = stateInfo.family === connection.twinkly.details.fw_family;
 
@@ -1814,7 +1814,7 @@ async function onModeChange(connectionName, newMode, oldMode) {
         }
 
         // Check if it is a new ledMode
-        if (newMode !== '' && !Object.values(twinkly.lightModes.values).includes(newMode)) {
+        if (newMode !== '' && !Object.values(twinkly.lightModes.value).includes(newMode)) {
             await handleSentryMessage(connectionName, 'onModeChange',
                 `ledMode:${connectionName}:${newMode}`,
                 `New ledMode found: ${connectionName} ${newMode}`,
