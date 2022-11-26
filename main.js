@@ -1524,9 +1524,9 @@ async function allowState(connectionName, stateInfo, checks = {}) {
             result = connection.twinkly.ledMode === stateInfo.filter.mode;
     }
     if (result && checks.deprecated && stateInfo.deprecated)
-        result = connection.twinkly.firmware !== '' && tools.versionGreater(connection.twinkly.firmware, stateInfo.deprecated);
+        result = !connection.twinkly.isFirmwareEmpty() && tools.versionGreater(connection.twinkly.firmware, stateInfo.deprecated);
     if (result && checks.newSince && stateInfo.newSince)
-        result = connection.twinkly.firmware !== '' && tools.versionLowerEquals(connection.twinkly.firmware, stateInfo.newSince);
+        result = !connection.twinkly.isFirmwareEmpty() && tools.versionLowerEquals(connection.twinkly.firmware, stateInfo.newSince);
     if (result && checks.family && stateInfo.family)
         result = stateInfo.family === connection.twinkly.details.fw_family;
 
@@ -1677,20 +1677,6 @@ async function loadTwinklyDataFromObjects(connectionName) {
             if (typeof lastModeOn === 'string')
                 connection.lastModeOn = lastModeOn;
         }
-
-        // firmware
-        // const firmware = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.firmware.child.version.id);
-        // if (firmware) {
-        //     connection.twinkly.firmware = firmware.val;
-        // }
-
-        // details
-        // const details = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.details.parent.id);
-        // if (details) {
-        //     const detailsJson = JSON.parse(details.val);
-        //     if (detailsJson)
-        //         tools.cloneObject(detailsJson, connection.twinkly.details);
-        // }
     } catch (e) {
         adapter.log.error(`[loadTwinklyDataFromObjects.${connectionName}] Cannot load data! ${e.message}`);
     }
@@ -1758,6 +1744,7 @@ async function onModeChange(connectionName, newMode, oldMode) {
  */
 async function onFirmwareChange(connectionName, newVersion, oldVersion) {
     try {
+        // Version 0.0.0 is the default version at startup
         if (oldVersion !== '0.0.0') {
             adapter.log.debug(`[onFirmwareChange.${connectionName}] Firmware changed from ${oldVersion} to ${newVersion}`);
         }
