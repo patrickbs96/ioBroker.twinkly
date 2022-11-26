@@ -910,7 +910,7 @@ async function syncConfig() {
         // Verbindungen auslesen und erstellen
         if (result)
             for (const device of adapter.config.devices) {
-                const deviceName = (device.name.trim() !== '' ? device.name : device.host).replace(stateTools.FORBIDDEN_CHARS, '_').replace(/[.\s]+/g, '_');
+                const deviceName = stateTools.removeForbiddenChars(device.name.trim() !== '' ? device.name : device.host).replace(/[.\s]+/g, '_');
 
                 // Verbindung aktiviert?
                 if (!device.enabled) {
@@ -926,7 +926,7 @@ async function syncConfig() {
 
                 // Verbindung anlegen
                 if (Object.keys(connections).includes(deviceName))
-                    adapter.log.warn(`Objects with same id = ${stateTools.buildId({device: deviceName, channel: null, state: null}, adapter)} created for two connections ${JSON.stringify(device)}`);
+                    adapter.log.warn(`Objects with same id = ${deviceName} created for two connections ${JSON.stringify(device)}`);
                 else {
                     connections[deviceName] = {
                         enabled    : device.enabled,
@@ -976,16 +976,16 @@ async function syncConfig() {
 
 /**
  * Konfiguration aufbereiten um die States/Objekte anzulegen
- * @returns {Promise<{device: {id: {device: String}, common: {}, native: {}},
- * states: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[],
- * channels: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[]}[]>}
+ * @returns {Promise<{connection: string, device: {id: string, type: string, common: {}, native: {}},
+ *                    channels: {id: string, type: string, common: {}, native: {}}[],
+ *                    states: {id: string, type: string, common: {}, native: {}}[]}[]>}
  */
 async function prepareObjectsByConfig() {
     /**
      * @param {{}} config
      * @param {Boolean} displayPrevName
-     * @param {{id: {}, common: {}, native: {}}} prevChannel
-     * @returns {{}}
+     * @param {{id: string, type: string, common: {}, native: {}}} prevChannel
+     * @returns {{name: string, read: boolean, write: boolean, type: string, role: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[]}}
      */
     function getCommon(config, displayPrevName, prevChannel) {
         const result = {};
@@ -1024,25 +1024,15 @@ async function prepareObjectsByConfig() {
     }
 
     /**
-     * @param {{device: {}, states: [], channels: []}} config
+     * @param {{connection: string, device: {id: string, type: string, common: {}, native: {}},
+     *          channels: {id: string, type: string, common: {}, native: {}}[],
+     *          states: {id: string, type: string, common: {}, native: {}}[]}} config
      * @param {{}} states
      * @param {Boolean} root
      * @param {Boolean} displayPrevName
-     * @param {{id: {}, common: {}, native: {}}} prevChannel
+     * @param {{id: string, type: string, common: {}, native: {}}} prevChannel
      */
     async function prepareConfig(config, states, root, displayPrevName, prevChannel) {
-        /**
-         * @param {{id: {state: String}, exclude: []}} stateObj
-         * @param {{id: String, exclude?: []}} stateInfo
-         */
-        function addState(stateObj, stateInfo) {
-            stateObj.id.state = stateInfo.id;
-            if (stateInfo.exclude)
-                stateObj.exclude = stateInfo.exclude;
-
-            config.states.push(stateObj);
-        }
-
         for (const state of Object.keys(states)) {
             try {
                 if (root) {
@@ -1055,15 +1045,12 @@ async function prepareObjectsByConfig() {
                     if (bContinue) continue;
                 }
 
-                /** @type {{id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}} */
+                /** @type {{id: string, type: string, common: {}, native: {}}} */
                 const stateObj = {
-                    id: {
-                        device: config.device.id.device,
-                        channel: prevChannel.id.channel ? prevChannel.id.channel : ''
-                    },
-                    common: getCommon(states[state].parent !== undefined ? states[state].parent : states[state], displayPrevName, prevChannel),
-                    native: {},
-                    exclude: []
+                    id     : stateTools.removeForbiddenChars(displayPrevName ? prevChannel.id : config.device.id),
+                    type   : 'state',
+                    common : getCommon(states[state].parent !== undefined ? states[state].parent : states[state], displayPrevName, prevChannel),
+                    native : {}
                 };
 
                 if (!states[state].hide) {
@@ -1071,7 +1058,8 @@ async function prepareObjectsByConfig() {
                         if (states[state].child !== undefined && states[state].expandJSON) {
                             // Soll der Parent angezeigt werden
                             if (!states[state].parent.hide) {
-                                stateObj.id.channel += (stateObj.id.channel !== '' ? '.' : '') + states[state].parent.id;
+                                stateObj.type = 'channel';
+                                stateObj.id += '.' + states[state].parent.id;
                                 config.channels.push(stateObj);
 
                                 await prepareConfig(config, states[state].child, false, true, stateObj);
@@ -1079,11 +1067,13 @@ async function prepareObjectsByConfig() {
                                 // Sonst States auf Grandparent erstellen
                                 await prepareConfig(config, states[state].child, false, false, prevChannel);
                             }
-                        } else if (await allowState(config.device.id.device, states[state].parent)) {
-                            addState(stateObj, states[state].parent);
+                        } else if (await allowState(config.connection, states[state].parent)) {
+                            stateObj.id += '.' + states[state].parent.id;
+                            config.states.push(stateObj);
                         }
-                    } else if (await allowState(config.device.id.device, states[state])) {
-                        addState(stateObj, states[state]);
+                    } else if (await allowState(config.connection, states[state])) {
+                        stateObj.id += '.' + states[state].id;
+                        config.states.push(stateObj);
                     }
                 }
             } catch (e) {
@@ -1092,36 +1082,25 @@ async function prepareObjectsByConfig() {
         }
     }
 
-    /**
-     * @type {{device?: {id: {device: String}, common: {}, native: {}},
-     * states: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[],
-     * channels: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[]}[]}
-     */
+    /** @type {{connection: string, device?: {id: string, type: string, common: {}, native: {}},
+     *          channels: {id: string, type: string, common: {}, native: {}}[],
+     *          states: {id: string, type: string, common: {}, native: {}}[]}[]} */
     const result = [];
 
     // Get Instance Objects
-    const instanceConfig = {channels: [], states: []};
+    /** @type {{connection: string, channels: {id: string, type: string, common: {}, native: {}}[],
+     * states: {id: string, type: string, common: {}, native: {}}[]}} */
+    const instanceConfig = {connection: '', channels: [], states: []};
     if (typeof adapter.ioPack.instanceObjects === 'object') {
         adapter.ioPack.instanceObjects.forEach(obj => {
-            /** @type {{id: {device?: String, channel?: String, state?: String}, common: {}, native: {}, exclude: []}} */
-            const instanceObject = {
-                id: {},
-                common: {},
-                native: {},
-                exclude: []
-            };
-
+            /** @type {{id: string, type: string, common: {}, native: {}}} */
+            const instanceObject = {id: `${adapter.namespace}.${obj._id}`, type : obj.type, common : {}, native : {}};
             tools.cloneObject(obj.common, instanceObject.common);
             tools.cloneObject(obj.native, instanceObject.native);
 
-            if (obj.type === 'channel') {
-                instanceObject.id.channel = obj._id;
+            if (instanceObject.type === 'channel') {
                 instanceConfig.channels.push(instanceObject);
-            } else if (obj.type === 'state') {
-                const parts = obj._id.split('.');
-
-                instanceObject.id.channel = parts.slice(0, -1).join('.');
-                instanceObject.id.state = parts[parts.length - 1];
+            } else if (instanceObject.type === 'state') {
                 instanceConfig.states.push(instanceObject);
             }
         });
@@ -1156,13 +1135,20 @@ async function prepareObjectsByConfig() {
             adapter.log.error(`[prepareObjectsByConfig] Could not interview ${connectionName} ${error}`);
         }
 
+        /**
+         * @type {{connection: string, device: {id: string, type: string, common: {}, native: {}},
+         *        channels: {id: string, type: string, common: {}, native: {}}[],
+         *        states: {id: string, type: string, common: {}, native: {}}[]}}
+         */
         const config = {
-            device: {
-                id     : {device : connectionName},
-                common : {name   : connection.twinkly.name, statusStates: {
+            connection : connectionName,
+            device : {
+                id     : `${adapter.namespace}.${connectionName}`,
+                type   : 'device',
+                common : {name : connection.twinkly.name, statusStates: {
                     onlineId: `${adapter.namespace}.${connectionName}.${apiObjectsMap.connected.id}`
                 }},
-                native : {host   : connection.twinkly.host}
+                native : {host : connection.twinkly.host}
             },
             states   : [],
             channels : []
@@ -1178,116 +1164,75 @@ async function prepareObjectsByConfig() {
 
 /**
  * prepareTasks
- * @param {{device: {id: {device: String}, common: {}, native: {}},
- * states: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[],
- * channels: {id: {device: String, channel: String, state?: String}, common: {}, native: {}, exclude: []}[]}[]} preparedObjects
+ * @param {{connection: string, device: {id: string, type: string, common: {}, native: {}},
+ *          channels: {id: string, type: string, common: {}, native: {}}[],
+ *          states: {id: string, type: string, common: {}, native: {}}[]}[]} preparedObjects
  * @param {Record<string, AdapterScopedObject>} old_objects
- * @returns {{id: string, type: string, data?: {common: {}, native: {}}}[]}
+ * @returns {{id: string, type: string, data: {common: {}, native: {}}}[]}
  */
 function prepareTasks(preparedObjects, old_objects) {
-    const devicesToUpdate  = [];
+    const devicesToUpdate = [];
     const channelsToUpdate = [];
-    const statesToUpdate   = [];
+    const statesToUpdate = [];
+
+    /**
+     * @param {[]} list
+     * @param {{id: string, type: string, common: {}, native: {}}} obj
+     * @param {String[]} exclude
+     */
+    function checkUpdateObj(list, obj, exclude) {
+        const oldObj = old_objects[obj.id];
+
+        // Native ergänzen falls nicht vorhanden
+        if (!obj.native) obj.native = {};
+
+        if (oldObj && oldObj.type === obj.type) {
+            if (!tools.areStatesEqual(oldObj, obj, exclude)) {
+                devicesToUpdate.push({
+                    type : `update_${obj.type}`,
+                    id   : obj.id,
+                    data : {
+                        common: obj.common,
+                        native: obj.native
+                    }
+                });
+            }
+            old_objects[obj.id] = undefined;
+        } else {
+            devicesToUpdate.push({
+                type  : `create_${obj.type}`,
+                id    : obj.id,
+                data  : {
+                    common: obj.common,
+                    native: obj.native
+                }
+            });
+        }
+    }
 
     try {
         for (const group of preparedObjects) {
             // Device prüfen
             if (group.device) {
-                const fullID = stateTools.buildId(group.device.id, adapter);
-                const oldObj = old_objects[fullID];
-
-                // Native ergänzen falls nicht vorhanden
-                if (!group.device.native) group.device.native = {};
-
-                if (oldObj && oldObj.type === 'device') {
-                    if (!tools.areStatesEqual(oldObj, group.device, [])) {
-                        devicesToUpdate.push({
-                            type : 'update_device',
-                            id   : group.device.id,
-                            data : {
-                                common : group.device.common,
-                                native : group.device.native
-                            }
-                        });
-                    }
-                    old_objects[fullID] = undefined;
-                } else {
-                    devicesToUpdate.push({
-                        type : 'create_device',
-                        id   : group.device.id,
-                        data : {
-                            common : group.device.common,
-                            native : group.device.native
-                        }
-                    });
-                }
+                checkUpdateObj(devicesToUpdate, group.device, []);
             }
 
             // Channels prüfen
             for (const channel of group.channels) {
-                const fullID = stateTools.buildId(channel.id, adapter);
-                const oldObj = old_objects[fullID];
-
-                // Native ergänzen falls nicht vorhanden
-                if (!channel.native) channel.native = {};
-
-                if (oldObj && oldObj.type === 'channel') {
-                    if (!tools.areStatesEqual(oldObj, channel, [])) {
-                        channelsToUpdate.push({
-                            type : 'update_channel',
-                            id   : channel.id,
-                            data : {
-                                common : channel.common,
-                                native : channel.native
-                            }
-                        });
-                    }
-                    old_objects[fullID] = undefined;
-                } else {
-                    channelsToUpdate.push({
-                        type : 'create_channel',
-                        id   : channel.id,
-                        data : {
-                            common : channel.common,
-                            native : channel.native
-                        }
-                    });
-                }
+                checkUpdateObj(channelsToUpdate, channel, []);
             }
 
             // States prüfen
             for (const state of group.states) {
-                const fullID = stateTools.buildId(state.id, adapter);
-                const oldObj = old_objects[fullID];
-
-                // Native ergänzen falls nicht vorhanden
-                if (!state.native) state.native = {};
+                checkUpdateObj(statesToUpdate, state, ['states']);
 
                 // Nur wenn der State bearbeitet werden darf hinzufügen
-                if (state.common.write)
-                    subscribedStates[fullID] = {connection: state.id.device, group: state.id.channel, command: state.id.state};
+                if (state.common.write) {
+                    const stateId = state.id.split('.').splice(3); // Remove AdapterNamespace + Connection
+                    const command = stateId.pop();
+                    const group   = stateId.join('.');
 
-                if (oldObj && oldObj.type === 'state') {
-                    if (!tools.areStatesEqual(oldObj, state, state.exclude)) {
-                        statesToUpdate.push({
-                            type : 'update_state',
-                            id   : state.id,
-                            data : {
-                                common : state.common,
-                                native : state.native
-                            }
-                        });
-                    }
-                    old_objects[fullID] = undefined;
-                } else {
-                    statesToUpdate.push({
-                        type : 'create_state',
-                        id   : state.id,
-                        data : {
-                            common : state.common,
-                            native : state.native
-                        }
-                    });
+                    subscribedStates[state.id] = {connection: group.connection, group: group, command: command};
                 }
             }
         }
@@ -1296,20 +1241,16 @@ function prepareTasks(preparedObjects, old_objects) {
     }
 
     // eslint-disable-next-line no-unused-vars
-    const oldEntries = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, object]) => object);
+    const oldEntries = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, obj]) => obj);
     // eslint-disable-next-line no-unused-vars
-    const devicesToDelete  = oldEntries.filter(([id, object]) => object.type === 'device') .map(([id]) => ({type: 'delete_device', id: id}));
-    // eslint-disable-next-line no-unused-vars
-    const channelsToDelete = oldEntries.filter(([id, object]) => object.type === 'channel').map(([id]) => ({type: 'delete_channel', id: id}));
-    // eslint-disable-next-line no-unused-vars
-    const statesToDelete    = oldEntries.filter(([id, object]) => object.type === 'state')  .map(([id]) => ({type: 'delete_state', id: id}));
+    const toDelete = oldEntries.filter(([id, obj]) => ['device', 'channel', 'state'].includes(obj.type)).map(([id, obj]) => ({id: id, type: `delete_${obj.type}`, data: {common: {}, native: {}}}));
 
-    return statesToDelete.concat(devicesToUpdate, devicesToDelete, channelsToUpdate, channelsToDelete, statesToUpdate);
+    return toDelete.concat(devicesToUpdate, channelsToUpdate, statesToUpdate);
 }
 
 /**
  * processTasks
- * @param {{id: string|{device: String, channel: String, state: String}, type: String, data?: {common: {}, native: {}}}[]} tasks
+ * @param {{id: string, type: String, data: {common: {}, native: {}}}[]} tasks
  */
 async function processTasks(tasks) {
     if (!tasks || tasks.length === 0) {
@@ -1318,79 +1259,42 @@ async function processTasks(tasks) {
     }
 
     while (tasks.length > 0) {
-        const
-            task = tasks.shift(),
-            id   = stateTools.buildId(task.id, adapter);
+        const task = tasks.shift();
 
-        adapter.log.debug('[processTasks] Task: ' + JSON.stringify(task) + ', ID: ' + id);
+        try {
+            adapter.log.debug('[processTasks] Task: ' + JSON.stringify(task));
 
-        if (task.type === 'create_device' && typeof task.id !== 'string') {
-            adapter.log.debug('[processTasks] Create device id=' + id);
-            try {
-                await stateTools.createDevice(adapter, task.id, task.data.common, task.data.native);
-            } catch (e) {
-                adapter.log.error('Cannot create device: ' + id + ' Error: ' + e.message);
-            }
-        } else if (task.type === 'update_device') {
-            adapter.log.debug('[processTasks] Update device id=' + id);
-            try {
-                await adapter.extendObject(id, task.data);
-            } catch (e) {
-                adapter.log.error('Cannot update device: ' + id + ' Error: ' + e.message);
-            }
-        } else if (task.type === 'delete_device') {
-            adapter.log.debug('[processTasks] Delete device id=' + id);
-            try {
-                await adapter.delObject(id);
-            } catch (e) {
-                adapter.log.error('Cannot delete device : ' + id + ' Error: ' + e.message);
+            const taskType = task.type.split('_');
+            if (taskType.length !== 2) {
+                adapter.log.debug(`[processTasks] Task type is invalid: ${task.type}`);
+                continue;
             }
 
-        } else if (task.type === 'create_channel' && typeof task.id !== 'string') {
-            adapter.log.debug('[processTasks] Create channel id=' + id);
-            try {
-                await stateTools.createChannel(adapter, task.id, task.data.common, task.data.native);
-            } catch (e) {
-                adapter.log.error('Cannot create channel: ' + id + ' Error: ' + e.message);
-            }
-        } else if (task.type === 'update_channel') {
-            adapter.log.debug('[processTasks] Update channel id=' + id);
-            try {
-                await adapter.extendObject(id, task.data);
-            } catch (e) {
-                adapter.log.error('Cannot update channel : ' + id + ' Error: ' + e.message);
-            }
-        } else if (task.type === 'delete_channel') {
-            adapter.log.debug('[processTasks] Delete channel id=' + id);
-            try {
-                await adapter.delObject(id);
-            } catch (e) {
-                adapter.log.error('Cannot delete channel : ' + id + ' Error: ' + e.message);
-            }
+            switch (taskType[0]) {
+                case 'create': {
+                    await adapter.setObjectNotExistsAsync(task.id, {type: taskType[1], common: task.data.common, native: task.data.native});
 
-        } else if (task.type === 'create_state' && typeof task.id !== 'string') {
-            adapter.log.debug('[processTasks] Create state id=' + id);
-            try {
-                await stateTools.createState(adapter, task.id, task.data.common, task.data.native);
-            } catch (e) {
-                adapter.log.error('Cannot create state: ' + id + ' Error: ' + e.message);
+                    if (taskType[1] === 'state') {
+                        if (task.data.common.def !== undefined) {
+                            await adapter.setStateAsync(task.id, task.data.common.def, true);
+                        } else {
+                            await adapter.setStateAsync(task.id, null, true);
+                        }
+                    }
+                    break;
+                }
+                case 'update': {
+                    await adapter.extendObject(task.id, task.data);
+                    break;
+                }
+                case 'delete': {
+                    await adapter.delObject(task.id);
+                    break;
+                }
             }
-        } else if (task.type === 'update_state') {
-            adapter.log.debug('[processTasks] Update state id=' + id);
-            try {
-                await adapter.extendObject(id, task.data);
-            } catch (e) {
-                adapter.log.error('Cannot update state : ' + id + ' Error: ' + e.message);
-            }
-        } else if (task.type === 'delete_state') {
-            adapter.log.debug('[processTasks] Delete state id=' + id);
-            try {
-                await adapter.delObject(id);
-            } catch (e) {
-                adapter.log.error('Cannot delete state : ' + id + ' Error: ' + e.message);
-            }
-        } else
-            adapter.log.error('Unknown task type: ' + JSON.stringify(task));
+        } catch (e) {
+            adapter.log.error(`Cannot ${task.type}: ${task.id}, Error: ${e.message}`);
+        }
     }
 }
 
