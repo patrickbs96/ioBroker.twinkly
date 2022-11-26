@@ -133,7 +133,7 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.8 (2022-11-26)
 * Add `musicreactive` Mode
 * Add Ukrainian translation
 * Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
@@ -163,9 +163,6 @@ sendTo('twinkly.0', 'generateFrame', {
 
 ### 1.0.2 (2022-07-07)
 * Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)
-
-### 1.0.1 (2022-07-05)
-* Remove deprecated values from mode
 
 ## License
 MIT License

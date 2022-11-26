@@ -1,4 +1,7 @@
 # Older changes
+## 1.0.1 (2022-07-05)
+* Remove deprecated values from mode
+
 ## 1.0.0 (2022-07-03)
 * Change refresh logic after State-Change
 * Added depcrecated logic to remove states when no longer filled with data from api
