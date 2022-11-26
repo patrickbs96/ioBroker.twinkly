@@ -22,7 +22,7 @@ let pollingInterval = null;
 
 /**
  * Twinkly-Verbindungen
- * @type {{[x: string]: {enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly, dataLoadedOnInit: Boolean}}}
+ * @type {{[x: string]: {enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly, firstConnect: Boolean}}}
  */
 const connections = {};
 
@@ -463,6 +463,8 @@ async function poll(specificConnection = '', filter = []) {
 
             deviceConnected = true;
 
+            await connection.twinkly.interview();
+
             // Only load at startup
             if (initializing) {
                 await updateEffects(connectionName);
@@ -808,8 +810,8 @@ async function processMessage(obj) {
     let returnMsg;
 
     /**
-     * @param {{checkPaused?: Boolean, checkConnected?: Boolean, ignoreConnected?: Boolean, writeConnectedState?: Boolean}} options
-     * @return {Promise<{enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly, dataLoadedOnInit: Boolean}>}
+     * @param {{checkPaused?: Boolean, checkConnected?: Boolean, ignoreConnected?: Boolean}} options
+     * @return {Promise<{enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly, firstConnect: Boolean}>}
      */
     async function getConnectionObj(options = {}) {
         if (obj.message && typeof obj.message === 'object') {
@@ -925,18 +927,18 @@ async function syncConfig() {
                 }
 
                 // Verbindung anlegen
-                if (Object.keys(connections).includes(deviceName))
+                if (Object.keys(connections).includes(deviceName)) {
                     adapter.log.warn(`Objects with same id = ${deviceName} created for two connections ${JSON.stringify(device)}`);
-                else {
+                } else {
                     connections[deviceName] = {
-                        enabled    : device.enabled,
-                        paused     : false,
-                        modeOn     : device.stateOn && (Object.keys(twinkly.lightModes.value).includes(device.stateOn) || twinkly.STATE_ON_LASTMODE === device.stateOn) ?
+                        enabled      : device.enabled,
+                        paused       : false,
+                        modeOn       : device.stateOn && (Object.keys(twinkly.lightModes.value).includes(device.stateOn) || twinkly.STATE_ON_LASTMODE === device.stateOn) ?
                             device.stateOn : twinkly.lightModes.value.movie,
-                        lastModeOn : twinkly.lightModes.value.movie,
-                        connected  : false,
-                        twinkly    : new twinkly.Twinkly(adapter, deviceName, device.host, onModeChange),
-                        dataLoadedOnInit : false
+                        lastModeOn   : twinkly.lightModes.value.movie,
+                        connected    : false,
+                        twinkly      : new twinkly.Twinkly(adapter, deviceName, device.host, onDataChange),
+                        firstConnect : false
                     };
 
                     await loadTwinklyDataFromObjects(deviceName);
@@ -948,43 +950,81 @@ async function syncConfig() {
             adapter.log.info('no enabled connections added...');
             result = false;
         }
+
+        if (result) {
+            // Create Instance Objects
+            await processObjectChanges('');
+        }
     } catch (e) {
         throw Error(e);
-    }
-
-    if (result) {
-        adapter.log.debug('[syncConfig] Prepare objects');
-        const preparedObjects = await prepareObjectsByConfig();
-
-        adapter.log.debug('[syncConfig] Get existing objects');
-        const _objects = await adapter.getAdapterObjectsAsync();
-
-        adapter.log.debug('[syncConfig] Prepare tasks of objects update');
-        const tasks = prepareTasks(preparedObjects, _objects);
-
-        adapter.log.debug('[syncConfig] Start tasks of objects update');
-        try {
-            await processTasks(tasks);
-            adapter.log.debug('[syncConfig] Finished tasks of objects update');
-        } catch (e) {
-            throw Error(e);
-        }
     }
 
     return result;
 }
 
+async function processObjectChanges(specificConnection) {
+    adapter.log.debug('[processObjectChanges] Get existing objects');
+    const _objects = await adapter.getAdapterObjectsAsync();
+
+    function removeConnectionObjects(connection) {
+        const connectionId = `${adapter.namespace}.${connection}`;
+        Object.keys(_objects).forEach(id => {
+            if (id.startsWith(connectionId)) {
+                delete _objects[id];
+            }
+        });
+    }
+
+    if (specificConnection === '') {
+        adapter.log.debug('[processObjectChanges] Remove all connections listed in config ==> Deletes all old connections');
+        Object.keys(connections).forEach(connection => {
+            removeConnectionObjects(connection);
+        });
+    } else {
+        adapter.log.debug('[processObjectChanges] Filter the objects for the specific connection');
+        Object.keys(connections).filter(connection => connection !== specificConnection).forEach(connection => {
+            removeConnectionObjects(connection);
+        });
+    }
+
+    /** @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} */
+    const preparedObjects = [];
+
+    adapter.log.debug('[processObjectChanges] Add instance objects');
+    prepareInstanceObjects(preparedObjects);
+
+    if (specificConnection !== '') {
+        adapter.log.debug('[processObjectChanges] Prepare connection objects');
+        await prepareObjectsByConfig(preparedObjects, specificConnection);
+    }
+
+    adapter.log.debug('[processObjectChanges] Prepare tasks of objects update');
+    const tasks = prepareTasks(preparedObjects, _objects);
+
+    if (tasks.length === 0) {
+        adapter.log.debug('[processObjectChanges] No tasks to process!');
+        return;
+    }
+
+    adapter.log.debug('[processObjectChanges] Start tasks of objects update');
+    try {
+        await processTasks(tasks);
+        adapter.log.debug('[processObjectChanges] Finished tasks of objects update');
+    } catch (e) {
+        throw Error(e);
+    }
+}
+
 /**
  * Konfiguration aufbereiten um die States/Objekte anzulegen
- * @returns {Promise<{connection: string, device: {id: string, type: string, common: {}, native: {}},
- *                    channels: {id: string, type: string, common: {}, native: {}}[],
- *                    states: {id: string, type: string, common: {}, native: {}}[]}[]>}
+ * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} preparedObjects
+ * @param {string} specificConnection
  */
-async function prepareObjectsByConfig() {
+async function prepareObjectsByConfig(preparedObjects, specificConnection) {
     /**
      * @param {{}} config
      * @param {Boolean} displayPrevName
-     * @param {{id: string, type: string, common: {}, native: {}}} prevChannel
+     * @param {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} prevChannel
      * @returns {{name: string, read: boolean, write: boolean, type: string, role: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[]}}
      */
     function getCommon(config, displayPrevName, prevChannel) {
@@ -1003,54 +1043,53 @@ async function prepareObjectsByConfig() {
                 result.max = config.max;
         }
 
-        if (result.def === undefined) {
+        if (config.def === undefined) {
             if (result.type === 'string')
                 result.def = '';
             else if (result.type === 'number')
                 result.def = result.min !== undefined ? result.min : 0;
             else if (result.type === 'boolean')
                 result.def = false;
-        } else
+        } else {
             result.def = config.def;
+        }
 
-        if (config.states !== undefined)
+        if (config.states !== undefined) {
             result.states = config.states;
+        }
 
-        if (config.unit !== undefined)
+        if (config.unit !== undefined) {
             result.unit = config.unit;
-
+        }
 
         return result;
     }
 
     /**
-     * @param {{connection: string, device: {id: string, type: string, common: {}, native: {}},
-     *          channels: {id: string, type: string, common: {}, native: {}}[],
-     *          states: {id: string, type: string, common: {}, native: {}}[]}} config
+     * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}} config
      * @param {{}} states
      * @param {Boolean} root
      * @param {Boolean} displayPrevName
-     * @param {{id: string, type: string, common: {}, native: {}}} prevChannel
+     * @param {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} prevChannel
      */
     async function prepareConfig(config, states, root, displayPrevName, prevChannel) {
         for (const state of Object.keys(states)) {
             try {
                 if (root) {
-                    let bContinue = false;
-                    if (states[state].parent !== undefined)
-                        bContinue = !statesConfig.includes(states[state].parent.id);
-                    else
-                        bContinue = states[state].id === undefined || !statesConfig.includes(states[state].id);
-
-                    if (bContinue) continue;
+                    if (states[state].parent !== undefined) {
+                        if (!statesConfig.includes(states[state].parent.id)) continue;
+                    } else {
+                        if (!statesConfig.includes(states[state].id)) continue;
+                    }
                 }
 
-                /** @type {{id: string, type: string, common: {}, native: {}}} */
+                /** @type {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} */
                 const stateObj = {
-                    id     : stateTools.removeForbiddenChars(displayPrevName ? prevChannel.id : config.device.id),
+                    id     : stateTools.removeForbiddenChars(prevChannel.id),
                     type   : 'state',
                     common : getCommon(states[state].parent !== undefined ? states[state].parent : states[state], displayPrevName, prevChannel),
-                    native : {}
+                    native      : {},
+                    checkStates : true
                 };
 
                 if (!states[state].hide) {
@@ -1060,7 +1099,7 @@ async function prepareObjectsByConfig() {
                             if (!states[state].parent.hide) {
                                 stateObj.type = 'channel';
                                 stateObj.id += '.' + states[state].parent.id;
-                                config.channels.push(stateObj);
+                                config.objects.push(stateObj);
 
                                 await prepareConfig(config, states[state].child, false, true, stateObj);
                             } else {
@@ -1069,11 +1108,14 @@ async function prepareObjectsByConfig() {
                             }
                         } else if (await allowState(config.connection, states[state].parent)) {
                             stateObj.id += '.' + states[state].parent.id;
-                            config.states.push(stateObj);
+                            config.objects.push(stateObj);
                         }
                     } else if (await allowState(config.connection, states[state])) {
                         stateObj.id += '.' + states[state].id;
-                        config.states.push(stateObj);
+                        config.objects.push(stateObj);
+                        if (states[state].checkStates === false) {
+                            stateObj.checkStates = false;
+                        }
                     }
                 }
             } catch (e) {
@@ -1082,39 +1124,13 @@ async function prepareObjectsByConfig() {
         }
     }
 
-    /** @type {{connection: string, device?: {id: string, type: string, common: {}, native: {}},
-     *          channels: {id: string, type: string, common: {}, native: {}}[],
-     *          states: {id: string, type: string, common: {}, native: {}}[]}[]} */
-    const result = [];
-
-    // Get Instance Objects
-    /** @type {{connection: string, channels: {id: string, type: string, common: {}, native: {}}[],
-     * states: {id: string, type: string, common: {}, native: {}}[]}} */
-    const instanceConfig = {connection: '', channels: [], states: []};
-    if (typeof adapter.ioPack.instanceObjects === 'object') {
-        adapter.ioPack.instanceObjects.forEach(obj => {
-            /** @type {{id: string, type: string, common: {}, native: {}}} */
-            const instanceObject = {id: `${adapter.namespace}.${obj._id}`, type : obj.type, common : {}, native : {}};
-            tools.cloneObject(obj.common, instanceObject.common);
-            tools.cloneObject(obj.native, instanceObject.native);
-
-            if (instanceObject.type === 'channel') {
-                instanceConfig.channels.push(instanceObject);
-            } else if (instanceObject.type === 'state') {
-                instanceConfig.states.push(instanceObject);
-            }
-        });
-    }
-
-    if (instanceConfig.channels.length > 0 || instanceConfig.states.length > 0) {
-        result.push(instanceConfig);
-    }
-
     // Add Connections Objects
     for (const connectionName of Object.keys(connections)) {
+        if (specificConnection !== '' && specificConnection !== connectionName) continue;
+
         let connection;
         try {
-            connection = await getConnection(connectionName, {checkPaused: false, checkConnected: true, ignoreConnected: true, writeConnectedState: false});
+            connection = await getConnection(connectionName, {checkPaused: false, checkConnected: true});
         } catch (e) {
             adapter.log.debug(`[prepareObjectsByConfig] ${e.message}`);
             continue;
@@ -1122,117 +1138,110 @@ async function prepareObjectsByConfig() {
 
         // Interview
         try {
-            if (connection.connected) {
-                // clear data, interview needs to load actual data
-                if (connection.dataLoadedOnInit) {
-                    connection.twinkly.firmware = '';
-                    tools.clearObject(connection.twinkly.details);
-                }
+            // Interview to load details
+            await connection.twinkly.interview();
 
-                await connection.twinkly.interview();
-            }
+            connection.firstConnect = true;
         } catch (error) {
             adapter.log.error(`[prepareObjectsByConfig] Could not interview ${connectionName} ${error}`);
         }
 
         /**
-         * @type {{connection: string, device: {id: string, type: string, common: {}, native: {}},
-         *        channels: {id: string, type: string, common: {}, native: {}}[],
-         *        states: {id: string, type: string, common: {}, native: {}}[]}}
+         * @type {{id: string, type: string, common: {}, native: {}, checkStates: boolean}}
          */
-        const config = {
-            connection : connectionName,
-            device : {
-                id     : `${adapter.namespace}.${connectionName}`,
-                type   : 'device',
-                common : {name : connection.twinkly.name, statusStates: {
-                    onlineId: `${adapter.namespace}.${connectionName}.${apiObjectsMap.connected.id}`
-                }},
-                native : {host : connection.twinkly.host}
-            },
-            states   : [],
-            channels : []
+        const device = {
+            id     : `${adapter.namespace}.${connectionName}`,
+            type   : 'device',
+            common : {name : connection.twinkly.name, statusStates: {
+                onlineId: `${adapter.namespace}.${connectionName}.${apiObjectsMap.connected.id}`
+            }},
+            native      : {host : connection.twinkly.host},
+            checkStates : true
         };
 
-        await prepareConfig(config, apiObjectsMap, true, false, config.device);
+        /**
+         * @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}}
+         */
+        const config = {connection : connectionName, objects : [device]};
 
-        result.push(config);
+        await prepareConfig(config, apiObjectsMap, true, false, device);
+
+        preparedObjects.push(config);
+    }
+}
+
+/**
+ * Get Instance Objects
+ * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} preparedObjects
+ */
+function prepareInstanceObjects(preparedObjects) {
+    /** @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}} */
+    const instanceConfig = {connection: '', objects: []};
+
+    if (typeof adapter.ioPack.instanceObjects === 'object') {
+        adapter.ioPack.instanceObjects.forEach(obj => {
+            /** @type {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} */
+            const instanceObject = {id: `${adapter.namespace}.${obj._id}`, type : obj.type, common : {}, native : {}, checkStates : true};
+            tools.cloneObject(obj.common, instanceObject.common);
+            tools.cloneObject(obj.native, instanceObject.native);
+
+            instanceConfig.objects.push(instanceObject);
+        });
     }
 
-    return result;
+    preparedObjects.push(instanceConfig);
 }
 
 /**
  * prepareTasks
- * @param {{connection: string, device: {id: string, type: string, common: {}, native: {}},
- *          channels: {id: string, type: string, common: {}, native: {}}[],
- *          states: {id: string, type: string, common: {}, native: {}}[]}[]} preparedObjects
- * @param {Record<string, AdapterScopedObject>} old_objects
+ * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} preparedObjects
+ * @param {Record<string, AdapterScopedObject>} oldObjects
  * @returns {{id: string, type: string, data: {common: {}, native: {}}}[]}
  */
-function prepareTasks(preparedObjects, old_objects) {
-    const devicesToUpdate = [];
-    const channelsToUpdate = [];
-    const statesToUpdate = [];
-
-    /**
-     * @param {[]} list
-     * @param {{id: string, type: string, common: {}, native: {}}} obj
-     * @param {String[]} exclude
-     */
-    function checkUpdateObj(list, obj, exclude) {
-        const oldObj = old_objects[obj.id];
-
-        // Native ergänzen falls nicht vorhanden
-        if (!obj.native) obj.native = {};
-
-        if (oldObj && oldObj.type === obj.type) {
-            if (!tools.areStatesEqual(oldObj, obj, exclude)) {
-                devicesToUpdate.push({
-                    type : `update_${obj.type}`,
-                    id   : obj.id,
-                    data : {
-                        common: obj.common,
-                        native: obj.native
-                    }
-                });
-            }
-            old_objects[obj.id] = undefined;
-        } else {
-            devicesToUpdate.push({
-                type  : `create_${obj.type}`,
-                id    : obj.id,
-                data  : {
-                    common: obj.common,
-                    native: obj.native
-                }
-            });
-        }
-    }
+function prepareTasks(preparedObjects, oldObjects) {
+    const toUpdate = [];
 
     try {
-        for (const group of preparedObjects) {
-            // Device prüfen
-            if (group.device) {
-                checkUpdateObj(devicesToUpdate, group.device, []);
-            }
+        for (const connection of preparedObjects) {
+            for (const obj of connection.objects) {
+                const oldObj = oldObjects[obj.id];
 
-            // Channels prüfen
-            for (const channel of group.channels) {
-                checkUpdateObj(channelsToUpdate, channel, []);
-            }
+                if (oldObj && oldObj.type === obj.type) {
+                    const exclude = [];
+                    if (!obj.checkStates) {
+                        exclude.push('states');
+                    }
 
-            // States prüfen
-            for (const state of group.states) {
-                checkUpdateObj(statesToUpdate, state, ['states']);
+                    if (!tools.areStatesEqual(oldObj, obj, exclude)) {
+                        toUpdate.push({
+                            type : `update_${obj.type}`,
+                            id   : obj.id,
+                            data : {
+                                common: obj.common,
+                                native: obj.native
+                            }
+                        });
+                    }
+                    delete oldObjects[obj.id];
+                } else {
+                    toUpdate.push({
+                        type  : `create_${obj.type}`,
+                        id    : obj.id,
+                        data  : {
+                            common: obj.common,
+                            native: obj.native
+                        }
+                    });
+                }
 
                 // Nur wenn der State bearbeitet werden darf hinzufügen
-                if (state.common.write) {
-                    const stateId = state.id.split('.').splice(3); // Remove AdapterNamespace + Connection
-                    const command = stateId.pop();
-                    const group   = stateId.join('.');
+                if (obj.type === 'state' && obj.common.write) {
+                    const stateId    = obj.id.split('.').splice(2); // Remove AdapterNamespace
+                    const connection = stateId.shift();                            // First is connection
+                    const command    = stateId.pop();                              // Last is command
+                    const group      = stateId.join('.');                          // Rest is group
 
-                    subscribedStates[state.id] = {connection: group.connection, group: group, command: command};
+                    subscribedStates[obj.id] = {connection: connection, group: group, command: command};
                 }
             }
         }
@@ -1240,12 +1249,9 @@ function prepareTasks(preparedObjects, old_objects) {
         adapter.log.error(e.name + ': ' + e.message);
     }
 
-    // eslint-disable-next-line no-unused-vars
-    const oldEntries = Object.keys(old_objects).map(id => ([id, old_objects[id]])).filter(([id, obj]) => obj);
-    // eslint-disable-next-line no-unused-vars
-    const toDelete = oldEntries.filter(([id, obj]) => ['device', 'channel', 'state'].includes(obj.type)).map(([id, obj]) => ({id: id, type: `delete_${obj.type}`, data: {common: {}, native: {}}}));
+    const toDelete = Object.entries(oldObjects).map(([id, obj]) => ({id: id, type: `delete_${obj.type}`, data: {common: {}, native: {}}}));
 
-    return toDelete.concat(devicesToUpdate, channelsToUpdate, statesToUpdate);
+    return toDelete.concat(toUpdate);
 }
 
 /**
@@ -1253,11 +1259,6 @@ function prepareTasks(preparedObjects, old_objects) {
  * @param {{id: string, type: String, data: {common: {}, native: {}}}[]} tasks
  */
 async function processTasks(tasks) {
-    if (!tasks || tasks.length === 0) {
-        adapter.log.debug('[processTasks] No tasks to process!');
-        return;
-    }
-
     while (tasks.length > 0) {
         const task = tasks.shift();
 
@@ -1665,8 +1666,9 @@ async function loadTwinklyDataFromObjects(connectionName) {
 
         // paused
         const paused = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.paused.id);
-        if (paused)
+        if (paused) {
             connection.paused = paused.val;
+        }
 
         // lastModeOn
         const obj = await adapter.getObjectAsync(connectionName + '.' + apiObjectsMap.ledMode.child.mode.id);
@@ -1677,30 +1679,48 @@ async function loadTwinklyDataFromObjects(connectionName) {
         }
 
         // firmware
-        const firmware = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.firmware.child.version.id);
-        if (firmware) {
-            connection.twinkly.firmware = firmware.val;
-        }
+        // const firmware = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.firmware.child.version.id);
+        // if (firmware) {
+        //     connection.twinkly.firmware = firmware.val;
+        // }
 
         // details
-        const details = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.details.parent.id);
-        if (details) {
-            const detailsJson = JSON.parse(details.val);
-            if (detailsJson)
-                tools.cloneObject(detailsJson, connection.twinkly.details);
-        }
-
-        connection.dataLoadedOnInit = true;
+        // const details = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.details.parent.id);
+        // if (details) {
+        //     const detailsJson = JSON.parse(details.val);
+        //     if (detailsJson)
+        //         tools.cloneObject(detailsJson, connection.twinkly.details);
+        // }
     } catch (e) {
         adapter.log.error(`[loadTwinklyDataFromObjects.${connectionName}] Cannot load data! ${e.message}`);
     }
 }
 
 /**
+ * Data Change
+ * @param {string} connectionName
+ * @param {string} type
+ * @param {any} val
+ * @param {any} oldVal
+ * @return {Promise<void>}
+ */
+async function onDataChange(connectionName, type, val, oldVal) {
+    try {
+        switch (type) {
+            case 'ledMode'  : await onModeChange(connectionName, val, oldVal); break;
+            case 'firmware' : await onFirmwareChange(connectionName, val, oldVal); break;
+            default         : adapter.log.debug(`[onDataChange.${connectionName}] DataChange type ${type} not handled!`);
+        }
+    } catch (e) {
+        adapter.log.error(`[onDataChange.${connectionName}] ${e.message}`);
+    }
+}
+
+/**
  * Mode Change
- * @param connectionName
- * @param newMode
- * @param oldMode
+ * @param {string} connectionName
+ * @param {string} newMode
+ * @param {string} oldMode
  * @return {Promise<void>}
  */
 async function onModeChange(connectionName, newMode, oldMode) {
@@ -1713,7 +1733,7 @@ async function onModeChange(connectionName, newMode, oldMode) {
             try {
                 await stateTools.updateObjectNative(adapter, connectionName + '.' + apiObjectsMap.ledMode.child.mode.id, {lastModeOn: newMode});
             } catch (e) {
-                adapter.log.error(`[updatePlaylist.${connectionName}] Cannot update playlist! ${e.message}`);
+                adapter.log.error(`[onModeChange.${connectionName}] Cannot update lastModeOn! ${e.message}`);
             }
         }
 
@@ -1730,10 +1750,29 @@ async function onModeChange(connectionName, newMode, oldMode) {
 }
 
 /**
+ * Firmware Change
+ * @param {string} connectionName
+ * @param {string} newVersion
+ * @param {string} oldVersion
+ * @return {Promise<void>}
+ */
+async function onFirmwareChange(connectionName, newVersion, oldVersion) {
+    try {
+        if (oldVersion !== '0.0.0') {
+            adapter.log.debug(`[onFirmwareChange.${connectionName}] Firmware changed from ${oldVersion} to ${newVersion}`);
+        }
+
+        await processObjectChanges(connectionName);
+    } catch (e) {
+        adapter.log.error(`[onFirmwareChange.${connectionName}] ${e.message}`);
+    }
+}
+
+/**
  * Get Connection and check if it is connected
  * @param {String} connectionName
- * @param {{checkPaused?: Boolean, checkConnected?: Boolean, ignoreConnected?: Boolean, writeConnectedState?: Boolean}} options
- * @return {Promise<{enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly, dataLoadedOnInit: Boolean}>}
+ * @param {{checkPaused?: Boolean, checkConnected?: Boolean, ignoreConnected?: Boolean}} options
+ * @return {Promise<{enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly, firstConnect: Boolean}>}
  */
 async function getConnection(connectionName, options = {}) {
     if (!Object.keys(connections).includes(connectionName))
@@ -1741,16 +1780,15 @@ async function getConnection(connectionName, options = {}) {
 
     const connection = connections[connectionName];
 
-    options.checkPaused = typeof options.checkPaused === 'undefined' ? true : options.checkPaused;
-    options.checkConnected = typeof options.checkConnected === 'undefined' ? false : options.checkConnected;
-    options.ignoreConnected = typeof options.ignoreConnected === 'undefined' ? false : options.ignoreConnected;
-    options.writeConnectedState = typeof options.writeConnectedState === 'undefined' ? true : options.writeConnectedState;
+    options.checkPaused = typeof options.checkPaused !== 'undefined' ? options.checkPaused : true;
+    options.checkConnected = typeof options.checkConnected !== 'undefined' ? options.checkConnected : false;
+    options.ignoreConnected = typeof options.ignoreConnected !== 'undefined' ? options.ignoreConnected : false;
 
     if ((typeof options.checkPaused === 'undefined' || options.checkPaused) && connection.paused) {
         throw new Error(`${connectionName} is paused!`);
     }
     if (options.checkConnected) {
-        await checkConnection(connectionName, options.writeConnectedState);
+        await checkConnection(connectionName);
     }
     if (!options.ignoreConnected && !connection.connected) {
         throw new Error(`${connectionName} not connected!`);
@@ -1762,10 +1800,9 @@ async function getConnection(connectionName, options = {}) {
 /**
  * Check reachability of connection
  * @param {String} connectionName
- * @param {boolean} writeState
  * @return {Promise<void>}
  */
-async function checkConnection(connectionName, writeState = true) {
+async function checkConnection(connectionName) {
     if (!Object.keys(connections).includes(connectionName)) return;
 
     const connection = connections[connectionName];
@@ -1774,8 +1811,9 @@ async function checkConnection(connectionName, writeState = true) {
     connection.connected = await connection.twinkly.checkConnection(adapter.config.usePing);
 
     try {
-        if (writeState)
+        if (await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.connected.id)) {
             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.connected.id, connection.connected, true);
+        }
     } catch (e) {
         //
     }

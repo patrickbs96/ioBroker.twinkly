@@ -24,12 +24,12 @@ The following Settings are available:
 
 In the table you can add all the Twinkly lights you want to control. 
 
-| Column       | Description                                                                                                     |
-|--------------|-----------------------------------------------------------------------------------------------------------------|
-| `Enabled`    | Shall this connection be accessed                                                                               |
-| `Name`       | Name of the connection in ioBroker                                                                              |
-| `IP Address` | IP-Address to the Twinkly Lights                                                                                |
-| `Mode On`    | Which `ledMode` should be activated when state `on` is enabled.<br/>Color, Effect, Movie, Playlist or last Mode |
+| Column       | Description                                                                                                                     |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `Enabled`    | Shall this connection be accessed                                                                                               |
+| `Name`       | Name of the connection in ioBroker                                                                                              |
+| `IP Address` | IP-Address to the Twinkly Lights                                                                                                |
+| `Mode On`    | Which `ledMode` should be activated when state `on` is enabled.<br/>Color, Effect, Movie, Music Reactive, Playlist or last Mode |
 
 The following additionals States are created per device when checked:
 * Device Info
@@ -49,7 +49,7 @@ The following States are available:
 | `ledConfig`   | :heavy_check_mark: | Configuration of LEDs                                                                                                           |
 | `ledEffect`   | :heavy_check_mark: | Effects (`Effect`)                                                                                                              |
 | `ledLayout`   | :heavy_check_mark: | Layout of LEDs (disabled for further testing)                                                                                   |
-| `ledMode`     | :heavy_check_mark: | Mode: Movie, Color, Effect, Playlist, Off, RealTime (not yet supported), Demo                                                   |
+| `ledMode`     | :heavy_check_mark: | Mode: Color, Effect, Movie, Music Reactive, Playlist, Off, RealTime (not yet supported), Demo                                   |
 | `ledMovie`    | :heavy_check_mark: | Active Movie, If multiple Movies are added in the Playlist feature then they can be selected here. (`Movie`)                    |
 | `ledPlaylist` | :heavy_check_mark: | Active Playlist Entry, Switch between Movies. (`Playlist`)                                                                      |
 | `ledSat`      | :heavy_check_mark: | Saturation 0-100 (deactivate control with -1)                                                                                   |
@@ -136,6 +136,7 @@ sendTo('twinkly.0', 'generateFrame', {
 ### **WORK IN PROGRESS**
 * Add `musicreactive` Mode
 * Add Ukrainian translation
+* Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
 
 ### 1.0.7 (2022-11-19)
 * Fixed deprecated messages from Sentry with api-validations
