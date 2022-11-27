@@ -133,6 +133,9 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.
+
 ### 1.0.8 (2022-11-26)
 * Add `musicreactive` Mode
 * Add Ukrainian translation
