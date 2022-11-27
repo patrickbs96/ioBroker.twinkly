@@ -1,4 +1,7 @@
 # Older changes
+## 1.0.2 (2022-07-07)
+* Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)
+
 ## 1.0.1 (2022-07-05)
 * Remove deprecated values from mode
 

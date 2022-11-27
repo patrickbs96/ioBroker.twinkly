@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "news": {
+      "1.0.9": {
+        "en": "Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.",
+        "de": "Erkennt nun, ob Twinkly in einer Gruppe ist (Firmware >= 2,8.3) Wenn ja, kann die Gruppe nur vom Master gesteuert werden, werden die Zustände vom Slave nur eingelesen.",
+        "ru": "Теперь обнаруживает, если Twinkly находится в группе (подтверждение >= 2.8.3) Если это так, группа может контролироваться только мастером, государства от раба читаются только.",
+        "pt": "Agora detecta se Twinkly está em um grupo (firmware >= 2.8.3) Se assim for, o grupo só pode ser controlado pelo mestre, os estados do escravo são somente leitura.",
+        "nl": "Als Twinkly in een groep 2.8.3 is, kan de groep alleen beheerd worden door de meester, de staaten van de slaaf worden gelezen.",
+        "fr": "Détecte maintenant si Twinkly est dans un groupe (firmware > 2.8.3) Si oui, le groupe ne peut être contrôlé que par le maître, les états de l'esclave sont lus seulement.",
+        "it": "Ora rileva se Twinkly è in un gruppo (firmware >= 2.8.3) Se è così, il gruppo può essere controllato solo dal padrone, gli stati dello schiavo sono in sola lettura.",
+        "es": "Ahora detecta si Twinkly está en un grupo (firmware √≥= 2.8.3) Si es así, el grupo sólo puede ser controlado por el maestro, los estados del esclavo son sólo lectura.",
+        "pl": "Teraz wykrywa, jeśli Twinkly znajduje się w grupie (firmware >= 2.8.3) Jeśli tak, grupa może być kontrolowana przez mistrza, stany z niewolnika są odczytane.",
+        "uk": "Тепер виявляє, якщо Twinkly є в групі (підтвердження>= 2.8.3) Якщо так, група може бути контрольована майстером, штати від раба читаються натільки.",
+        "zh-cn": "现在发现,如果Twinkly是一群(肯定)=2.8.3),该团体只能由总长控制,那么奴隶的各州就读。."
+      },
       "1.0.8": {
         "en": "Add `musicreactive` Mode\nAdd Ukrainian translation\nRework how objects are created, objects are now created after first connect after startup and updated after a firmware update",
         "de": "Musikreaktiver Modus hinzufügen\nUkrainische Übersetzung hinzufügen\nRework, wie Objekte erstellt werden, Objekte werden nun nach dem ersten Verbindungsaufbau nach dem Start erstellt und nach einem Firmware-Update aktualisiert",
@@ -80,19 +93,6 @@
         "pl": "Add Online-Status to object-view (ang.)\nIgnore .*uid value, nieznana, w której są dostępne (IOBROKER-TWINKLY-1Q)",
         "zh-cn": "添加网上调查\nIgnore .*uid数值,不详,可予以释放(OBROKER-TWINY-1Q)。",
         "uk": "Додайте онлайн-статус до об’єктного перегляду\nІгнорувати значення `*.uid`, невідомо, у якому випуску вони доступні (IOBROKER-TWINKLY-1Q)"
-      },
-      "1.0.2": {
-        "en": "Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
-        "de": "Fügen Sie neue Werte details.uid und details.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N) hinzu",
-        "ru": "Добавить новые значения details.uid и details.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
-        "pt": "Adicionar novos valores details.uid e details.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
-        "nl": "Voeg nieuwe waarden toe aan details en details",
-        "fr": "Ajouter de nouvelles valeurs details.uid and details.group.uid fw évangélis= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
-        "it": "Aggiungi nuovi valori dettagli.uid e dettagli.group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
-        "es": "Añada nuevos valores detalles.uid y detalles.group.uid fw ≤ 2,8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)",
-        "pl": "Addd new value details.uid and details group.uid fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N) (ang.)",
-        "zh-cn": "增加新的数值细节,详见G.uid fw >=2.8.4, fwFamily=G(IOBROKER-TWINKLY-1G, IPOKER-TWINKLY-1N)",
-        "uk": "Додайте нові значення `details.uid` і `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)"
       }
     },
     "titleLang": {

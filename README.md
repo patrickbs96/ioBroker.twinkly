@@ -133,7 +133,7 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.9 (2022-11-27)
 * Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.
 
 ### 1.0.8 (2022-11-26)
@@ -163,9 +163,6 @@ sendTo('twinkly.0', 'generateFrame', {
 ### 1.0.3 (2022-07-31)
 * Add Online-Status to object-view
 * Ignore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)
-
-### 1.0.2 (2022-07-07)
-* Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)
 
 ## License
 MIT License
