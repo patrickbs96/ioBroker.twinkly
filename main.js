@@ -1839,14 +1839,11 @@ async function handleSentryMessage(connectionName, functionName, key, message, l
 
     try {
         const connection = await getConnection(connectionName, {checkPaused: false, ignoreConnected: true});
-        message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}, ledMode=${connection.twinkly.ledMode}`;
+        message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}, productCode=${connection.twinkly.details.product_code}`;
 
         // Export more information if unsure of the reason for deprecated/newSince
         if (key.includes('deprecated:')) {
-            if (key.includes(':details:group')) {
-                // New Items since 2.8.15, available in F, deprecated in G
-                message += `, group=${JSON.stringify(connection.twinkly.details.group)}`;
-            }
+            // Add if needed...
         }
     } catch (e) {
         //
