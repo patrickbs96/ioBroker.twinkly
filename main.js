@@ -841,8 +841,8 @@ async function processMessage(obj) {
         switch (obj.command.toLowerCase()) {
             case 'uploadmovie': {
                 const connection = await getConnectionObj();
-                if (connection && typeof obj.message === 'object') {
-                    returnMsg = await connection.twinkly.uploadMovie(obj.message.movie.frames, obj.message.movie.delay);
+                if (connection && typeof obj.message === 'object' && typeof obj.message.frames === 'object' && typeof obj.message.delay === 'number') {
+                    returnMsg = await connection.twinkly.uploadMovie(obj.message.frames, obj.message.delay);
                 }
                 break;
             }
@@ -862,7 +862,7 @@ async function processMessage(obj) {
             }
             case 'sendrealtimeframe': {
                 const connection = await getConnectionObj();
-                if (connection && typeof obj.message === 'object') {
+                if (connection && typeof obj.message === 'object' && typeof obj.message.frame === 'object') {
                     returnMsg = await connection.twinkly.sendRealtimeFrame(obj.message.frame);
                 }
                 break;

@@ -75,14 +75,12 @@ The following States are available:
 ```
 sendTo('twinkly.0', 'uploadMovie', {
     connection : 'Fenster',
-    movie      : {
-        frames : [
-            [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
-            [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
-            ...
-        ],
-        delay : 250
-    }
+    frames     : [
+        [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
+        [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
+        ...
+    ],
+    delay : 250
 });
 ```
 
@@ -93,7 +91,7 @@ Upload a predefined movie.
 ```
 sendTo('twinkly.0', 'uploadTemplateMovie', {
     connection : 'Fenster',
-    template   : 0,1
+    template   : 1
 });
 
 ```
@@ -123,18 +121,20 @@ By sending the colors in the property `colors` you get an array of frames return
 sendTo('twinkly.0', 'generateFrame', {
     connection : 'Fenster',
     color      : '#dd0055' // or {r: 221, g: 0, b: 85}
-}, response => {
+});
+response => {
     // [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...]
     ...
-});
+}
 
 sendTo('twinkly.0', 'generateFrame', {
     connection : 'Fenster',
     colors     : ['#dd0055', ...] // or [{r: 221, g: 0, b: 85}, ...]
-}, response => {
+});
+response => {
     // [[{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...], ..]
     ...
-});
+}
 ```
 
 ## Changelog
