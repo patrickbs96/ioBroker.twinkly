@@ -74,14 +74,14 @@ The following States are available:
 ### Upload Movie
 ```
 sendTo('twinkly.0', 'uploadMovie', {
-    connection: 'Fenster',
-    movie: {
-        frames: [
+    connection : 'Fenster',
+    movie      : {
+        frames : [
             [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
             [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...],
             ...
         ],
-        delay: 250
+        delay : 250
     }
 });
 ```
@@ -92,8 +92,17 @@ Upload a predefined movie.
 - 1: Twinkle Christmas-Green-Red
 ```
 sendTo('twinkly.0', 'uploadTemplateMovie', {
-    connection: 'Fenster',
-    index: 0,1
+    connection : 'Fenster',
+    template   : 0,1
+});
+
+```
+### Upload Twinkle Movie
+```
+sendTo('twinkly.0', 'uploadTwinkleMovie', {
+    connection  : 'Fenster',
+    baseColor   : '#00873f', // or {r: 0, g: 135, b: 62}
+    secondColor : '#c30F15'  // or {r: 195, g: 15, b: 22}
 });
 ```
 
@@ -101,8 +110,8 @@ sendTo('twinkly.0', 'uploadTemplateMovie', {
 ### Send Realtime Frame
 ```
 sendTo('twinkly.0', 'sendrealtimeframe', {
-    connection: 'Fenster',
-    frame: [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...]
+    connection : 'Fenster',
+    frame      : [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...]
 });
 ```
 -->
@@ -112,16 +121,16 @@ Returns a full frame in one color.
 By sending the colors in the property `colors` you get an array of frames returned.
 ```
 sendTo('twinkly.0', 'generateFrame', {
-    connection: 'Fenster',
-    color : '#dd0055' // or {r: 221, g: 0, b: 85}
+    connection : 'Fenster',
+    color      : '#dd0055' // or {r: 221, g: 0, b: 85}
 }, response => {
     // [{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...]
     ...
 });
 
 sendTo('twinkly.0', 'generateFrame', {
-    connection: 'Fenster',
-    colors : ['#dd0055', ...] // or [{r: 221, g: 0, b: 85}, ...]
+    connection : 'Fenster',
+    colors     : ['#dd0055', ...] // or [{r: 221, g: 0, b: 85}, ...]
 }, response => {
     // [[{"r":221,"g":0,"b":85},{"r":221,"g":0,"b":85}, ...], ..]
     ...
@@ -133,6 +142,9 @@ sendTo('twinkly.0', 'generateFrame', {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors
+
 ### 1.0.9 (2022-11-27)
 * Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.
 

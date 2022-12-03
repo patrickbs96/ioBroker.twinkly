@@ -837,8 +837,15 @@ async function processMessage(obj) {
             }
             case 'uploadtemplatemovie': {
                 const connection = await getConnectionObj();
-                if (connection && typeof obj.message === 'object' && typeof obj.message.index === 'number') {
-                    returnMsg = await uploadTemplateMovie(obj.message.connection, obj.message.index);
+                if (connection && typeof obj.message === 'object' && typeof obj.message.template === 'number') {
+                    returnMsg = await uploadTemplateMovie(obj.message.connection, obj.message.template);
+                }
+                break;
+            }
+            case 'uploadtwinklemovie': {
+                const connection = await getConnectionObj();
+                if (connection && typeof obj.message === 'object' && typeof obj.message.baseColor !== 'undefined' && typeof obj.message.secondColor !== 'undefined') {
+                    returnMsg = await uploadTwinkleMovie(obj.message.connection, obj.message.baseColor, obj.message.secondColor);
                 }
                 break;
             }
@@ -1657,10 +1664,10 @@ async function updatePlaylist(connectionName) {
 
 /**
  * @param {String} connectionName
- * @param {Number} index
+ * @param {Number} template
  * @return {Promise<{code: Number}>}
  */
-async function uploadTemplateMovie(connectionName, index) {
+async function uploadTemplateMovie(connectionName, template) {
     let connection;
     try {
         connection = await getConnection(connectionName);
@@ -1670,7 +1677,7 @@ async function uploadTemplateMovie(connectionName, index) {
     }
 
     let frames;
-    switch (index) {
+    switch (template) {
         case 0:
             frames = twinklyMovies.generateTwinkleBlueWhite(connection.twinkly);
             break;
@@ -1681,6 +1688,25 @@ async function uploadTemplateMovie(connectionName, index) {
             frames = [];
     }
 
+    return await connection.twinkly.uploadMovie(frames, 250);
+}
+
+/**
+ * @param {String} connectionName
+ * @param {{r: number, g: number, b: number} | string} baseColor
+ * @param {{r: number, g: number, b: number} | string} secondColor
+ * @return {Promise<{code: Number}>}
+ */
+async function uploadTwinkleMovie(connectionName, baseColor, secondColor) {
+    let connection;
+    try {
+        connection = await getConnection(connectionName);
+    } catch (e) {
+        adapter.log.debug(`[uploadTwinkleMovie.${connectionName}] ${e.message}`);
+        return {code: twinkly.HTTPCodes.values.invalid};
+    }
+
+    const frames = twinklyMovies.generateTwinkle(connection.twinkly, baseColor, secondColor);
     return await connection.twinkly.uploadMovie(frames, 250);
 }
 
