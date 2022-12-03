@@ -784,15 +784,26 @@ function onStop () {
         clearInterval();
 
         // Alle Verbindungen abmelden...
-        Object.values(connections)
-            .filter(connection => !connection.paused)
-            .forEach(async connection => {
+        Object.keys(connections)
+            .filter(connectionName => !connections[connectionName].paused)
+            .forEach(async connectionName => {
+                const connection = connections[connectionName];
                 try {
                     await connection.twinkly.logout();
                 } catch (e) {
                     adapter.log.error(`[onStop.${connection.twinkly.name}] ${e}`);
                 }
+
+                // Set connection status to false
+                if (await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.connected.id)) {
+                    await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.connected.id, false, true);
+                }
             });
+
+        // Set connection status to false
+        adapter.setState('info.connection', false, true);
+
+        adapter.log.info('cleaned everything up...');
     } catch (e) {
         adapter.log.error(`[onStop] ${e}`);
     }
