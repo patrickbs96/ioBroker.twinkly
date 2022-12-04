@@ -1,6 +1,6 @@
 {
     "env": {
-        "es13": true, // es2022
+        "es6": true,
         "node": true,
         "mocha": true
     },
