@@ -27,10 +27,10 @@ let pollingInterval = null;
 const connections = {};
 
 /**
- * Sentry
- * @type {{[x: string]: string}}
+ * Sentry Messages
+ * @type {string[]}}
  */
-const sentryMessages = {};
+const sentryMessages = [];
 
 /**
  * Liste aller States
@@ -1406,11 +1406,9 @@ async function saveJSONinState(connectionName, state, json, mapping) {
         await writeState(mapping.parent.id, mapping.parent, json, true);
     }
 
-    if (mapping.logItem && !initializing) { // Don't handle Sentry Messages during startup) {
-        await handleSentryMessage(connectionName, 'saveJSONinState',
-            `LogItem:${connectionName}:${mapping.parent.id}`,
-            `LogItem (${connectionName}.${mapping.parent.id}, ${JSON.stringify(json)})`,
-            'info');
+    if (mapping.logItem) {
+        await handleSentryMessage(connectionName, 'saveJSONinState', 'logItem',
+            `${connectionName}:${mapping.parent.id}`, `Log Response: ${connectionName}.${mapping.parent.id}`, 'info', json, 'query');
     }
 }
 
@@ -1445,11 +1443,11 @@ async function checkTwinklyResponse(connectionName, response, mapping) {
  *          child: {}, expandJSON: boolean, logItem?: boolean, hide?: boolean}} mapping
  */
 async function checkTwinklyResponseNewSince(connectionName, name, response, mapping) {
-    if (typeof response === 'undefined') return;
+    if (typeof response === 'undefined' || typeof response !== 'object') return;
 
     for (const key of Object.keys(response)) {
         if (mapping.child && Object.keys(mapping.child).includes(key)) {
-            if (typeof response[key] === 'object' && !Array.isArray(response[key])) {
+            if (typeof response[key] !== 'object' || !Array.isArray(response[key])) {
                 let continueCheck;
                 if (mapping.child[key].parent !== undefined) {
                     continueCheck = await allowState(connectionName, mapping.child[key].parent, {hide: false, ignoreDeprecated: true, ignoreNewSince: true, filter: false, newSince: false});
@@ -1459,18 +1457,14 @@ async function checkTwinklyResponseNewSince(connectionName, name, response, mapp
 
                 if (continueCheck) {
                     await checkTwinklyResponseNewSince(connectionName, name + '.' + key, response[key], mapping.child[key]);
-                } else if (!initializing) { // Don't handle Sentry Messages during startup
-                    await handleSentryMessage(connectionName, 'checkTwinklyResponse',
-                        `reintroduced:${connectionName}:${name}:${key}`,
-                        `Item reintroduced! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`,
-                        'warning');
+                } else {
+                    await handleSentryMessage(connectionName, 'checkTwinklyResponse', 'reintroduced', `${connectionName}:${name}:${key}`,
+                        `Item reintroduced: ${connectionName}.${name}.${key}`, 'warning', {[typeof response[key]]: response[key]}, 'query');
                 }
             }
-        } else if (!initializing) { // Don't handle Sentry Messages during startup{
-            await handleSentryMessage(connectionName, 'checkTwinklyResponse',
-                `newSince:${connectionName}:${name}:${key}`,
-                `New Item detected! (${connectionName}.${name}.${key}, ${JSON.stringify(response[key])}, ${typeof response[key]})`,
-                'warning');
+        } else {
+            await handleSentryMessage(connectionName, 'checkTwinklyResponse', 'newSince', `${connectionName}:${name}:${key}`,
+                `New Item detected: ${connectionName}.${name}.${key}`, 'warning', {[typeof response[key]]: response[key]}, 'query');
         }
     }
 }
@@ -1499,11 +1493,9 @@ async function checkTwinklyResponseDeprecated(connectionName, name, response, ma
                 canHandle = await allowState(connectionName, mapping.child[child], {hide: false, ignoreDeprecated: true});
             }
 
-            if (canHandle && !initializing) { // Don't handle Sentry Messages during startup
-                await handleSentryMessage(connectionName, 'checkTwinklyResponse',
-                    `deprecated:${connectionName}:${name}:${child}`,
-                    `Item deprecated: ${connectionName}.${name}.${child}`,
-                    'warning');
+            if (canHandle) {
+                await handleSentryMessage(connectionName, 'checkTwinklyResponse', 'deprecated', `${connectionName}:${name}:${child}`,
+                    `Item deprecated: ${connectionName}.${name}.${child}`, 'warning');
             }
         }
     }
@@ -1796,10 +1788,8 @@ async function onModeChange(connectionName, newMode) {
 
         // Check if it is a new ledMode
         if (!Object.values(twinkly.lightModes.value).includes(newMode)) {
-            await handleSentryMessage(connectionName, 'onModeChange',
-                `ledMode:${connectionName}:${newMode}`,
-                `New ledMode found: ${connectionName} ${newMode}`,
-                'warning');
+            await handleSentryMessage(connectionName, 'onModeChange', 'ledMode', `${connectionName}:${newMode}`,
+                'New ledMode found', 'warning', {'ledMode': newMode});
         }
     } catch (e) {
         adapter.log.error(`[onModeChange.${connectionName}] ${e.message}`);
@@ -1865,36 +1855,71 @@ async function checkConnection(connectionName) {
  * Handle Sentry Messages and check if already sent
  * @param {String} connectionName
  * @param {String} functionName
+ * @param {string} category
  * @param {String} key
  * @param {String} message
- * @param {'fatal'|'error'|'warning'|'log'|'info'|'debug'} level?
+ * @param {'fatal'|'error'|'warning'|'log'|'info'|'debug'} level
+ * @param {{[key: string]: any}} data
+ * @param {'default'|'debug'|'error'|'navigation'|'http'|'info'|'query'|'transaction'|'ui'|'user'} breadcrumbType
  */
-async function handleSentryMessage(connectionName, functionName, key, message, level) {
+async function handleSentryMessage(connectionName, functionName, category, key, message, level, data = {}, breadcrumbType = 'info') {
+    // Don't handle Sentry Messages during startup
+    if (initializing) return;
+
     // Anonymize Connection-Name
     key = key.replace(connectionName, '####');
     message = message.replace(connectionName, '');
 
+    const tags = {};
+    const details = {};
     try {
         const connection = await getConnection(connectionName, {checkPaused: false, ignoreConnected: true});
-        message += `, fw=${connection.twinkly.firmware}, fwFamily=${connection.twinkly.details.fw_family}, productCode=${connection.twinkly.details.product_code}`;
+        // Sentry Tags
+        tags['twFw']          = connection.twinkly.firmware;
+        tags['twFwFamily']    = connection.twinkly.details.fw_family;
+        tags['twProductCode'] = connection.twinkly.details.product_code;
+        // Sentry Details
+        details['LED Mode']    = connection.twinkly.ledMode;
+        details['LED Profile'] = connection.twinkly.details.led_profile;
 
         // Export more information if unsure of the reason for deprecated/newSince
-        if (key.includes('deprecated:')) {
+        if (category === 'deprecated') {
             // Add if needed...
         }
     } catch (e) {
         //
     }
 
-    const sentryKey = `${functionName}:${key}`;
-    if (!Object.keys(sentryMessages).includes(sentryKey)) {
-        sentryMessages[sentryKey] = message;
+    const sentryKey = `${functionName}:${category}:${key}`;
+    if (!sentryMessages.includes(sentryKey)) {
+        sentryMessages.push(sentryKey);
+
+        const functionMessage = `[${functionName}] ${message}`;
 
         const sentryObject = getSentryObject();
         if (typeof sentryObject !== 'undefined') {
-            sentryObject.captureMessage(`[${functionName}] ${message}`, level);
+            sentryObject.withScope(scope => {
+                scope.setTags(tags);
+                scope.setContext('details', details);
+
+                if (typeof data === 'object' && Object.keys(data).length > 0) {
+                    scope.addBreadcrumb({
+                        type: breadcrumbType,
+                        category: category,
+                        level: level,
+                        message: functionMessage,
+                        data: data
+                    });
+                }
+
+                if (level === 'fatal' || level === 'error') {
+                    sentryObject.captureException(new Error(message));
+                } else {
+                    sentryObject.captureMessage(message, level);
+                }
+            });
         } else {
-            adapter.log.info(`[${functionName}] ${message} --> Please notify the developer!`);
+            adapter.log.info(`${functionMessage} --> Please notify the developer!`);
         }
     }
 
@@ -1927,7 +1952,22 @@ function clearInterval() {
 /**
  * Get Sentry Object
  * @returns {{captureMessage  : function(message: string, level?: 'fatal'|'error'|'warning'|'log'|'info'|'debug'),
- *            captureException: function(exception: string|Error)} | undefined}
+ *            captureException: function(exception: string|Error),
+ *            configureScope  : function(callback: (scope: {setUser: function(user: {id?: string, ip_address?: string, email?: string, username?: string} || null),
+ *                                                          setTag : function(key: string, value: string),
+ *                                                          setTags: function({[key: string]: string})
+ *                                                  }) => void),
+ *            withScope       : function(callback: (scope: {setUser      : function(user: {id?: string, ip_address?: string, email?: string, username?: string} || null),
+ *                                                          setTag       : function(key: string, value: string),
+ *                                                          setTags      : function({[key: string]: string}),
+ *                                                          setContext   : function(key: string, context: {[key: string]: string}),
+ *                                                          setLevel     : function(level: 'fatal'|'error'|'warning'|'log'|'info'|'debug'),
+ *                                                          addBreadcrumb: function(breadcrumb: {type?: 'default'|'debug'|'error'|'navigation'|'http'|'info'|'query'|'transaction'|'ui'|'user',
+ *                                                                                               level?: 'fatal'|'error'|'warning'|'log'|'info'|'debug',
+ *                                                                                               event_id?: string, category?: string, message?: string, data?: {[key: string]: any}, timestamp?: number},
+ *                                                                                  maxBreadcrumbs?: number)
+ *                                                  }) => void)}
+ *            | undefined}
  */
 function getSentryObject() {
     if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
