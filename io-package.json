@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.9",
+    "version": "1.0.10-beta.0",
     "news": {
+      "1.0.10-beta.0": {
+        "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors",
+        "de": "In den Warenkorb Zur Nachricht hochladenTwinkle Film zum Hochladen eines twinkle Films mit eigenen Farben",
+        "ru": "Добавить отправить Чтобы загрузить сообщениеTwinkle Фильм для загрузки фильма twinkle с собственными цветами",
+        "pt": "Adicionar Para enviar mensagemTwinkle Filme para fazer upload de um filme twinkle com próprias cores",
+        "nl": "Vertaling: Twinkle Film om een tweelingfilm te uploaden met eigen kleuren",
+        "fr": "Ajouter envoyer Pour envoyer un messageTwinkle Film pour télécharger un film avec des couleurs propres",
+        "it": "Aggiungi Caricamento messaggioTwinkle Film per caricare un film twinkle con i propri colori",
+        "es": "Agregar envío Para cargar mensajesTwinkle Película para subir una película con colores propios",
+        "pl": "Wysyłać do wiadomości upload Movie wydało film z własnymi kolorami",
+        "uk": "Додати відправлення Для завантаження повідомлень Фільми для завантаження близнюків з власними квітами",
+        "zh-cn": "增 编 D. 发出的信息 装有自己的颜色的双壳电影"
+      },
       "1.0.9": {
         "en": "Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.",
         "de": "Erkennt nun, ob Twinkly in einer Gruppe ist (Firmware >= 2,8.3) Wenn ja, kann die Gruppe nur vom Master gesteuert werden, werden die Zustände vom Slave nur eingelesen.",
@@ -80,19 +93,6 @@
         "pl": "Upload Movies (ang.)\nUpload Generated Movies (ang.)\nSend Realtime Frame (ang.)\nGenerate Full Frame in one color (create own frames) (ang.)\nUpdates imports to fw 2.6.6\nUlepszenie API z Sentry",
         "uk": "Завантажити кіно\nЗавантажити Generated Movies\n-Закінчення в режимі реального часу\nГенерувати повну рамку в одному кольорі (створити власні кадри)\nUpdate deprecated стани для fw 2.6.6\nUpdate twinkly API Питання з Sentry",
         "zh-cn": "载 录\n装载的摩维斯\n- 假日\n在一个色彩(形成自己的框架)中形成全面欺诈\n最新编排国家\n二. 来自Sentry的“新生动”问题"
-      },
-      "1.0.3": {
-        "en": "Add Online-Status to object-view\nIgnore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)",
-        "de": "Online-Status zur Objektansicht hinzufügen\nIgnorieren .*uid-Werte, unbekannt, in denen sie freigeben (IOBROKER-TWINKLY-1Q)",
-        "ru": "Добавить Online-Status в объект-просмотр\nИгнорировать значения .*uid, неизвестные в какой версии они доступны (IOBROKER-TWINKLY-1Q)",
-        "pt": "Adicionar Online-Status a object-view\nIgnorar valores .*uid, desconhecidos em que versão estão disponíveis (IOBROKER-TWINKLY-1Q)",
-        "nl": "Voeg Online-Status toe aan object-view\nIgnore ",
-        "fr": "Ajouter Online-Status à object-view\nIgnore .*uid values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)",
-        "it": "Aggiungi Online-Status a object-view\nIgnora i valori .*uid, sconosciuti in cui sono disponibili (IOBROKER-TWINKLY-1Q)",
-        "es": "Añadir Online-Status a la vista del objeto\nIgnorar valores .*uid, desconocidos en los que se liberan están disponibles (IOBROKER-TWINKLY-1Q)",
-        "pl": "Add Online-Status to object-view (ang.)\nIgnore .*uid value, nieznana, w której są dostępne (IOBROKER-TWINKLY-1Q)",
-        "zh-cn": "添加网上调查\nIgnore .*uid数值,不详,可予以释放(OBROKER-TWINY-1Q)。",
-        "uk": "Додайте онлайн-статус до об’єктного перегляду\nІгнорувати значення `*.uid`, невідомо, у якому випуску вони доступні (IOBROKER-TWINKLY-1Q)"
       }
     },
     "titleLang": {
