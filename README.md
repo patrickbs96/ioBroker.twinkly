@@ -141,12 +141,6 @@ response => {
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
-* Test
-
-### 1.0.10-beta.1 (2022-12-05)
-* Test
-
-### 1.0.10-beta.0 (2022-12-05)
 * Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors
 
 ### 1.0.9 (2022-11-27)
