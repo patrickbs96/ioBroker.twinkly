@@ -1789,7 +1789,7 @@ async function onModeChange(connectionName, newMode) {
         // Check if it is a new ledMode
         if (!Object.values(twinkly.lightModes.value).includes(newMode)) {
             await handleSentryMessage(connectionName, 'onModeChange', 'ledMode', `${connectionName}:${newMode}`,
-                'New ledMode found', {'ledMode': newMode}, 'warning');
+                'New ledMode found', 'warning', {'ledMode': newMode});
         }
     } catch (e) {
         adapter.log.error(`[onModeChange.${connectionName}] ${e.message}`);
@@ -1953,16 +1953,20 @@ function clearInterval() {
  * Get Sentry Object
  * @returns {{captureMessage  : function(message: string, level?: 'fatal'|'error'|'warning'|'log'|'info'|'debug'),
  *            captureException: function(exception: string|Error),
- *            withScope : function(callback: (scope: {setUser: function(user: {id?: string, ip_address?: string, email?: string, username?: string}),
- *                                                    setTag: function(key: string, value: string),
- *                                                    setTags: function({[key: string]: string}),
- *                                                    setContext: function(key: string, context: {[key: string]: string}),
- *                                                    setLevel: function(level: 'fatal'|'error'|'warning'|'log'|'info'|'debug'),
- *                                                    addBreadcrumb: function(breadcrumb: {type?: 'default'|'debug'|'error'|'navigation'|'http'|'info'|'query'|'transaction'|'ui'|'user',
- *                                                                                         level?: 'fatal'|'error'|'warning'|'log'|'info'|'debug',
- *                                                                                         event_id?: string, category?: string, message?: string, data?: {[key: string]: any}, timestamp?: number},
- *                                                                            maxBreadcrumbs?: number)
- *                                            }) => void)}
+ *            configureScope  : function(callback: (scope: {setUser: function(user: {id?: string, ip_address?: string, email?: string, username?: string} || null),
+ *                                                          setTag : function(key: string, value: string),
+ *                                                          setTags: function({[key: string]: string})
+ *                                                  }) => void),
+ *            withScope       : function(callback: (scope: {setUser      : function(user: {id?: string, ip_address?: string, email?: string, username?: string} || null),
+ *                                                          setTag       : function(key: string, value: string),
+ *                                                          setTags      : function({[key: string]: string}),
+ *                                                          setContext   : function(key: string, context: {[key: string]: string}),
+ *                                                          setLevel     : function(level: 'fatal'|'error'|'warning'|'log'|'info'|'debug'),
+ *                                                          addBreadcrumb: function(breadcrumb: {type?: 'default'|'debug'|'error'|'navigation'|'http'|'info'|'query'|'transaction'|'ui'|'user',
+ *                                                                                               level?: 'fatal'|'error'|'warning'|'log'|'info'|'debug',
+ *                                                                                               event_id?: string, category?: string, message?: string, data?: {[key: string]: any}, timestamp?: number},
+ *                                                                                  maxBreadcrumbs?: number)
+ *                                                  }) => void)}
  *            | undefined}
  */
 function getSentryObject() {
