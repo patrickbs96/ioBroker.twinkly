@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.10-beta.2",
+    "version": "1.0.10-beta.3",
     "news": {
+      "1.0.10-beta.3": {
+        "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors\nUpdate Release Integration in Github Actions and Sentry",
+        "de": "In den Warenkorb Zur Nachricht hochladenTwinkle Film zum Hochladen eines twinkle Films mit eigenen Farben\nVeröffentlichung Integration in Github Actions und Sentry",
+        "ru": "Добавить отправить Чтобы загрузить сообщениеTwinkle Фильм для загрузки фильма twinkle с собственными цветами\nИнтеграция обновлений в Github Actions и Sentry",
+        "pt": "Adicionar Para enviar mensagemTwinkle Filme para fazer upload de um filme twinkle com próprias cores\nIntegração de lançamento de atualização em ações do Github e Sentry",
+        "nl": "Vertaling: Twinkle Film om een tweelingfilm te uploaden met eigen kleuren\nUpdate Release Integratie in Github Acties",
+        "fr": "Ajouter envoyer Pour envoyer un messageTwinkle Film pour télécharger un film avec des couleurs propres\nMise à jour Intégration de la publication dans les actions Github et Sentry",
+        "it": "Aggiungi Caricamento messaggioTwinkle Film per caricare un film twinkle con i propri colori\nIntegrazione del rilascio di aggiornamento in Github Azioni e Sentry",
+        "es": "Agregar envío Para cargar mensajesTwinkle Película para subir una película con colores propios\nUpdate Release Integration in Github Actions and Sentry",
+        "pl": "Wysyłać do wiadomości upload Movie wydało film z własnymi kolorami\nUchwalenie Integracji w Github Actions and Sentry",
+        "uk": "Додати відправлення Для завантаження повідомлень Фільми для завантаження близнюків з власними квітами\nОновлення інтеграції релізів в Github Дії та Стоматології",
+        "zh-cn": "增 编 D. 发出的信息 装有自己的颜色的双壳电影\nB. 吉隆布行动和Sentry的最新释放"
+      },
       "1.0.10-beta.2": {
         "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors",
         "de": "In den Warenkorb Zur Nachricht hochladenTwinkle Film zum Hochladen eines twinkle Films mit eigenen Farben",
@@ -80,19 +93,6 @@
         "pl": "Zabronione wiadomości od Sentry z api-validation\nTryb automatycznego przełącznika miał błąd z listami odtwarzaczymi. Nie można było wybierać żadnego elementu.",
         "uk": "Фіксовані депресовані повідомлення від Sentry з api-validations\nАвтоматичний режим вимикача мав помилку зі списками відтворення. Плейлистовий елемент не можна вибрати.",
         "zh-cn": "Sentry有固定的电传器\n自动转换模式有误导者。 不能选择项目。."
-      },
-      "1.0.6": {
-        "en": "Fixed polling (ledBri, ledSat)\nAdded Connection-Info",
-        "de": "Feste Bestäubung (ledBri, ledSat)\nVerbindungs-Info hinzugefügt",
-        "ru": "Фиксированный опрос (ledBri, ledSat)\nДобавлено Connection-Info",
-        "pt": "Pesquisa fixa (ledBri, ledSat)\nAdicionado Conexão-Info",
-        "nl": "Gerepareerde polling (leBri)\nVertaling:",
-        "fr": "Polling fixe (ledBri, ledSat)\nAjouté Connection-Info",
-        "it": "Inquinamento fisso (ledBri, ledSat)\nAggiunto Connessione-Info",
-        "es": "Votación fija (ledBri, ledSat)\nConexión adicional-info",
-        "pl": "BadSat (ang.)\nAdded Connection-Info",
-        "uk": "Виправлено опитування (ledBri, ledSat)\nДодано підключення-Info",
-        "zh-cn": "混合投票(由领先的Bri)\nA. 增加免疫接种-信息"
       }
     },
     "titleLang": {

@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.10-beta.3 (2022-12-05)
 * Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors
 * Update Release Integration in Github Actions and Sentry
 
