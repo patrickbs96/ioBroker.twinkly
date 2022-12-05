@@ -3,58 +3,6 @@
     "name": "twinkly",
     "version": "1.0.10-beta.3",
     "news": {
-      "1.0.10-beta.3": {
-        "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors\nUpdate Release Integration in Github Actions and Sentry",
-        "de": "In den Warenkorb Zur Nachricht hochladenTwinkle Film zum Hochladen eines twinkle Films mit eigenen Farben\nVeröffentlichung Integration in Github Actions und Sentry",
-        "ru": "Добавить отправить Чтобы загрузить сообщениеTwinkle Фильм для загрузки фильма twinkle с собственными цветами\nИнтеграция обновлений в Github Actions и Sentry",
-        "pt": "Adicionar Para enviar mensagemTwinkle Filme para fazer upload de um filme twinkle com próprias cores\nIntegração de lançamento de atualização em ações do Github e Sentry",
-        "nl": "Vertaling: Twinkle Film om een tweelingfilm te uploaden met eigen kleuren\nUpdate Release Integratie in Github Acties",
-        "fr": "Ajouter envoyer Pour envoyer un messageTwinkle Film pour télécharger un film avec des couleurs propres\nMise à jour Intégration de la publication dans les actions Github et Sentry",
-        "it": "Aggiungi Caricamento messaggioTwinkle Film per caricare un film twinkle con i propri colori\nIntegrazione del rilascio di aggiornamento in Github Azioni e Sentry",
-        "es": "Agregar envío Para cargar mensajesTwinkle Película para subir una película con colores propios\nUpdate Release Integration in Github Actions and Sentry",
-        "pl": "Wysyłać do wiadomości upload Movie wydało film z własnymi kolorami\nUchwalenie Integracji w Github Actions and Sentry",
-        "uk": "Додати відправлення Для завантаження повідомлень Фільми для завантаження близнюків з власними квітами\nОновлення інтеграції релізів в Github Дії та Стоматології",
-        "zh-cn": "增 编 D. 发出的信息 装有自己的颜色的双壳电影\nB. 吉隆布行动和Sentry的最新释放"
-      },
-      "1.0.10-beta.2": {
-        "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors",
-        "de": "In den Warenkorb Zur Nachricht hochladenTwinkle Film zum Hochladen eines twinkle Films mit eigenen Farben",
-        "ru": "Добавить отправить Чтобы загрузить сообщениеTwinkle Фильм для загрузки фильма twinkle с собственными цветами",
-        "pt": "Adicionar Para enviar mensagemTwinkle Filme para fazer upload de um filme twinkle com próprias cores",
-        "nl": "Vertaling: Twinkle Film om een tweelingfilm te uploaden met eigen kleuren",
-        "fr": "Ajouter envoyer Pour envoyer un messageTwinkle Film pour télécharger un film avec des couleurs propres",
-        "it": "Aggiungi Caricamento messaggioTwinkle Film per caricare un film twinkle con i propri colori",
-        "es": "Agregar envío Para cargar mensajesTwinkle Película para subir una película con colores propios",
-        "pl": "Wysyłać do wiadomości upload Movie wydało film z własnymi kolorami",
-        "uk": "Додати відправлення Для завантаження повідомлень Фільми для завантаження близнюків з власними квітами",
-        "zh-cn": "增 编 D. 发出的信息 装有自己的颜色的双壳电影"
-      },
-      "1.0.10-beta.1": {
-        "en": "Test",
-        "de": "Prüfung",
-        "ru": "Тест",
-        "pt": "Teste de teste",
-        "nl": "Test",
-        "fr": "Essai",
-        "it": "Test",
-        "es": "Prueba",
-        "pl": "Test",
-        "uk": "Тести",
-        "zh-cn": "试验"
-      },
-      "1.0.10-beta.0": {
-        "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors",
-        "de": "In den Warenkorb Zur Nachricht hochladenTwinkle Film zum Hochladen eines twinkle Films mit eigenen Farben",
-        "ru": "Добавить отправить Чтобы загрузить сообщениеTwinkle Фильм для загрузки фильма twinkle с собственными цветами",
-        "pt": "Adicionar Para enviar mensagemTwinkle Filme para fazer upload de um filme twinkle com próprias cores",
-        "nl": "Vertaling: Twinkle Film om een tweelingfilm te uploaden met eigen kleuren",
-        "fr": "Ajouter envoyer Pour envoyer un messageTwinkle Film pour télécharger un film avec des couleurs propres",
-        "it": "Aggiungi Caricamento messaggioTwinkle Film per caricare un film twinkle con i propri colori",
-        "es": "Agregar envío Para cargar mensajesTwinkle Película para subir una película con colores propios",
-        "pl": "Wysyłać do wiadomości upload Movie wydało film z własnymi kolorami",
-        "uk": "Додати відправлення Для завантаження повідомлень Фільми для завантаження близнюків з власними квітами",
-        "zh-cn": "增 编 D. 发出的信息 装有自己的颜色的双壳电影"
-      },
       "1.0.9": {
         "en": "Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.",
         "de": "Erkennt nun, ob Twinkly in einer Gruppe ist (Firmware >= 2,8.3) Wenn ja, kann die Gruppe nur vom Master gesteuert werden, werden die Zustände vom Slave nur eingelesen.",
