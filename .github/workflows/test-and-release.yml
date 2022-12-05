@@ -1,11 +1,18 @@
 name: Test and Release
 
-# Run this job on tags with a semantic version
+# Run this job on all pushes and pull requests
+# as well as tags with a semantic version
 on:
   push:
+    branches:
+      - "master"
+      - "develop"
     tags:
       # normal versions
       - "v[0-9]+.[0-9]+.[0-9]+"
+      # pre-releases
+      - "v[0-9]+.[0-9]+.[0-9]+-**"
+  pull_request: {}
 
 # Cancel previous PR/branch runs when a new commit is pushed
 concurrency:
