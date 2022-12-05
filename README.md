@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.10-beta.0 (2022-12-05)
 * Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors
 
 ### 1.0.9 (2022-11-27)
@@ -169,10 +169,6 @@ response => {
 * Generate Full Frame in one color (create own frames)
 * Update deprecated states to fw 2.6.6
 * Update twinkly API Issues from Sentry
-
-### 1.0.3 (2022-07-31)
-* Add Online-Status to object-view
-* Ignore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)
 
 ## License
 MIT License

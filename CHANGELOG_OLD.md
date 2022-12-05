@@ -1,4 +1,8 @@
 # Older changes
+## 1.0.3 (2022-07-31)
+* Add Online-Status to object-view
+* Ignore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)
+
 ## 1.0.2 (2022-07-07)
 * Add new values `details.uid` and `details.group.uid` fw >= 2.8.4, fwFamily=G (IOBROKER-TWINKLY-1G, IOBROKER-TWINKLY-1N)
 
