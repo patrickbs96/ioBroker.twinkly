@@ -140,8 +140,9 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### 1.0.10-beta.2 (2022-12-05)
+### **WORK IN PROGRESS**
 * Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors
+* Update Release Integration in Github Actions and Sentry
 
 ### 1.0.9 (2022-11-27)
 * Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.
