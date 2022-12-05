@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.10-beta.1",
+    "version": "1.0.10-beta.2",
     "news": {
+      "1.0.10-beta.2": {
+        "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors",
+        "de": "In den Warenkorb Zur Nachricht hochladenTwinkle Film zum Hochladen eines twinkle Films mit eigenen Farben",
+        "ru": "Добавить отправить Чтобы загрузить сообщениеTwinkle Фильм для загрузки фильма twinkle с собственными цветами",
+        "pt": "Adicionar Para enviar mensagemTwinkle Filme para fazer upload de um filme twinkle com próprias cores",
+        "nl": "Vertaling: Twinkle Film om een tweelingfilm te uploaden met eigen kleuren",
+        "fr": "Ajouter envoyer Pour envoyer un messageTwinkle Film pour télécharger un film avec des couleurs propres",
+        "it": "Aggiungi Caricamento messaggioTwinkle Film per caricare un film twinkle con i propri colori",
+        "es": "Agregar envío Para cargar mensajesTwinkle Película para subir una película con colores propios",
+        "pl": "Wysyłać do wiadomości upload Movie wydało film z własnymi kolorami",
+        "uk": "Додати відправлення Для завантаження повідомлень Фільми для завантаження близнюків з власними квітами",
+        "zh-cn": "增 编 D. 发出的信息 装有自己的颜色的双壳电影"
+      },
       "1.0.10-beta.1": {
         "en": "Test",
         "de": "Prüfung",
@@ -80,19 +93,6 @@
         "pl": "BadSat (ang.)\nAdded Connection-Info",
         "uk": "Виправлено опитування (ledBri, ledSat)\nДодано підключення-Info",
         "zh-cn": "混合投票(由领先的Bri)\nA. 增加免疫接种-信息"
-      },
-      "1.0.5": {
-        "en": "Fixed error when changing active movie (#173)",
-        "de": "Fehler beim Wechsel des aktiven Films behoben (#173)",
-        "ru": "Исправлена ошибка при изменении активного фильма (#173)",
-        "pt": "Erro fixo ao alterar filme ativo (#173)",
-        "nl": "Verzonnen fout wanneer je actieve film verandert",
-        "fr": "Erreur fixe lors de la modification du film actif (#173)",
-        "it": "Errore fisso durante la modifica del film attivo (#173)",
-        "es": "Error fijo al cambiar la película activa (#173)",
-        "pl": "Zmiana błędu po zmianie aktywnego filmu (#173)",
-        "uk": "Виправлена помилка при зміні активного кіно (#173)",
-        "zh-cn": "在改变积极电影(第173号)时,固定错误"
       }
     },
     "titleLang": {

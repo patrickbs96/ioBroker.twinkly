@@ -1,12 +1,4 @@
 # Older changes
-## 1.0.4 (2022-10-15)
-* Upload Movies
-* Upload Generated Movies
-* --Send Realtime Frame
-* Generate Full Frame in one color (create own frames)
-* Update deprecated states to fw 2.6.6
-* Update twinkly API Issues from Sentry
-
 ## 1.0.3 (2022-07-31)
 * Add Online-Status to object-view
 * Ignore `*.uid` values, unknown in which release they are available (IOBROKER-TWINKLY-1Q)
