@@ -78,7 +78,7 @@ jobs:
 
           sentry: true
           sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          sentry-url: "https://sentry.io"
+          sentry-url: "https://sentry.io/"
           sentry-org: "patrickbs96"
           sentry-project: "iobroker-twinkly"
           sentry-version-prefix: "iobroker.twinkly"
