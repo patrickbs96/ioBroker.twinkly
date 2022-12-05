@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.11-beta.1 (2022-12-05)
 * Updated Sentry logging for better viewability
 
 ### 1.0.10 (2022-12-05)

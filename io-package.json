@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.11-beta.0",
+    "version": "1.0.11-beta.1",
     "news": {
+      "1.0.11-beta.1": {
+        "en": "Updated Sentry logging for better viewability",
+        "de": "Aktualisiertes Sentry Protokoll für bessere Sichtbarkeit",
+        "ru": "Обновленная стружка Sentry для лучшего просмотра",
+        "pt": "Registro de Sentry atualizado para melhor visibilidade",
+        "nl": "Update Sentry op zoek naar beter zicht",
+        "fr": "Mise à jour du logging Sentry pour une meilleure visibilité",
+        "it": "Registrazione Sentry aggiornata per una migliore visibilità",
+        "es": "Registro de centry actualizado para una mejor visualización",
+        "pl": "Ulepszona praca Sentrylog for better viewability",
+        "uk": "Оновлений журнал Sentry для кращої видимості",
+        "zh-cn": "A. 更新的采样,以便更好地了解"
+      },
       "1.0.11-beta.0": {
         "en": "Updated Sentry logging for better viewability",
         "de": "Aktualisiertes Sentry Protokoll für bessere Sichtbarkeit",
