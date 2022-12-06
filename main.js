@@ -1887,6 +1887,9 @@ async function handleSentryMessage(connectionName, functionName, category, key, 
         // Export more information if unsure of the reason for deprecated/newSince
         if (category === 'deprecated') {
             // Add if needed...
+            if (key.contains('details:group')) {
+                details['Group'] = connection.twinkly.details.group;
+            }
         }
     } catch (e) {
         //
