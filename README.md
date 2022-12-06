@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.11-beta.3 (2022-12-06)
 * Extend Sentry logging for details.groups when "deprecated"
 * Cancel active pause not working after startup if active beforehand
 
@@ -166,10 +166,6 @@ response => {
 ### 1.0.7 (2022-11-19)
 * Fixed deprecated messages from Sentry with api-validations
 * Automatic switch mode had an error with playlists. Playlist item could never be selected.
-
-### 1.0.6 (2022-11-19)
-* Fixed polling (ledBri, ledSat)
-* Added Connection-Info
 
 ## License
 MIT License

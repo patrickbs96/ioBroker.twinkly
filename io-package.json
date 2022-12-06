@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.11-beta.2",
+    "version": "1.0.11-beta.3",
     "news": {
+      "1.0.11-beta.3": {
+        "en": "Extend Sentry logging for details.groups when \"deprecated\"\nCancel active pause not working after startup if active beforehand",
+        "de": "Erweitern Sie Sentry Protokoll für Details. Gruppen bei Abschreibungen\nStoppen Sie die aktive Pause nicht nach dem Start arbeiten, wenn aktiv vorhand",
+        "ru": "Расширяйте заготовку Sentry для деталей. группы при определённом\nОтменить активную паузу не работая после запуска если активный заранее",
+        "pt": "Estenda o registro da Sentry para obter detalhes. grupos quando desprezados\nCancelar pausa ativa não funciona após a inicialização se ativa de antemão",
+        "nl": "Extend Sentry op zoek naar details. Groep wanneer gedepreceerd\nAnnuleer actieve pauze niet na de start",
+        "fr": "Étendez Sentry logging pour plus de détails. les groupes dépréciés\nAnnuler pause active ne fonctionnant pas après le démarrage si active avant-main",
+        "it": "Estendere la registrazione Sentry per i dettagli. gruppi quando deprecato\nAnnulla pausa attiva non funzionante dopo l'avvio se attiva in anticipo",
+        "es": "Extender registro de centinelas para detalles. grupos cuando deprecated\nCancelar pausa activa no trabajar después de la puesta en marcha si activa antes",
+        "pl": "Długa lista do szczegółów. Grupy, w których wspominają o uprzednim zaniedbowaniu\nAktywność Cancela nie działa po rozpoczęciu startu, jeśli aktywnie działała",
+        "uk": "Продовжити журналювання Sentry для деталей. групи при депресованих\nСкасувати активний пауза не працює після запуску, якщо активна передньою рукою",
+        "zh-cn": "详见Sentry伐木。 被提名的群体\n如果在先知之前积极开展工作,那么在开始后没有工作。"
+      },
       "1.0.11-beta.2": {
         "en": "Merge libraries request and twinkly\nOptimized Code in requests",
         "de": "Merge Bibliotheken Anfrage und twinkly\nOptimierter Code in Anfragen",
@@ -80,19 +93,6 @@
         "pl": "Mode reaktywny\nTłumaczenie ukraińskie\nZastosowanie tego, jak obiekty są tworzone, obecnie obiekty tworzone po pierwszym połączeniu po uruchomieniu i aktualizacji oprogramowania po aktualizacji oprogramowania",
         "uk": "Додати музичний режим\nДодати український переклад\nПереробити, як створюються об'єкти, об'єкти тепер створюються після першого підключення після запуску і оновлення після оновлення мікропрограми",
         "zh-cn": "增加音乐活动\n增加乌克兰翻译\n重新研究如何建立物体的工作,现在是在开始后和更新的第一连线之后建立物体。"
-      },
-      "1.0.7": {
-        "en": "Fixed deprecated messages from Sentry with api-validations\nAutomatic switch mode had an error with playlists. Playlist item could never be selected.",
-        "de": "Behobene deprecated Nachrichten von Sentry mit api-validierungen\nDer automatische Schaltermodus hatte einen Fehler mit Wiedergabelisten. Playlist Artikel konnte nie ausgewählt werden.",
-        "ru": "Фиксированные обесцененные сообщения от Сентри с апи-валидациями\nАвтоматический режим переключателя имел ошибку с плейлистами. Пункт плейлиста никогда не может быть выбран.",
-        "pt": "Corrigido mensagens deprecated de Sentry com api-validations\nO modo de interruptor automático teve um erro com listas de reprodução. item da lista de reprodução nunca poderia ser selecionado.",
-        "nl": "Vertaling:\nAutomatische schakelaar had een fout met speellijsten. Playlist item kan nooit geselecteerd worden.",
-        "fr": "Messages dépréciés fixes de Sentry avec api-validations\nLe mode de commutation automatique avait une erreur avec des playlists. L'élément Playlist ne pourrait jamais être sélectionné.",
-        "it": "Fisso messaggi deprecati da Sentry con api-validations\nLa modalità di commutazione automatica ha avuto un errore con le playlist. La voce della lista di gioco non potrebbe mai essere selezionata.",
-        "es": "Mensajes deprecatados fijos de Sentry con api-validaciones\nEl modo de conmutación automático tuvo un error con listas de reproducción. El artículo de la lista de reproducción nunca podría ser seleccionado.",
-        "pl": "Zabronione wiadomości od Sentry z api-validation\nTryb automatycznego przełącznika miał błąd z listami odtwarzaczymi. Nie można było wybierać żadnego elementu.",
-        "uk": "Фіксовані депресовані повідомлення від Sentry з api-validations\nАвтоматичний режим вимикача мав помилку зі списками відтворення. Плейлистовий елемент не можна вибрати.",
-        "zh-cn": "Sentry有固定的电传器\n自动转换模式有误导者。 不能选择项目。."
       }
     },
     "titleLang": {
