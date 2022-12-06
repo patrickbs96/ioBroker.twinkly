@@ -140,6 +140,10 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Extend Sentry logging for details.groups when "deprecated"
+* Cancel active pause not working after startup if active beforehand
+
 ### 1.0.11-beta.2 (2022-12-06)
 * Merge libraries request and twinkly
 * Optimized Code in requests
