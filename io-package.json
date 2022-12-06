@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.11-beta.1",
+    "version": "1.0.11-beta.2",
     "news": {
+      "1.0.11-beta.2": {
+        "en": "Merge libraries request and twinkly\nOptimized Code in requests",
+        "de": "Merge Bibliotheken Anfrage und twinkly\nOptimierter Code in Anfragen",
+        "ru": "Запрос на библиотеки Merge и twinkly\nОптимизированный код в запросах",
+        "pt": "Requisito de bibliotecas de mescla e twinkly\nCódigo otimizado em pedidos",
+        "nl": "Meerdere bibliotheken verzoeken en tweeling\nOptimated Code in verzoek",
+        "fr": "Demande de bibliothèques de fusion et bikly\nCode optimisé dans les demandes",
+        "it": "Unire la richiesta di librerie e twinkly\nCodice ottimizzato nelle richieste",
+        "es": "Merge bibliotecas petición y gemelo\nCódigo optimizado en solicitudes",
+        "pl": "Biblioteka Merge (ang. Merge library)\nOświadczony kod na żądanie",
+        "uk": "Запитайте та проконсультуйтеся з бібліотеками\nОптимальний код в запитах",
+        "zh-cn": "混合图书馆要求和双重频率\n请求中的《受害者法》"
+      },
       "1.0.11-beta.1": {
         "en": "Updated Sentry logging for better viewability",
         "de": "Aktualisiertes Sentry Protokoll für bessere Sichtbarkeit",
