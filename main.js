@@ -103,7 +103,7 @@ async function stateChange(id, state) {
         let connection;
         try {
             if (command === apiObjectsMap.paused.id) {
-                connection = await getConnection(connectionName, {checkPaused: false});
+                connection = await getConnection(connectionName, {checkPaused: false, ignoreConnected: true});
 
                 if (connection.paused !== state.val) {
                     connection.paused = state.val;
@@ -1270,12 +1270,7 @@ function prepareTasks(preparedObjects, oldObjects) {
                 // Nur wenn der State bearbeitet werden darf hinzufügen
                 if (obj.type === 'state') {
                     if (obj.common.write) {
-                        const stateId = obj.id.split('.').splice(2); // Remove AdapterNamespace
-                        const connection = stateId.shift();                            // First is connection
-                        const command = stateId.pop();                              // Last is command
-                        const group = stateId.join('.');                          // Rest is group
-
-                        subscribedStates[obj.id] = {connection: connection, group: group, command: command};
+                        addSubscribeState(obj.id);
                     } else {
                         delete subscribedStates[obj.id];
                     }
@@ -1289,6 +1284,19 @@ function prepareTasks(preparedObjects, oldObjects) {
     const toDelete = Object.entries(oldObjects).map(([id, obj]) => ({id: id, type: `delete_${obj.type}`, data: {common: {}, native: {}}}));
 
     return toDelete.concat(toUpdate);
+}
+
+function addSubscribeState(state) {
+    if (!state.startsWith(adapter.namespace)) {
+        state = adapter.namespace + '.' + state;
+    }
+
+    const stateId    = state.split('.').splice(2); // Remove AdapterNamespace
+    const connection = stateId.shift();                         // First is connection
+    const command    = stateId.pop();                           // Last is command
+    const group      = stateId.join('.');                       // Rest is group
+
+    subscribedStates[state] = {connection: connection, group: group, command: command};
 }
 
 /**
@@ -1732,6 +1740,8 @@ async function loadTwinklyDataFromObjects(connectionName) {
         const paused = await adapter.getStateAsync(connectionName + '.' + apiObjectsMap.paused.id);
         if (paused) {
             connection.paused = paused.val;
+            // Add State manually, otherwise it won't be added without first connect at startup, as state would be paused
+            addSubscribeState(connectionName + '.' + apiObjectsMap.paused.id);
         }
 
         // lastModeOn
@@ -1887,6 +1897,9 @@ async function handleSentryMessage(connectionName, functionName, category, key, 
         // Export more information if unsure of the reason for deprecated/newSince
         if (category === 'deprecated') {
             // Add if needed...
+            if (key.contains('details:group')) {
+                details['Group'] = connection.twinkly.details.group;
+            }
         }
     } catch (e) {
         //
