@@ -476,8 +476,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getDeviceDetails();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.details, apiObjectsMap.details);
-                        await saveJSONinState(connectionName, connectionName, response.details, apiObjectsMap.details);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.details);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.details);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.details.parent.id} ${e}`);
@@ -490,8 +490,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getFirmwareVersion();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.firmware, apiObjectsMap.firmware);
-                        await saveJSONinState(connectionName, connectionName, response.firmware, apiObjectsMap.firmware);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.firmware);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.firmware);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.firmware.parent.id} ${e}`);
@@ -504,10 +504,10 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getBrightness();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.bri, apiObjectsMap.ledBri);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledBri);
                         try {
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledBri.child.value.id,
-                                response.bri.mode !== 'disabled' ? response.bri.value : -1, true);
+                                response.mode !== 'disabled' ? response.value : -1, true);
                         } catch (e) {
                             //
                         }
@@ -523,13 +523,13 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getLEDColor();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.color, apiObjectsMap.ledColor);
-                        await saveJSONinState(connectionName, connectionName, response.color, apiObjectsMap.ledColor);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledColor);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledColor);
 
                         try {
                             // Hex Version
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledColor.parent.id + '.' + apiObjectsMap.ledColor.child.hex.id,
-                                tools.rgbToHex(response.color.red, response.color.green, response.color.blue, false), true);
+                                tools.rgbToHex(response.red, response.green, response.blue, false), true);
                         } catch (e) {
                             //
                         }
@@ -545,9 +545,9 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getLEDConfig();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.config, apiObjectsMap.ledConfig);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledConfig);
                         try {
-                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledConfig.id, JSON.stringify(response.config.strings), true);
+                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledConfig.id, JSON.stringify(response.strings), true);
                         } catch (e) {
                             //
                         }
@@ -563,8 +563,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getCurrentLEDEffect();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.effect, apiObjectsMap.ledEffect);
-                        await saveJSONinState(connectionName, connectionName, response.effect, apiObjectsMap.ledEffect);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledEffect);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledEffect);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledEffect.parent.id} ${e}`);
@@ -577,8 +577,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getLayout();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.layout, apiObjectsMap.ledLayout);
-                        await saveJSONinState(connectionName, connectionName, response.layout, apiObjectsMap.ledLayout);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledLayout);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledLayout);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledLayout.parent.id} ${e}`);
@@ -591,10 +591,10 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getLEDMode();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.mode, apiObjectsMap.ledMode);
-                        await saveJSONinState(connectionName, connectionName, response.mode, apiObjectsMap.ledMode);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledMode);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledMode);
                         try {
-                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.on.id, response.mode.mode !== twinkly.lightModes.value.off, true);
+                            await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.on.id, response.mode !== twinkly.lightModes.value.off, true);
                         } catch (e) {
                             //
                         }
@@ -613,8 +613,8 @@ async function poll(specificConnection = '', filter = []) {
                     // ... then get current Movie
                     const response = await connection.twinkly.getCurrentMovie();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.movie, apiObjectsMap.ledMovie);
-                        await saveJSONinState(connectionName, connectionName, response.movie, apiObjectsMap.ledMovie);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledMovie);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledMovie);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledMovie.parent.id} ${e}`);
@@ -630,8 +630,8 @@ async function poll(specificConnection = '', filter = []) {
                     // ... then get current Playlist Entry
                     const response = await connection.twinkly.getCurrentPlaylistEntry();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.playlist, apiObjectsMap.ledPlaylist);
-                        await saveJSONinState(connectionName, connectionName, response.playlist, apiObjectsMap.ledPlaylist);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledPlaylist);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledPlaylist);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledPlaylist.parent.id} ${e}`);
@@ -644,10 +644,10 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getSaturation();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.sat, apiObjectsMap.ledSat);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.ledSat);
                         try {
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledSat.child.value.id,
-                                response.sat.mode !== 'disabled' ? response.sat.value : -1, true);
+                                response.mode !== 'disabled' ? response.value : -1, true);
                         } catch (e) {
                             //
                         }
@@ -663,8 +663,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getMqttConfiguration();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.mqtt, apiObjectsMap.mqtt);
-                        await saveJSONinState(connectionName, connectionName, response.mqtt, apiObjectsMap.mqtt);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.mqtt);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.mqtt);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.mqtt.parent.id} ${e}`);
@@ -677,8 +677,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getDeviceName();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.name, apiObjectsMap.name);
-                        await saveJSONinState(connectionName, connectionName, response.name, apiObjectsMap.name);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.name);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.name);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.name.parent.id} ${e}`);
@@ -691,8 +691,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getNetworkStatus();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.status, apiObjectsMap.networkStatus);
-                        await saveJSONinState(connectionName, connectionName, response.status, apiObjectsMap.networkStatus);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.networkStatus);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.networkStatus);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.networkStatus.parent.id} ${e}`);
@@ -717,8 +717,8 @@ async function poll(specificConnection = '', filter = []) {
                 try {
                     const response = await connection.twinkly.getTimer();
                     if (response.code === twinkly.HTTPCodes.values.ok) {
-                        await checkTwinklyResponse(connectionName, response.timer, apiObjectsMap.timer);
-                        await saveJSONinState(connectionName, connectionName, response.timer, apiObjectsMap.timer);
+                        await checkTwinklyResponse(connectionName, response, apiObjectsMap.timer);
+                        await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.timer);
                     }
                 } catch (e) {
                     adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.timer.parent.id} ${e}`);
@@ -1425,7 +1425,7 @@ async function checkTwinklyResponse(connectionName, response, mapping) {
         const name = mapping.parent ? mapping.parent.id : mapping.id;
 
         // check newSince
-        await checkTwinklyResponseNewSince(connectionName, name, response, mapping);
+        await checkTwinklyResponseNewSince(connectionName, name, response, mapping, true);
         // check deprecated
         await checkTwinklyResponseDeprecated(connectionName, name, response, mapping);
     } catch (e) {
@@ -1441,8 +1441,9 @@ async function checkTwinklyResponse(connectionName, response, mapping) {
  * @param {{id: string, name: string, hide?: boolean} |
  *         {parent: {id: string, name: string, hide?: boolean},
  *          child: {}, expandJSON: boolean, logItem?: boolean, hide?: boolean}} mapping
+ * @param {boolean} root
  */
-async function checkTwinklyResponseNewSince(connectionName, name, response, mapping) {
+async function checkTwinklyResponseNewSince(connectionName, name, response, mapping, root) {
     if (typeof response === 'undefined' || typeof response !== 'object') return;
 
     for (const key of Object.keys(response)) {
@@ -1456,13 +1457,14 @@ async function checkTwinklyResponseNewSince(connectionName, name, response, mapp
                 }
 
                 if (continueCheck) {
-                    await checkTwinklyResponseNewSince(connectionName, name + '.' + key, response[key], mapping.child[key]);
+                    await checkTwinklyResponseNewSince(connectionName, name + '.' + key, response[key], mapping.child[key], false);
                 } else {
                     await handleSentryMessage(connectionName, 'checkTwinklyResponse', 'reintroduced', `${connectionName}:${name}:${key}`,
                         `Item reintroduced: ${connectionName}.${name}.${key}`, 'warning', {[typeof response[key]]: response[key]}, 'query');
                 }
             }
-        } else {
+            // Im Root der Response liegt die Property "code", die ignoriert werden kann
+        } else if (!root || key !== 'code') {
             await handleSentryMessage(connectionName, 'checkTwinklyResponse', 'newSince', `${connectionName}:${name}:${key}`,
                 `New Item detected: ${connectionName}.${name}.${key}`, 'warning', {[typeof response[key]]: response[key]}, 'query');
         }
@@ -1622,7 +1624,7 @@ async function updateMovies(connectionName) {
         const response = await connection.twinkly.getListOfMovies();
         if (statesConfig.includes(apiObjectsMap.ledMovies.id)) {
             try {
-                await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledMovies.id, JSON.stringify(response.movies.movies), true);
+                await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledMovies.id, JSON.stringify(response.movies), true);
             } catch (e) {
                 //
             }
