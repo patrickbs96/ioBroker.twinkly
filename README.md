@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.11-beta.4 (2022-12-11)
 * Correct Sentry logging for details.groups when "deprecated"
 
 ### 1.0.11-beta.3 (2022-12-06)
@@ -165,10 +165,6 @@ response => {
 * Add `musicreactive` Mode
 * Add Ukrainian translation
 * Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
-
-### 1.0.7 (2022-11-19)
-* Fixed deprecated messages from Sentry with api-validations
-* Automatic switch mode had an error with playlists. Playlist item could never be selected.
 
 ## License
 MIT License

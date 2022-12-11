@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.11-beta.3",
+    "version": "1.0.11-beta.4",
     "news": {
       "1.0.11-beta.3": {
         "en": "Extend Sentry logging for details.groups when \"deprecated\"\nCancel active pause not working after startup if active beforehand",
