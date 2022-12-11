@@ -140,6 +140,9 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Correct Sentry logging for details.groups when "deprecated"
+
 ### 1.0.11-beta.3 (2022-12-06)
 * Extend Sentry logging for details.groups when "deprecated"
 * Cancel active pause not working after startup if active beforehand
