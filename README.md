@@ -140,6 +140,20 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### 1.0.11-beta.4 (2022-12-11)
+* Correct Sentry logging for details.groups when "deprecated"
+
+### 1.0.11-beta.3 (2022-12-06)
+* Extend Sentry logging for details.groups when "deprecated"
+* Cancel active pause not working after startup if active beforehand
+
+### 1.0.11-beta.2 (2022-12-06)
+* Merge libraries request and twinkly
+* Optimized Code in requests
+
+### 1.0.11-beta.1 (2022-12-05)
+* Updated Sentry logging for better viewability
+
 ### 1.0.10 (2022-12-05)
 * Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors
 * Update Release Integration in Github Actions and Sentry
@@ -151,25 +165,6 @@ response => {
 * Add `musicreactive` Mode
 * Add Ukrainian translation
 * Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
-
-### 1.0.7 (2022-11-19)
-* Fixed deprecated messages from Sentry with api-validations
-* Automatic switch mode had an error with playlists. Playlist item could never be selected.
-
-### 1.0.6 (2022-11-19)
-* Fixed polling (ledBri, ledSat)
-* Added Connection-Info
-
-### 1.0.5 (2022-10-16)
-* Fixed error when changing active movie (#173)
-
-### 1.0.4 (2022-10-15)
-* Upload Movies
-* Upload Generated Movies
-* --Send Realtime Frame
-* Generate Full Frame in one color (create own frames)
-* Update deprecated states to fw 2.6.6
-* Update twinkly API Issues from Sentry
 
 ## License
 MIT License
