@@ -1,59 +1,20 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.11-beta.4",
+    "version": "1.0.11",
     "news": {
-      "1.0.11-beta.3": {
-        "en": "Extend Sentry logging for details.groups when \"deprecated\"\nCancel active pause not working after startup if active beforehand",
-        "de": "Erweitern Sie Sentry Protokoll für Details. Gruppen bei Abschreibungen\nStoppen Sie die aktive Pause nicht nach dem Start arbeiten, wenn aktiv vorhand",
-        "ru": "Расширяйте заготовку Sentry для деталей. группы при определённом\nОтменить активную паузу не работая после запуска если активный заранее",
-        "pt": "Estenda o registro da Sentry para obter detalhes. grupos quando desprezados\nCancelar pausa ativa não funciona após a inicialização se ativa de antemão",
-        "nl": "Extend Sentry op zoek naar details. Groep wanneer gedepreceerd\nAnnuleer actieve pauze niet na de start",
-        "fr": "Étendez Sentry logging pour plus de détails. les groupes dépréciés\nAnnuler pause active ne fonctionnant pas après le démarrage si active avant-main",
-        "it": "Estendere la registrazione Sentry per i dettagli. gruppi quando deprecato\nAnnulla pausa attiva non funzionante dopo l'avvio se attiva in anticipo",
-        "es": "Extender registro de centinelas para detalles. grupos cuando deprecated\nCancelar pausa activa no trabajar después de la puesta en marcha si activa antes",
-        "pl": "Długa lista do szczegółów. Grupy, w których wspominają o uprzednim zaniedbowaniu\nAktywność Cancela nie działa po rozpoczęciu startu, jeśli aktywnie działała",
-        "uk": "Продовжити журналювання Sentry для деталей. групи при депресованих\nСкасувати активний пауза не працює після запуску, якщо активна передньою рукою",
-        "zh-cn": "详见Sentry伐木。 被提名的群体\n如果在先知之前积极开展工作,那么在开始后没有工作。"
-      },
-      "1.0.11-beta.2": {
-        "en": "Merge libraries request and twinkly\nOptimized Code in requests",
-        "de": "Merge Bibliotheken Anfrage und twinkly\nOptimierter Code in Anfragen",
-        "ru": "Запрос на библиотеки Merge и twinkly\nОптимизированный код в запросах",
-        "pt": "Requisito de bibliotecas de mescla e twinkly\nCódigo otimizado em pedidos",
-        "nl": "Meerdere bibliotheken verzoeken en tweeling\nOptimated Code in verzoek",
-        "fr": "Demande de bibliothèques de fusion et bikly\nCode optimisé dans les demandes",
-        "it": "Unire la richiesta di librerie e twinkly\nCodice ottimizzato nelle richieste",
-        "es": "Merge bibliotecas petición y gemelo\nCódigo optimizado en solicitudes",
-        "pl": "Biblioteka Merge (ang. Merge library)\nOświadczony kod na żądanie",
-        "uk": "Запитайте та проконсультуйтеся з бібліотеками\nОптимальний код в запитах",
-        "zh-cn": "混合图书馆要求和双重频率\n请求中的《受害者法》"
-      },
-      "1.0.11-beta.1": {
-        "en": "Updated Sentry logging for better viewability",
-        "de": "Aktualisiertes Sentry Protokoll für bessere Sichtbarkeit",
-        "ru": "Обновленная стружка Sentry для лучшего просмотра",
-        "pt": "Registro de Sentry atualizado para melhor visibilidade",
-        "nl": "Update Sentry op zoek naar beter zicht",
-        "fr": "Mise à jour du logging Sentry pour une meilleure visibilité",
-        "it": "Registrazione Sentry aggiornata per una migliore visibilità",
-        "es": "Registro de centry actualizado para una mejor visualización",
-        "pl": "Ulepszona praca Sentrylog for better viewability",
-        "uk": "Оновлений журнал Sentry для кращої видимості",
-        "zh-cn": "A. 更新的采样,以便更好地了解"
-      },
-      "1.0.11-beta.0": {
-        "en": "Updated Sentry logging for better viewability",
-        "de": "Aktualisiertes Sentry Protokoll für bessere Sichtbarkeit",
-        "ru": "Обновленная стружка Sentry для лучшего просмотра",
-        "pt": "Registro de Sentry atualizado para melhor visibilidade",
-        "nl": "Update Sentry op zoek naar beter zicht",
-        "fr": "Mise à jour du logging Sentry pour une meilleure visibilité",
-        "it": "Registrazione Sentry aggiornata per una migliore visibilità",
-        "es": "Registro de centry actualizado para una mejor visualización",
-        "pl": "Ulepszona praca Sentrylog for better viewability",
-        "uk": "Оновлений журнал Sentry для кращої видимості",
-        "zh-cn": "A. 更新的采样,以便更好地了解"
+      "1.0.11": {
+        "en": "Extend Sentry logging for details.groups when \"deprecated\"\nCancel active pause not working after startup if active beforehand\nMerge libraries request and twinkly\nOptimized Code in requests\nUpdated Sentry logging for better viewability",
+        "de": "Erweitern Sie Sentry Protokoll für Details. Gruppen bei Abschreibungen\nStoppen Sie die aktive Pause nicht nach dem Start arbeiten, wenn aktiv vorhand\nMerge Bibliotheken Anfrage und twinkly\nOptimierter Code in Anfragen\nAktualisiertes Sentry Protokoll für bessere Sichtbarkeit",
+        "ru": "Расширяйте заготовку Sentry для деталей. группы при определённом\nОтменить активную паузу не работая после запуска если активный заранее\nЗапрос на библиотеки Merge и twinkly\nОптимизированный код в запросах\nОбновленная стружка Sentry для лучшего просмотра",
+        "pt": "Estenda o registro da Sentry para obter detalhes. grupos quando desprezados\nCancelar pausa ativa não funciona após a inicialização se ativa de antemão\nRequisito de bibliotecas de mescla e twinkly\nCódigo otimizado em pedidos\nRegistro de Sentry atualizado para melhor visibilidade",
+        "nl": "Extend Sentry op zoek naar details. Groep wanneer gedepreceerd\nAnnuleer actieve pauze niet na de start\nMeerdere bibliotheken verzoeken en tweeling\nOptimated Code in verzoek\nUpdate Sentry op zoek naar beter zicht",
+        "fr": "Étendez Sentry logging pour plus de détails. les groupes dépréciés\nAnnuler pause active ne fonctionnant pas après le démarrage si active avant-main\nDemande de bibliothèques de fusion et bikly\nCode optimisé dans les demandes\nMise à jour du logging Sentry pour une meilleure visibilité",
+        "it": "Estendere la registrazione Sentry per i dettagli. gruppi quando deprecato\nAnnulla pausa attiva non funzionante dopo l'avvio se attiva in anticipo\nUnire la richiesta di librerie e twinkly\nCodice ottimizzato nelle richieste\nRegistrazione Sentry aggiornata per una migliore visibilità",
+        "es": "Extender registro de centinelas para detalles. grupos cuando deprecated\nCancelar pausa activa no trabajar después de la puesta en marcha si activa antes\nMerge bibliotecas petición y gemelo\nCódigo optimizado en solicitudes\nRegistro de centry actualizado para una mejor visualización",
+        "pl": "Długa lista do szczegółów. Grupy, w których wspominają o uprzednim zaniedbowaniu\nAktywność Cancela nie działa po rozpoczęciu startu, jeśli aktywnie działała\nBiblioteka Merge (ang. Merge library)\nOświadczony kod na żądanie\nUlepszona praca Sentrylog for better viewability",
+        "uk": "Продовжити журналювання Sentry для деталей. групи при депресованих\nСкасувати активний пауза не працює після запуску, якщо активна передньою рукою\nЗапитайте та проконсультуйтеся з бібліотеками\nОптимальний код в запитах\nОновлений журнал Sentry для кращої видимості",
+        "zh-cn": "详见Sentry伐木。 被提名的群体\n如果在先知之前积极开展工作,那么在开始后没有工作。\n混合图书馆要求和双重频率\n请求中的《受害者法》\nA. 更新的采样,以便更好地了解"
       },
       "1.0.10": {
         "en": "Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors\nUpdate Release Integration in Github Actions and Sentry",
