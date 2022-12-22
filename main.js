@@ -1040,7 +1040,7 @@ async function processObjectChanges(specificConnection) {
 async function prepareObjectsByConfig(preparedObjects, specificConnection) {
     /**
      * @param {{enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly}} connection
-     * @param {{id: string, name: string, write?: boolean, type?: string, role?: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[]}} config
+     * @param {{id: string, name: string, write?: boolean, writeSlave?: boolean, type?: string, role?: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[]}} config
      * @param {Boolean} displayPrevName
      * @param {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} prevChannel
      * @returns {Promise<{name: string, read: boolean, write: boolean, type: string, role: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[]}>}
@@ -1066,7 +1066,7 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
         // Twinkly with group: Slave devices can only read
         let configWrite = config.write;
         if (configWrite && tools.versionGreaterEquals('2.8.3', connection.twinkly.firmware)) {
-            if (await connection.twinkly.checkDetailInfo({name: 'group.mode', val: 'slave', type: 'eq'})) {
+            if (await connection.twinkly.checkDetailInfo({name: 'group.mode', val: 'slave', type: 'eq'}) && !config.writeSlave) {
                 configWrite = false;
             }
         }
