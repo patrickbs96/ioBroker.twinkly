@@ -140,6 +140,9 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Slave can write ledBri and ledSat
+
 ### 1.0.11 (2022-12-13)
 * Extend Sentry logging for details.groups when "deprecated"
 * Cancel active pause not working after startup if active beforehand
