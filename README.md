@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.12 (2022-12-22)
 * Slave can write ledBri and ledSat
 
 ### 1.0.11 (2022-12-13)
@@ -169,9 +169,6 @@ response => {
 ### 1.0.6 (2022-11-19)
 * Fixed polling (ledBri, ledSat)
 * Added Connection-Info
-
-### 1.0.5 (2022-10-16)
-* Fixed error when changing active movie (#173)
 
 ## License
 MIT License

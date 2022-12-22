@@ -1,4 +1,7 @@
 # Older changes
+## 1.0.5 (2022-10-16)
+* Fixed error when changing active movie (#173)
+
 ## 1.0.4 (2022-10-15)
 * Upload Movies
 * Upload Generated Movies
