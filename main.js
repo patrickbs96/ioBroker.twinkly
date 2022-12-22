@@ -986,7 +986,7 @@ async function processObjectChanges(specificConnection) {
     function removeConnectionObjects(connection) {
         const connectionId = `${adapter.namespace}.${connection}`;
         Object.keys(_objects).forEach(id => {
-            if (id.startsWith(connectionId)) {
+            if (id === connectionId || id.startsWith(connectionId + '.')) {
                 delete _objects[id];
             }
         });
@@ -1004,7 +1004,7 @@ async function processObjectChanges(specificConnection) {
         });
     }
 
-    /** @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} */
+    /** @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, exclude: string[]}[]}[]} */
     const preparedObjects = [];
 
     adapter.log.debug('[processObjectChanges] Add instance objects');
@@ -1034,20 +1034,18 @@ async function processObjectChanges(specificConnection) {
 
 /**
  * Konfiguration aufbereiten um die States/Objekte anzulegen
- * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} preparedObjects
+ * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, exclude: string[]}[]}[]} preparedObjects
  * @param {string} specificConnection
  */
 async function prepareObjectsByConfig(preparedObjects, specificConnection) {
     /**
      * @param {{enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly}} connection
-     * @param {{id: string, name: string, write?: boolean, writeSlave?: boolean, type?: string, role?: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[]}} config
+     * @param {{id: string, type: string, common: {}, native: {}, exclude: string[]}} obj
+     * @param {{id: string, name: string, write?: boolean, writeSlave?: boolean, type?: string, role?: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[], native?: {[key: string] : string}}} config
      * @param {Boolean} displayPrevName
-     * @param {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} prevChannel
-     * @returns {Promise<{name: string, read: boolean, write: boolean, type: string, role: string, unit?: string, min?: number, max?: number, def?: any, states?: Record<string, string> | string[]}>}
+     * @param {{id: string, type: string, common: {}, native: {}, exclude: string[]}} prevChannel
      */
-    async function getCommon(connection, config, displayPrevName, prevChannel) {
-        const result = {};
-
+    async function setCommonNative(connection, obj, config, displayPrevName, prevChannel) {
         // Set default values
         config.write = typeof config.write !== 'undefined' ? config.write : false;
         config.type  = typeof config.type  !== 'undefined' ? config.type  : 'string';
@@ -1071,39 +1069,58 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
             }
         }
 
-        result.name   = (displayPrevName && prevChannel.common ? prevChannel.common.name + ' ' : '') + (typeof config.name !== 'undefined' ? config.name : config.id);
-        result.read   = true;
-        result.write  = configWrite;
-        result.type   = config.type;
-        result.role   = config.role;
-        result.def    = config.def;
+        obj.common.name   = (displayPrevName && prevChannel.common ? prevChannel.common.name + ' ' : '') + (typeof config.name !== 'undefined' ? config.name : config.id);
+        obj.common.read   = true;
+        obj.common.write  = configWrite;
+        obj.common.type   = config.type;
+        obj.common.role   = config.role;
+        obj.common.def    = config.def;
 
         if (config.type === 'number') {
             if (typeof config.min !== 'undefined') {
-                result.min = config.min;
+                obj.common.min = config.min;
             }
             if (typeof config.max !== 'undefined') {
-                result.max = config.max;
+                obj.common.max = config.max;
             }
         }
 
         if (typeof config.states !== 'undefined') {
-            result.states = config.states;
+            obj.common.states = config.states;
         }
         if (typeof config.unit !== 'undefined') {
-            result.unit = config.unit;
+            obj.common.unit = config.unit;
         }
 
-        return result;
+        // Write default native values
+        if (typeof config.native !== 'undefined') {
+            Object.entries(config.native).forEach(([key, type]) => {
+                let found = false;
+                if (type === 'string') {
+                    obj.native[key] = '';
+                    found = true;
+                } else if (type === 'number') {
+                    obj.native[key] = 0;
+                    found = true;
+                } else if (type === 'boolean') {
+                    obj.native[key] = false;
+                    found = true;
+                }
+
+                if (found) {
+                    obj.exclude.push(key);
+                }
+            });
+        }
     }
 
     /**
      * @param {{enabled: Boolean, paused: Boolean, modeOn: String, lastModeOn: String, connected: Boolean, twinkly: Twinkly}} connection
-     * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}} config
+     * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, exclude: string[]}[]}} config
      * @param {{}} states
      * @param {Boolean} root
      * @param {Boolean} displayPrevName
-     * @param {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} prevChannel
+     * @param {{id: string, type: string, common: {}, native: {}, exclude: string[]}} prevChannel
      */
     async function prepareConfig(connection, config, states, root, displayPrevName, prevChannel) {
         for (const state of Object.keys(states)) {
@@ -1116,14 +1133,16 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
                     }
                 }
 
-                /** @type {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} */
+                /** @type {{id: string, type: string, common: {}, native: {}, exclude: string[]}} */
                 const stateObj = {
                     id          : stateTools.removeForbiddenChars(prevChannel.id),
                     type        : 'state',
-                    common      : await getCommon(connection, states[state].parent !== undefined ? states[state].parent : states[state], displayPrevName, prevChannel),
+                    common      : {},
                     native      : {},
-                    checkStates : true
+                    exclude     : [],
                 };
+
+                await setCommonNative(connection, stateObj, states[state].parent !== undefined ? states[state].parent : states[state], displayPrevName, prevChannel);
 
                 if (!states[state].hide) {
                     if (states[state].parent !== undefined) {
@@ -1148,8 +1167,10 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
                     } else if (await allowState(config.connection, states[state], {ignoreCreate: true})) {
                         stateObj.id += '.' + states[state].id;
                         config.objects.push(stateObj);
-                        if (states[state].checkStates === false) {
-                            stateObj.checkStates = false;
+                        if (typeof states[state].exclude === 'object') {
+                            for (const exclude of states[state].exclude) {
+                                stateObj.exclude.push(exclude);
+                            }
                         }
                     }
                 }
@@ -1180,7 +1201,7 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
         }
 
         /**
-         * @type {{id: string, type: string, common: {}, native: {}, checkStates: boolean}}
+         * @type {{id: string, type: string, common: {}, native: {}, exclude: string[]}}
          */
         const device = {
             id     : `${adapter.namespace}.${connectionName}`,
@@ -1188,12 +1209,12 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
             common : {name : connection.twinkly.name, statusStates: {
                 onlineId: `${adapter.namespace}.${connectionName}.${apiObjectsMap.connected.id}`
             }},
-            native      : {host : connection.twinkly.host},
-            checkStates : true
+            native  : {host : connection.twinkly.host},
+            exclude : [],
         };
 
         /**
-         * @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}}
+         * @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, exclude: string[]}[]}}
          */
         const config = {connection : connectionName, objects : [device]};
 
@@ -1205,16 +1226,16 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
 
 /**
  * Get Instance Objects
- * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} preparedObjects
+ * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, exclude: string[]}[]}[]} preparedObjects
  */
 function prepareInstanceObjects(preparedObjects) {
-    /** @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}} */
+    /** @type {{connection: string, objects: {id: string, type: string, common: {}, native: {}, exclude: string[]}[]}} */
     const instanceConfig = {connection: '', objects: []};
 
     if (typeof adapter.ioPack.instanceObjects === 'object') {
         adapter.ioPack.instanceObjects.forEach(obj => {
-            /** @type {{id: string, type: string, common: {}, native: {}, checkStates: boolean}} */
-            const instanceObject = {id: `${adapter.namespace}.${obj._id}`, type : obj.type, common : {}, native : {}, checkStates : true};
+            /** @type {{id: string, type: string, common: {}, native: {}, exclude: string[]}} */
+            const instanceObject = {id: `${adapter.namespace}.${obj._id}`, type : obj.type, common : {}, native : {}, exclude : []};
             tools.cloneObject(obj.common, instanceObject.common);
             tools.cloneObject(obj.native, instanceObject.native);
 
@@ -1227,7 +1248,7 @@ function prepareInstanceObjects(preparedObjects) {
 
 /**
  * prepareTasks
- * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, checkStates: boolean}[]}[]} preparedObjects
+ * @param {{connection: string, objects: {id: string, type: string, common: {}, native: {}, exclude: string[]}[]}[]} preparedObjects
  * @param {Record<string, AdapterScopedObject>} oldObjects
  * @returns {{id: string, type: string, data: {common: {}, native: {}}}[]}
  */
@@ -1240,12 +1261,7 @@ function prepareTasks(preparedObjects, oldObjects) {
                 const oldObj = oldObjects[obj.id];
 
                 if (oldObj && oldObj.type === obj.type) {
-                    const exclude = [];
-                    if (!obj.checkStates) {
-                        exclude.push('states');
-                    }
-
-                    if (!tools.areStatesEqual(oldObj, obj, exclude)) {
+                    if (!tools.areStatesEqual(oldObj, obj, obj.exclude)) {
                         toUpdate.push({
                             type : `update_${obj.type}`,
                             id   : obj.id,
