@@ -143,6 +143,7 @@ response => {
 ### **WORK IN PROGRESS**
 * Add formatting to some states (hex-values -> uppercase, uptime in hours)
 * Handle Sentry message (IOBROKER-TWINKLY-8P)
+* Upgrade dependency
 
 ### 1.0.12 (2022-12-22)
 * Slave can write ledBri and ledSat
