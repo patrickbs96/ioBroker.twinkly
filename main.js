@@ -1386,12 +1386,23 @@ async function saveJSONinState(connectionName, state, json, mapping) {
         if (!await allowState(connectionName, stateInfo, {ignoreCreate: true})) return;
 
         if (!stringify) {
-            // Unix * 1000
-            if (stateInfo.role === 'value.time')
-                value = value * 1000;
-            // number -> boolean
-            if (stateInfo.type === 'boolean' && typeof value === 'number')
-                value = value === 1;
+            if (typeof value === 'number') {
+                if (stateInfo.role === 'value.time') {
+                    // time: Unix * 1000
+                    value = value * 1000;
+                } else if (stateInfo.type === 'boolean') {
+                    // boolean: number -> boolean
+                    value = value === 1;
+                }
+            } else if (typeof value === 'string') {
+                if (stateInfo.role === 'value.hex') {
+                    // hex: lowercase -> UPPERCASE
+                    value = value.toUpperCase();
+                } else if (stateInfo.role === 'value.uptime') {
+                    // uptime: milliseconds -> hours
+                    value = Math.round(parseInt(value) / 3_600_000 * 100) / 100;
+                }
+            }
         }
 
         try {
