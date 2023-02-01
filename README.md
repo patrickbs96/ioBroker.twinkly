@@ -140,6 +140,9 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Update dependencies
+
 ### 1.0.12 (2022-12-22)
 * Slave can write ledBri and ledSat
 
