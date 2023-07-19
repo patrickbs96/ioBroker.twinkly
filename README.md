@@ -143,7 +143,7 @@ response => {
 ### **WORK IN PROGRESS**
 * Add formatting to some states (hex-values -> uppercase, uptime in hours)
 * Handle Sentry message (IOBROKER-TWINKLY-8P)
-* Upgrade dependency
+* Update dependencies
 
 ### 1.0.13 (2023-02-01)
 * Update dependencies
