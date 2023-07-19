@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "news": {
+      "1.0.14": {
+        "en": "Add formatting to some states (hex-values -> uppercase, uptime in hours)\nHandle Sentry message (IOBROKER-TWINKLY-8P)\nUpdate dependencies",
+        "de": "Formatierung zu einigen Zuständen hinzufügen (Hex-Werte -> Großbuchstabe, Zeit in Stunden)\nSchalten Sie Ihre Nachricht (IOBROKER-TWINKLY-8P)\nAbhängigkeiten aktualisieren",
+        "ru": "Добавить форматирование в некоторые государства (hex-values -> overcase, uptime в часах)\nОбрабатывать сообщение о сантехнике (IOBROKER-TWINKLY-8P)\nОбновить зависимости",
+        "pt": "Adicionar formatação a alguns estados (hex-valores -> maiúscula, uptime em horas)\nLidar com a mensagem Sentry (IOBROKER-TWINKLY-8P)\nDependências de atualização",
+        "nl": "Voeg de formaten toe aan sommige staten\nHandle Sentry bericht (IOBROKER-TWINKly-8P)\nUpdate afhankelijkheid",
+        "fr": "Ajouter le formatage à certains états (valeurs hex - Chirurgie, heures supplémentaires)\nMessage de Sentry (IOBROKER-TWINKLY-8P)\nMettre à jour les dépendances",
+        "it": "Aggiungere la formattazione ad alcuni stati (valori esadesi -> maiuscola, uptime in ore)\nManiglia Sentry messaggio (IOBROKER-TWINKLY-8P)\nDipendenze di aggiornamento",
+        "es": "Añadir formato a algunos estados (hex-valores - título superior, tiempo de trabajo en horas)\nHandle Sentry message (IOBROKER-TWINKLY-8P)\nActualizar las dependencias",
+        "pl": "Addd formatting to some states (hex-values -> uppercase, uptime in hours) (ang.)\nStrona oficjalna (IOBROKER-TWINKLY-8P)\nZależności aktualnej",
+        "uk": "Додати форматування до деяких штатів (hex-values -> topcase, uptime в години)\nРучка Sentry повідомлення (IOBROKER-TWINKLY-8P)\nОновлення залежності",
+        "zh-cn": "增加一些国家的格式(hex-数值-上级,小时)\nD. 中型Sentry信息(OBROKER-TWINKLY-8P)\n最新依赖"
+      },
       "1.0.13": {
         "en": "Update dependencies",
         "de": "Abhängigkeiten aktualisieren",

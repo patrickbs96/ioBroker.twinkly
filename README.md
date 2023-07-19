@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.14 (2023-07-19)
 * Add formatting to some states (hex-values -> uppercase, uptime in hours)
 * Handle Sentry message (IOBROKER-TWINKLY-8P)
 * Update dependencies
@@ -169,14 +169,6 @@ response => {
 * Add `musicreactive` Mode
 * Add Ukrainian translation
 * Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
-
-### 1.0.7 (2022-11-19)
-* Fixed deprecated messages from Sentry with api-validations
-* Automatic switch mode had an error with playlists. Playlist item could never be selected.
-
-### 1.0.6 (2022-11-19)
-* Fixed polling (ledBri, ledSat)
-* Added Connection-Info
 
 ## License
 MIT License
