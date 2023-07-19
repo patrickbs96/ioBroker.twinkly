@@ -140,6 +140,11 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Add formatting to some states (hex-values -> uppercase, uptime in hours)
+* Handle Sentry message (IOBROKER-TWINKLY-8P)
+* Update dependencies
+
 ### 1.0.13 (2023-02-01)
 * Update dependencies
 
@@ -169,10 +174,14 @@ response => {
 * Fixed deprecated messages from Sentry with api-validations
 * Automatic switch mode had an error with playlists. Playlist item could never be selected.
 
+### 1.0.6 (2022-11-19)
+* Fixed polling (ledBri, ledSat)
+* Added Connection-Info
+
 ## License
 MIT License
 
-Copyright (c) 2023 patrickbs96 <patrickbsimon96@gmail.com>
+Copyright (c) 2022 patrickbs96 <patrickbsimon96@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
