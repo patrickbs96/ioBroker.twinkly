@@ -145,6 +145,9 @@ response => {
 * Handle Sentry message (IOBROKER-TWINKLY-8P)
 * Upgrade dependency
 
+### 1.0.13 (2023-02-01)
+* Update dependencies
+
 ### 1.0.12 (2022-12-22)
 * Slave can write ledBri and ledSat
 
