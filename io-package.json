@@ -1,8 +1,34 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.11",
+    "version": "1.0.13",
     "news": {
+      "1.0.13": {
+        "en": "Update dependencies",
+        "de": "Abhängigkeiten aktualisieren",
+        "ru": "Обновить зависимости",
+        "pt": "Dependências de atualização",
+        "nl": "Update afhankelijkheid",
+        "fr": "Mettre à jour les dépendances",
+        "it": "Dipendenze di aggiornamento",
+        "es": "Actualizar las dependencias",
+        "pl": "Zależności aktualnej",
+        "uk": "Оновлення залежності",
+        "zh-cn": "最新依赖"
+      },
+      "1.0.12": {
+        "en": "Slave can write ledBri and ledSat",
+        "de": "Slave kann ledBri schreiben und geführt Saat",
+        "ru": "Slave может написать ledBri и led Сб",
+        "pt": "Slave pode escrever ledBri e led Satisfeito",
+        "nl": "Slave kan LeBri schrijven. Sat",
+        "fr": "Slave peut écrire ledBri et conduit Sat",
+        "it": "Slave può scrivere ledBri e led Rasoio",
+        "es": "Slave puede escribir ledBri y lidera Sat",
+        "pl": "Słowianie mogą pisać przewodnieBri i przewodzić. Sat",
+        "uk": "Раб може писати під керівництвомБри і під керівництвом Сонце",
+        "zh-cn": "奴隶可以写出领导者,并领导 Sat"
+      },
       "1.0.11": {
         "en": "Extend Sentry logging for details.groups when \"deprecated\"\nCancel active pause not working after startup if active beforehand\nMerge libraries request and twinkly\nOptimized Code in requests\nUpdated Sentry logging for better viewability",
         "de": "Erweitern Sie Sentry Protokoll für Details. Gruppen bei Abschreibungen\nStoppen Sie die aktive Pause nicht nach dem Start arbeiten, wenn aktiv vorhand\nMerge Bibliotheken Anfrage und twinkly\nOptimierter Code in Anfragen\nAktualisiertes Sentry Protokoll für bessere Sichtbarkeit",

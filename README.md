@@ -140,6 +140,12 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### 1.0.13 (2023-02-01)
+* Update dependencies
+
+### 1.0.12 (2022-12-22)
+* Slave can write ledBri and ledSat
+
 ### 1.0.11 (2022-12-13)
 * Extend Sentry logging for details.groups when "deprecated"
 * Cancel active pause not working after startup if active beforehand
@@ -163,17 +169,10 @@ response => {
 * Fixed deprecated messages from Sentry with api-validations
 * Automatic switch mode had an error with playlists. Playlist item could never be selected.
 
-### 1.0.6 (2022-11-19)
-* Fixed polling (ledBri, ledSat)
-* Added Connection-Info
-
-### 1.0.5 (2022-10-16)
-* Fixed error when changing active movie (#173)
-
 ## License
 MIT License
 
-Copyright (c) 2022 patrickbs96 <patrickbsimon96@gmail.com>
+Copyright (c) 2023 patrickbs96 <patrickbsimon96@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
