@@ -12,6 +12,9 @@
     "control",
     "lights"
   ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/patrickbs96/ioBroker.twinkly"
