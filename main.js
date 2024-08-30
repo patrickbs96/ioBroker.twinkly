@@ -509,7 +509,7 @@ async function poll(specificConnection = '', filter = []) {
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledBri.child.value.id,
                                 response.mode !== 'disabled' ? response.value : -1, true);
                         } catch (e) {
-                            //
+                            this.adapter.log.silly(`[poll.${connectionName}]: ${e}`);
                         }
                     }
                 } catch (e) {
@@ -531,7 +531,7 @@ async function poll(specificConnection = '', filter = []) {
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledColor.parent.id + '.' + apiObjectsMap.ledColor.child.hex.id,
                                 tools.rgbToHex(response.red, response.green, response.blue, false), true);
                         } catch (e) {
-                            //
+                            this.adapter.log.silly(`[poll.${connectionName}]: ${e}`);
                         }
                     }
                 } catch (e) {
@@ -549,7 +549,7 @@ async function poll(specificConnection = '', filter = []) {
                         try {
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledConfig.id, JSON.stringify(response.strings), true);
                         } catch (e) {
-                            //
+                            this.adapter.log.silly(`[poll.${connectionName}]: ${e}`);
                         }
                     }
                 } catch (e) {
@@ -596,7 +596,7 @@ async function poll(specificConnection = '', filter = []) {
                         try {
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.on.id, response.mode !== twinkly.lightModes.value.off, true);
                         } catch (e) {
-                            //
+                            this.adapter.log.silly(`[poll.${connectionName}]: ${e}`);
                         }
                     }
                 } catch (e) {
@@ -649,7 +649,7 @@ async function poll(specificConnection = '', filter = []) {
                             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledSat.child.value.id,
                                 response.mode !== 'disabled' ? response.value : -1, true);
                         } catch (e) {
-                            //
+                            this.adapter.log.silly(`[poll.${connectionName}]: ${e}`);
                         }
                     }
                 } catch (e) {
@@ -1408,7 +1408,7 @@ async function saveJSONinState(connectionName, state, json, mapping) {
         try {
             await adapter.setStateAsync(id === state ? state : state + '.' + id, stringify ? JSON.stringify(value) : value, true);
         } catch (e) {
-            //
+            this.adapter.log.silly(`[saveJSONinState.writeState]: ${e}`);
         }
     }
 
@@ -1558,6 +1558,7 @@ async function getJSONStates(connectionName, stateId, json, mapping, lastState) 
                         const state = await adapter.getStateAsync(stateId + '.' + mapping[key].id);
                         json[key] = state ? state.val : '';
                     } catch (e) {
+                        this.adapter.log.silly(`[getJSONStates]: ${e}`);
                         json[key] = '';
                     }
                 }
@@ -1661,7 +1662,7 @@ async function updateMovies(connectionName) {
             try {
                 await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.ledMovies.id, JSON.stringify(response.movies), true);
             } catch (e) {
-                //
+                this.adapter.log.silly(`[updateMovies.${connectionName}]: ${e}`);
             }
         }
     } catch (e) {
@@ -1882,7 +1883,7 @@ async function checkConnection(connectionName) {
             await adapter.setStateAsync(connectionName + '.' + apiObjectsMap.connected.id, connection.connected, true);
         }
     } catch (e) {
-        //
+        this.adapter.log.silly(`[checkConnection]: ${e}`);
     }
 
     if (!connection.connected) {
@@ -1929,7 +1930,7 @@ async function handleSentryMessage(connectionName, functionName, category, key, 
             }
         }
     } catch (e) {
-        //
+        this.adapter.log.silly(`[handleSentryMessage]: ${e}`);
     }
 
     const sentryKey = `${functionName}:${category}:${key}`;
