@@ -128,9 +128,11 @@
       "control",
       "lights"
     ],
-    "license": "MIT",
+    "licenseInformation" : {
+      "license" : "MIT",
+      "type" : "free"
+    },
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "twinkly.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/patrickbs96/ioBroker.twinkly/master/admin/twinkly.png",
@@ -138,18 +140,17 @@
     "loglevel": "info",
     "mode": "daemon",
     "messagebox": true,
+    "tier": 3,
     "type": "lighting",
     "connectionType": "local",
     "dataSource": "poll",
     "compact": true,
-    "materialize": true,
-    "materializeTab": true,
     "adminUI": {
       "config": "materialize"
     },
     "dependencies": [
       {
-        "js-controller": ">=2.0.0"
+        "js-controller": ">=4.0.24"
       }
     ],
     "plugins": {
