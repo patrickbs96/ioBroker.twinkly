@@ -1,4 +1,5 @@
 /* eslint-disable quotes */
+/* eslint-disable no-unused-vars */
 /*global systemDictionary:true */
 /*
 +===================== DO NOT MODIFY ======================+
