@@ -141,6 +141,7 @@ response => {
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
 * Update dependencies
 
 ### 1.0.14 (2023-07-19)
