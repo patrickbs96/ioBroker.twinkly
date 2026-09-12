@@ -141,6 +141,7 @@ response => {
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 22 now.
 * Update dependencies
 
 ### 1.0.14 (2023-07-19)
