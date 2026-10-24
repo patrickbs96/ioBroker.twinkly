@@ -14,3 +14,20 @@ updates:
       timezone: Europe/Berlin
     open-pull-requests-limit: 20
     versioning-strategy: increase
+    ignore:
+      # @types/node should match the minimum supported Node.js version
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # chai is pinned to 4.x by @iobroker/testing, the plugins must follow
+      - dependency-name: "chai"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/chai"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "chai-as-promised"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/chai-as-promised"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "sinon-chai"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/sinon-chai"
+        update-types: ["version-update:semver-major"]

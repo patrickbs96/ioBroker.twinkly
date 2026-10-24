@@ -141,6 +141,7 @@ response => {
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 22 now.
 * Update dependencies
 
 ### 1.0.14 (2023-07-19)
@@ -178,7 +179,7 @@ response => {
 ## License
 MIT License
 
-Copyright (c) 2024 patrickbs96 <patrickbsimon96@gmail.com>
+Copyright (c) 2024-2026 patrickbs96 <patrickbsimon96@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

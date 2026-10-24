@@ -973,7 +973,7 @@ async function syncConfig() {
             await processObjectChanges('');
         }
     } catch (e) {
-        throw Error(e);
+        throw Error(e, { cause: e });
     }
 
     return result;
@@ -1028,7 +1028,7 @@ async function processObjectChanges(specificConnection) {
         await processTasks(tasks);
         adapter.log.debug('[processObjectChanges] Finished tasks of objects update');
     } catch (e) {
-        throw Error(e);
+        throw Error(e, { cause: e });
     }
 }
 
@@ -1175,7 +1175,7 @@ async function prepareObjectsByConfig(preparedObjects, specificConnection) {
                     }
                 }
             } catch (e) {
-                throw Error(`[prepareConfig] ${state}: ${e}`);
+                throw Error(`[prepareConfig] ${state}: ${e}`, { cause: e });
             }
         }
     }
