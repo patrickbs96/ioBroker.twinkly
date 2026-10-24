@@ -141,6 +141,8 @@ response => {
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 22 now.
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
 * Update dependencies
 
 ### 1.0.14 (2023-07-19)
@@ -173,10 +175,12 @@ response => {
 * Add Ukrainian translation
 * Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 MIT License
 
-Copyright (c) 2024 patrickbs96 <patrickbsimon96@gmail.com>
+Copyright (c) 2024-2026 patrickbs96 <patrickbsimon96@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
