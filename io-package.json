@@ -128,9 +128,9 @@
       "control",
       "lights"
     ],
-    "licenseInformation" : {
-      "license" : "MIT",
-      "type" : "free"
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
     },
     "platform": "Javascript/Node.js",
     "icon": "twinkly.png",
@@ -150,7 +150,7 @@
     },
     "dependencies": [
       {
-        "js-controller": ">=4.0.24"
+        "js-controller": ">=6.0.11"
       }
     ],
     "plugins": {
