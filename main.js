@@ -456,6 +456,10 @@ async function stateChange(id, state) {
                     newMode = twinkly.lightModes.value.off;
                 }
 
+                if (state.val && newMode === twinkly.lightModes.value.movie) {
+                    newMode = await prepareMovieMode(connectionName, connection.twinkly);
+                }
+
                 await connection.twinkly.setLEDMode(newMode);
             } catch (e) {
                 adapter.log.error(`[${connectionName}.${command}] Could not set ${state.val}! ${e}`);
@@ -2097,6 +2101,32 @@ async function onDataChange(connectionName, type, val, oldVal) {
     } catch (e) {
         adapter.log.error(`[onDataChange.${connectionName}] ${e.message}`);
     }
+}
+
+/**
+ * Before switching on in mode movie: select the current movie again, otherwise some firmware plays the default effect.
+ * Without any saved movie there is nothing to play, so color is used.
+ *
+ * @param {string} connectionName
+ * @param {InstanceType<typeof twinkly.Twinkly>} device
+ * @returns {Promise<string>} mode to switch on
+ */
+async function prepareMovieMode(connectionName, device) {
+    try {
+        const movies = await device.getListOfMovies();
+        if (!movies.movies || movies.movies.length === 0) {
+            adapter.log.debug(`[${connectionName}] No saved movie, switching on in mode color`);
+            return twinkly.lightModes.value.color;
+        }
+
+        const current = await device.getCurrentMovie();
+        const id = current.id >= 0 ? current.id : movies.movies[0].id;
+        await device.setCurrentMovie(id);
+    } catch (e) {
+        // Switching on must still work
+        adapter.log.debug(`[${connectionName}] Could not select current movie: ${e.message}`);
+    }
+    return twinkly.lightModes.value.movie;
 }
 
 /**

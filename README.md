@@ -140,6 +140,9 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (patrickbs96) Switching on in mode `Movie` selects the current movie again first (falls back to `Color` if no movie is saved) (#368)
+
 ### 1.1.0 (2026-10-25)
 - (iobroker-bot) Adapter requires node.js >= 22 now.
 - (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
