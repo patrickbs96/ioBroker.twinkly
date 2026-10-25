@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/patrickbs96/ioBroker.twinkly"
+    "url": "git+https://github.com/patrickbs96/ioBroker.twinkly.git"
   },
   "engines": {
     "node": ">=22"
