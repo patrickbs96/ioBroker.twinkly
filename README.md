@@ -141,7 +141,7 @@ response => {
   ### **WORK IN PROGRESS**
 - (patrickbs96) No more error `Parse Error: Data after Connection: close` for devices without playlist or movie (#486, #452, #357)
 -->
-### **WORK IN PROGRESS**
+### 1.1.1 (2026-10-25)
 - (patrickbs96) Requests to the Twinkly now time out after 10 seconds instead of waiting forever
 - (patrickbs96) Switching on in mode `Movie` selects the current movie again first (falls back to `Color` if no movie is saved) (#368)
 
@@ -176,9 +176,6 @@ response => {
 ### 1.0.10 (2022-12-05)
 * Add sendTo message `uploadTwinkleMovie` to upload a twinkle movie with own colors
 * Update Release Integration in Github Actions and Sentry
-
-### 1.0.9 (2022-11-27)
-* Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

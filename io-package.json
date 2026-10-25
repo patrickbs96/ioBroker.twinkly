@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "news": {
       "1.1.1": {
         "en": "Switching on in mode \"Movie\" selects the current movie again first.\nRequests to the Twinkly time out after 10 seconds.\nNo more \"Parse Error: Data after Connection: close\" for devices without playlist or movie.",
@@ -93,19 +93,6 @@
         "pl": "Wysyłać do wiadomości upload Movie wydało film z własnymi kolorami\nUchwalenie Integracji w Github Actions and Sentry",
         "uk": "Додати відправлення Для завантаження повідомлень Фільми для завантаження близнюків з власними квітами\nОновлення інтеграції релізів в Github Дії та Стоматології",
         "zh-cn": "增 编 D. 发出的信息 装有自己的颜色的双壳电影\nB. 吉隆布行动和Sentry的最新释放"
-      },
-      "1.0.9": {
-        "en": "Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.",
-        "de": "Erkennt nun, ob Twinkly in einer Gruppe ist (Firmware >= 2,8.3) Wenn ja, kann die Gruppe nur vom Master gesteuert werden, werden die Zustände vom Slave nur eingelesen.",
-        "ru": "Теперь обнаруживает, если Twinkly находится в группе (подтверждение >= 2.8.3) Если это так, группа может контролироваться только мастером, государства от раба читаются только.",
-        "pt": "Agora detecta se Twinkly está em um grupo (firmware >= 2.8.3) Se assim for, o grupo só pode ser controlado pelo mestre, os estados do escravo são somente leitura.",
-        "nl": "Als Twinkly in een groep 2.8.3 is, kan de groep alleen beheerd worden door de meester, de staaten van de slaaf worden gelezen.",
-        "fr": "Détecte maintenant si Twinkly est dans un groupe (firmware > 2.8.3) Si oui, le groupe ne peut être contrôlé que par le maître, les états de l'esclave sont lus seulement.",
-        "it": "Ora rileva se Twinkly è in un gruppo (firmware >= 2.8.3) Se è così, il gruppo può essere controllato solo dal padrone, gli stati dello schiavo sono in sola lettura.",
-        "es": "Ahora detecta si Twinkly está en un grupo (firmware √≥= 2.8.3) Si es así, el grupo sólo puede ser controlado por el maestro, los estados del esclavo son sólo lectura.",
-        "pl": "Teraz wykrywa, jeśli Twinkly znajduje się w grupie (firmware >= 2.8.3) Jeśli tak, grupa może być kontrolowana przez mistrza, stany z niewolnika są odczytane.",
-        "uk": "Тепер виявляє, якщо Twinkly є в групі (підтвердження>= 2.8.3) Якщо так, група може бути контрольована майстером, штати від раба читаються натільки.",
-        "zh-cn": "现在发现,如果Twinkly是一群(肯定)=2.8.3),该团体只能由总长控制,那么奴隶的各州就读。."
       }
     },
     "titleLang": {
