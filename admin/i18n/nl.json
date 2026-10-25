@@ -1,6 +1,6 @@
 {
-    "Additional data points": "Aanvullende gegevenspunten",
     "Additional Information": "Extra informatie",
+    "Additional data points": "Aanvullende gegevenspunten",
     "Checks via ping whether the device is reachable": "Controleert via ping of het apparaat bereikbaar is",
     "Color": "Kleur",
     "Creates states with detailed device information": "Maakt staten aan met gedetailleerde apparaatinformatie",
@@ -11,13 +11,13 @@
     "Effect": "Effect",
     "Enabled": "Ingeschakeld",
     "Enter a valid IPv4 address or host name": "Voer een geldig IPv4-adres of hostnaam in",
-    "Interval [s]": "Interval [s]",
     "IP Address": "IP adres",
+    "Interval [s]": "Interval [s]",
     "Last Mode": "Laatste Mode",
+    "MQTT": "MQTT",
     "Minimum 15 seconds": "Minimum 15 seconden",
     "Mode": "Mode",
     "Movie": "Film",
-    "MQTT": "MQTT",
     "Music Reactive": "Muziek reactief",
     "Name": "Naam",
     "Network Status": "Netwerk status",
@@ -25,6 +25,6 @@
     "Polling": "Polling",
     "Switch Mode after State change": "Schakelmodus na verandering van status",
     "Switches the device to the matching mode when a value, e.g. the color, is changed": "Schakelt het apparaat naar de overeenkomende modus wanneer een waarde, bijvoorbeeld de kleur, wordt gewijzigd",
-    "twinkly adapter settings": "Adapterinstellingen voor twinkly",
-    "Use ping for reachability": "Gebruik ping voor bereikbaarheid"
+    "Use ping for reachability": "Gebruik ping voor bereikbaarheid",
+    "twinkly adapter settings": "Adapterinstellingen voor twinkly"
 }
