@@ -139,6 +139,7 @@ response => {
 <!--
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
+- (patrickbs96) Requests to the Twinkly now time out after 10 seconds instead of waiting forever
 -->
 ### **WORK IN PROGRESS**
 - (patrickbs96) Switching on in mode `Movie` selects the current movie again first (falls back to `Color` if no movie is saved) (#368)
