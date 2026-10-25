@@ -1,0 +1,115 @@
+{
+    "type": "panel",
+    "i18n": true,
+    "items": {
+        "devices": {
+            "type": "table",
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12,
+            "noDelete": false,
+            "items": [
+                {
+                    "type": "checkbox",
+                    "attr": "enabled",
+                    "title": "Enabled",
+                    "width": "10%",
+                    "default": true
+                },
+                {
+                    "type": "text",
+                    "attr": "name",
+                    "title": "Name",
+                    "width": "30%"
+                },
+                {
+                    "type": "text",
+                    "attr": "host",
+                    "title": "IP Address",
+                    "width": "30%"
+                },
+                {
+                    "type": "select",
+                    "attr": "stateOn",
+                    "title": "Mode",
+                    "width": "30%",
+                    "default": "movie",
+                    "options": [
+                        { "value": "color", "label": "Color" },
+                        { "value": "effect", "label": "Effect" },
+                        { "value": "movie", "label": "Movie" },
+                        { "value": "musicreactive", "label": "Music Reactive" },
+                        { "value": "playlist", "label": "Playlist" },
+                        { "value": "lastMode", "label": "Last Mode" }
+                    ]
+                }
+            ]
+        },
+        "interval": {
+            "type": "number",
+            "label": "Interval [s]",
+            "min": 15,
+            "default": 60,
+            "newLine": true,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "details": {
+            "type": "checkbox",
+            "label": "Device Info",
+            "default": false,
+            "newLine": true,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "mqtt": {
+            "type": "checkbox",
+            "label": "MQTT",
+            "default": false,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "network": {
+            "type": "checkbox",
+            "label": "Network Status",
+            "default": false,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "usePing": {
+            "type": "checkbox",
+            "label": "Use ping for reachability",
+            "default": true,
+            "newLine": true,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "switchMode": {
+            "type": "checkbox",
+            "label": "Switch Mode after State change",
+            "default": false,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        }
+    }
+}

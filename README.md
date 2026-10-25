@@ -143,6 +143,7 @@ response => {
 ### **WORK IN PROGRESS**
 - (iobroker-bot) Adapter requires node.js >= 22 now.
 - (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
+- (patrickbs96) Admin UI migrated to jsonConfig (admin >= 7.6.20 required).
 * Update dependencies
 
 ### 1.0.14 (2023-07-19)
