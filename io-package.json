@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "twinkly",
-    "version": "1.0.14",
+    "version": "1.1.0",
     "news": {
       "1.1.0": {
         "en": "Adapter requires node.js >= 22 now.\nAdapter requires js-controller >= 6.0.11 now.\nAdmin UI migrated to jsonConfig (admin >= 7.6.20 required), with address validation and help texts.\nPing: `ping.exe` is called directly (no `cmd.exe`, no `process.env`), the address is validated, missing ICMP permissions are detected and reported once.\nRelease process: publishing to npm via Trusted Publishing, tests on Node.js 22, 24 and 26.\nPackage contents limited via `files`, translations moved to `admin/i18n/{lang}.json`.\nSwitched to `@iobroker/eslint-config`, polling timer uses `adapter.setTimeout`.\nUpdate dependencies",
@@ -93,19 +93,6 @@
         "pl": "Teraz wykrywa, jeśli Twinkly znajduje się w grupie (firmware >= 2.8.3) Jeśli tak, grupa może być kontrolowana przez mistrza, stany z niewolnika są odczytane.",
         "uk": "Тепер виявляє, якщо Twinkly є в групі (підтвердження>= 2.8.3) Якщо так, група може бути контрольована майстером, штати від раба читаються натільки.",
         "zh-cn": "现在发现,如果Twinkly是一群(肯定)=2.8.3),该团体只能由总长控制,那么奴隶的各州就读。."
-      },
-      "1.0.8": {
-        "en": "Add `musicreactive` Mode\nAdd Ukrainian translation\nRework how objects are created, objects are now created after first connect after startup and updated after a firmware update",
-        "de": "Musikreaktiver Modus hinzufügen\nUkrainische Übersetzung hinzufügen\nRework, wie Objekte erstellt werden, Objekte werden nun nach dem ersten Verbindungsaufbau nach dem Start erstellt und nach einem Firmware-Update aktualisiert",
-        "ru": "Добавить музыкальный режим\nДобавить украинский перевод\nПереработайте, как создаются объекты, объекты теперь создаются после первого подключения после запуска и обновления после обновления прошивки",
-        "pt": "Adicionar modo musicreactive\nAdicionar tradução ucraniana\nRetrabalhe como os objetos são criados, os objetos agora são criados após a primeira conexão após a inicialização e atualizados após uma atualização de firmware",
-        "nl": "Voeg muziekreactie\nVertaling:\nReageer hoe objecten worden gecreëerd na de eerste verbinding na de start en update na een firmaware update",
-        "fr": "Ajouter le mode musicréactif\nAjouter la traduction ukrainienne\nRetravailler la façon dont les objets sont créés, les objets sont maintenant créés après la première connexion après le démarrage et mis à jour après une mise à jour du firmware",
-        "it": "Aggiungi la modalità musicareattiva\nAggiungi traduzione ucraina\nRipeti come vengono creati gli oggetti, gli oggetti vengono creati dopo la prima connessione dopo l'avvio e l'aggiornamento dopo un aggiornamento del firmware",
-        "es": "Añadir modo músicareactivo\nAgregar traducción ucraniana\nRework how objects are created, objects are now created after first connect after startup and updated after a firmware update",
-        "pl": "Mode reaktywny\nTłumaczenie ukraińskie\nZastosowanie tego, jak obiekty są tworzone, obecnie obiekty tworzone po pierwszym połączeniu po uruchomieniu i aktualizacji oprogramowania po aktualizacji oprogramowania",
-        "uk": "Додати музичний режим\nДодати український переклад\nПереробити, як створюються об'єкти, об'єкти тепер створюються після першого підключення після запуску і оновлення після оновлення мікропрограми",
-        "zh-cn": "增加音乐活动\n增加乌克兰翻译\n重新研究如何建立物体的工作,现在是在开始后和更新的第一连线之后建立物体。"
       }
     },
     "titleLang": {

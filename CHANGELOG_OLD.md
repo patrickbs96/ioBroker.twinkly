@@ -1,4 +1,9 @@
 # Older changes
+## 1.0.8 (2022-11-26)
+* Add `musicreactive` Mode
+* Add Ukrainian translation
+* Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
+
 ## 1.0.7 (2022-11-19)
 * Fixed deprecated messages from Sentry with api-validations
 * Automatic switch mode had an error with playlists. Playlist item could never be selected.

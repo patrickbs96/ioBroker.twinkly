@@ -140,7 +140,7 @@ response => {
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.1.0 (2026-10-25)
 - (iobroker-bot) Adapter requires node.js >= 22 now.
 - (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
 - (patrickbs96) Admin UI migrated to jsonConfig (admin >= 7.6.20 required), with address validation and help texts.
@@ -174,11 +174,6 @@ response => {
 
 ### 1.0.9 (2022-11-27)
 * Now detects if Twinkly is in a group (firmware >= 2.8.3). If so, the group can only be controlled by the master, the states from the slave are read-only.
-
-### 1.0.8 (2022-11-26)
-* Add `musicreactive` Mode
-* Add Ukrainian translation
-* Rework how objects are created, objects are now created after first connect after startup and updated after a firmware update
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
