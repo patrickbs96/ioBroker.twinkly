@@ -146,7 +146,7 @@
     "dataSource": "poll",
     "compact": true,
     "adminUI": {
-      "config": "materialize"
+      "config": "json"
     },
     "dependencies": [
       {

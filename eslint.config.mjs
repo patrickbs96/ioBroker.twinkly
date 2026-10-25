@@ -4,7 +4,7 @@ import globals from 'globals';
 export default [
     ...config,
     {
-        ignores: ['**/*.d.ts', 'admin/words.js'],
+        ignores: ['**/*.d.ts'],
     },
     {
         files: ['main.test.js', 'test/**/*.js'],

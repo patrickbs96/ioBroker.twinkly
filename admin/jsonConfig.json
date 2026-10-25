@@ -1,0 +1,153 @@
+{
+    "type": "panel",
+    "i18n": true,
+    "items": {
+        "_devicesHeader": {
+            "type": "header",
+            "text": "Devices",
+            "size": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+        },
+        "devices": {
+            "type": "table",
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12,
+            "items": [
+                {
+                    "type": "checkbox",
+                    "attr": "enabled",
+                    "title": "Enabled",
+                    "width": "8%",
+                    "default": true
+                },
+                {
+                    "type": "text",
+                    "attr": "name",
+                    "title": "Name",
+                    "width": "30%"
+                },
+                {
+                    "type": "text",
+                    "attr": "host",
+                    "title": "IP Address",
+                    "width": "30%",
+                    "placeholder": "192.168.1.50",
+                    "validator": "/^((25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])([.](25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])){3}|[a-zA-Z]([a-zA-Z0-9.-]*[a-zA-Z0-9])?)$/.test(data.host || '')",
+                    "validatorErrorText": "Enter a valid IPv4 address or host name",
+                    "validatorNoSaveOnError": true
+                },
+                {
+                    "type": "select",
+                    "attr": "stateOn",
+                    "title": "Mode",
+                    "width": "32%",
+                    "default": "movie",
+                    "options": [
+                        { "value": "color", "label": "Color" },
+                        { "value": "effect", "label": "Effect" },
+                        { "value": "movie", "label": "Movie" },
+                        { "value": "musicreactive", "label": "Music Reactive" },
+                        { "value": "playlist", "label": "Playlist" },
+                        { "value": "lastMode", "label": "Last Mode" }
+                    ]
+                }
+            ]
+        },
+        "_pollingHeader": {
+            "type": "header",
+            "text": "Polling",
+            "size": 3,
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+        },
+        "interval": {
+            "type": "number",
+            "label": "Interval [s]",
+            "help": "Minimum 15 seconds",
+            "min": 15,
+            "default": 60,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "usePing": {
+            "type": "checkbox",
+            "label": "Use ping for reachability",
+            "help": "Checks via ping whether the device is reachable",
+            "default": true,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "switchMode": {
+            "type": "checkbox",
+            "label": "Switch Mode after State change",
+            "help": "Switches the device to the matching mode when a value, e.g. the color, is changed",
+            "default": false,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "_dataHeader": {
+            "type": "header",
+            "text": "Additional data points",
+            "size": 3,
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+        },
+        "details": {
+            "type": "checkbox",
+            "label": "Device Info",
+            "help": "Creates states with detailed device information",
+            "default": false,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "mqtt": {
+            "type": "checkbox",
+            "label": "MQTT",
+            "help": "Creates states with the MQTT settings of the device",
+            "default": false,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "network": {
+            "type": "checkbox",
+            "label": "Network Status",
+            "help": "Creates states with the network status of the device",
+            "default": false,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        }
+    }
+}
