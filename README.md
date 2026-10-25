@@ -143,7 +143,11 @@ response => {
 ### **WORK IN PROGRESS**
 - (iobroker-bot) Adapter requires node.js >= 22 now.
 - (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
-- (patrickbs96) Admin UI migrated to jsonConfig (admin >= 7.6.20 required).
+- (patrickbs96) Admin UI migrated to jsonConfig (admin >= 7.6.20 required), with address validation and help texts.
+- (patrickbs96) Ping: `ping.exe` is called directly (no `cmd.exe`, no `process.env`), the address is validated, missing ICMP permissions are detected and reported once.
+- (patrickbs96) Release process: publishing to npm via Trusted Publishing, tests on Node.js 22, 24 and 26.
+- (patrickbs96) Package contents limited via `files`, translations moved to `admin/i18n/{lang}.json`.
+- (patrickbs96) Switched to `@iobroker/eslint-config`, polling timer uses `adapter.setTimeout`.
 * Update dependencies
 
 ### 1.0.14 (2023-07-19)
