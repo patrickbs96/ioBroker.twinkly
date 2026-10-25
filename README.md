@@ -141,6 +141,7 @@ response => {
   ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (patrickbs96) Requests to the Twinkly now time out after 10 seconds instead of waiting forever
 - (patrickbs96) Switching on in mode `Movie` selects the current movie again first (falls back to `Color` if no movie is saved) (#368)
 
 ### 1.1.0 (2026-10-25)
