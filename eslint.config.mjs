@@ -7,7 +7,7 @@ export default [
         ignores: ['**/*.d.ts'],
     },
     {
-        files: ['main.test.js', 'test/**/*.js'],
+        files: ['**/*.test.js', 'test/**/*.js'],
         languageOptions: {
             globals: globals.mocha,
         },

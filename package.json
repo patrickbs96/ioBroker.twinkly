@@ -45,6 +45,7 @@
     "!admin/*.d.ts",
     "lib/",
     "!lib/*.d.ts",
+    "!lib/*.test.js",
     "io-package.json",
     "LICENSE",
     "main.js"
