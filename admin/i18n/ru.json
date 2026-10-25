@@ -1,6 +1,6 @@
 {
-    "Additional data points": "Дополнительные точки данных",
     "Additional Information": "Дополнительная информация",
+    "Additional data points": "Дополнительные точки данных",
     "Checks via ping whether the device is reachable": "Проверяет через пинг, доступно ли устройство",
     "Color": "Цвет",
     "Creates states with detailed device information": "Создаёт состояния с подробной информацией об устройстве",
@@ -11,13 +11,13 @@
     "Effect": "Эффект",
     "Enabled": "Включено",
     "Enter a valid IPv4 address or host name": "Введите действительный адрес IPv4 или имя хоста",
-    "Interval [s]": "Интервал [с]",
     "IP Address": "Айпи адрес",
+    "Interval [s]": "Интервал [с]",
     "Last Mode": "Последний режим",
+    "MQTT": "MQTT",
     "Minimum 15 seconds": "Минимум 15 секунд",
     "Mode": "Режим",
     "Movie": "Кино",
-    "MQTT": "MQTT",
     "Music Reactive": "Музыка Реактив",
     "Name": "название",
     "Network Status": "Состояние сети",
@@ -25,6 +25,6 @@
     "Polling": "Опрос",
     "Switch Mode after State change": "Режим переключения после изменения состояния",
     "Switches the device to the matching mode when a value, e.g. the color, is changed": "Переключает устройство в соответствующий режим, когда значение, например цвет, изменяется",
-    "twinkly adapter settings": "Настройки адаптера для twinkly",
-    "Use ping for reachability": "Используйте ping для доступности"
+    "Use ping for reachability": "Используйте ping для доступности",
+    "twinkly adapter settings": "Настройки адаптера для twinkly"
 }

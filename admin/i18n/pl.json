@@ -1,6 +1,6 @@
 {
-    "Additional data points": "Dodatkowe punkty danych",
     "Additional Information": "Dodatkowe informacje",
+    "Additional data points": "Dodatkowe punkty danych",
     "Checks via ping whether the device is reachable": "Sprawdza za pomocą ping, czy urządzenie jest osiągalne",
     "Color": "Kolor",
     "Creates states with detailed device information": "Tworzy stany ze szczegółowymi informacjami o urządzeniu",
@@ -11,13 +11,13 @@
     "Effect": "Efekt",
     "Enabled": "Włączono",
     "Enter a valid IPv4 address or host name": "Podaj poprawny adres IPv4 lub nazwę hosta",
-    "Interval [s]": "Przedział [s]",
     "IP Address": "Adres IP",
+    "Interval [s]": "Przedział [s]",
     "Last Mode": "Przełomowy",
+    "MQTT": "MQTT",
     "Minimum 15 seconds": "Minimum 15 sekund",
     "Mode": "Mode Mode Mode",
     "Movie": "Film",
-    "MQTT": "MQTT",
     "Music Reactive": "Muzyka reaktywna",
     "Name": "Nazwa",
     "Network Status": "Status sieci",
@@ -25,6 +25,6 @@
     "Polling": "Odpytywanie",
     "Switch Mode after State change": "Przełącz tryb po zmianie stanu",
     "Switches the device to the matching mode when a value, e.g. the color, is changed": "Przełącza urządzenie na odpowiedni tryb, gdy wartość, np. kolor, zostanie zmieniona",
-    "twinkly adapter settings": "Ustawienia adaptera dla twinkly",
-    "Use ping for reachability": "Użyj polecenia ping, aby uzyskać osiągalność"
+    "Use ping for reachability": "Użyj polecenia ping, aby uzyskać osiągalność",
+    "twinkly adapter settings": "Ustawienia adaptera dla twinkly"
 }

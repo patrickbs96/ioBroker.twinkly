@@ -1,6 +1,6 @@
 {
-    "Additional data points": "其他数据点",
     "Additional Information": "附加信息",
+    "Additional data points": "其他数据点",
     "Checks via ping whether the device is reachable": "通过 ping 检查设备是否可访问",
     "Color": "颜色",
     "Creates states with detailed device information": "创建带有详细设备信息的状态",
@@ -11,13 +11,13 @@
     "Effect": "影响",
     "Enabled": "已启用",
     "Enter a valid IPv4 address or host name": "输入有效的 IPv4 地址或主机名",
-    "Interval [s]": "间隔[s]",
     "IP Address": "IP地址",
+    "Interval [s]": "间隔[s]",
     "Last Mode": "上次辩论",
+    "MQTT": "MQTT",
     "Minimum 15 seconds": "最少 15 秒",
     "Mode": "导 言",
     "Movie": "电影",
-    "MQTT": "MQTT",
     "Music Reactive": "音乐反应",
     "Name": "名称",
     "Network Status": "网络状态",
@@ -25,6 +25,6 @@
     "Polling": "轮询",
     "Switch Mode after State change": "状态改变后切换模式",
     "Switches the device to the matching mode when a value, e.g. the color, is changed": "当某个值（例如颜色）被更改时，设备切换到匹配的模式",
-    "twinkly adapter settings": "twinkly的适配器设置",
-    "Use ping for reachability": "使用 ping 实现可达性"
+    "Use ping for reachability": "使用 ping 实现可达性",
+    "twinkly adapter settings": "twinkly的适配器设置"
 }
