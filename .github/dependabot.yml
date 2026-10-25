@@ -40,3 +40,16 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "@types/sinon-chai"
         update-types: ["version-update:semver-major"]
+      # @iobroker/eslint-config pins the major versions of these via peerDependencies
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "globals"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-plugin-jsdoc"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-plugin-unicorn"
+        update-types: ["version-update:semver-major"]
