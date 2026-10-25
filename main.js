@@ -1977,7 +1977,7 @@ async function handleSentryMessage(connectionName, functionName, category, key, 
  */
 function startInterval(interval, specificConnection = '', filter = []) {
     clearInterval();
-    pollingInterval = setTimeout(async () => {
+    pollingInterval = adapter.setTimeout(async () => {
         await poll(specificConnection, filter);
     }, interval);
 }
@@ -1987,7 +1987,7 @@ function startInterval(interval, specificConnection = '', filter = []) {
  */
 function clearInterval() {
     if (pollingInterval) {
-        clearTimeout(pollingInterval);
+        adapter.clearTimeout(pollingInterval);
         pollingInterval = null;
     }
 }
