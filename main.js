@@ -505,6 +505,20 @@ async function stateChange(id, state) {
 }
 
 /**
+ * Log a failed request: connection problems with the device are only a warning, everything else an error
+ *
+ * @param {string} message
+ * @param {any} e
+ */
+function logRequestError(message, e) {
+    if (tools.isNetworkError(e)) {
+        adapter.log.warn(`${message} (device not reachable: ${e.message})`);
+    } else {
+        adapter.log.error(`${message} ${e}`);
+    }
+}
+
+/**
  * Polling auf alle Verbindungen ausführen
  *
  * @param {string} specificConnection
@@ -562,7 +576,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.details);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.details.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.details.parent.id}`, e);
                 }
             }
 
@@ -576,7 +590,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.firmware);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.firmware.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.firmware.parent.id}`, e);
                 }
             }
 
@@ -598,7 +612,7 @@ async function poll(specificConnection = '', filter = []) {
                         }
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledBri.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledBri.parent.id}`, e);
                 }
             }
 
@@ -623,7 +637,7 @@ async function poll(specificConnection = '', filter = []) {
                         }
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledColor.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledColor.parent.id}`, e);
                 }
             }
 
@@ -645,7 +659,7 @@ async function poll(specificConnection = '', filter = []) {
                         }
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledConfig.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledConfig.id}`, e);
                 }
             }
 
@@ -659,7 +673,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledEffect);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledEffect.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledEffect.parent.id}`, e);
                 }
             }
 
@@ -673,7 +687,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledLayout);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledLayout.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledLayout.parent.id}`, e);
                 }
             }
 
@@ -696,7 +710,7 @@ async function poll(specificConnection = '', filter = []) {
                         }
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledMode.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledMode.parent.id}`, e);
                 }
             }
 
@@ -713,7 +727,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledMovie);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledMovie.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledMovie.parent.id}`, e);
                 }
             }
 
@@ -730,7 +744,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.ledPlaylist);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledPlaylist.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledPlaylist.parent.id}`, e);
                 }
             }
 
@@ -752,7 +766,7 @@ async function poll(specificConnection = '', filter = []) {
                         }
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.ledSat.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.ledSat.parent.id}`, e);
                 }
             }
 
@@ -766,7 +780,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.mqtt);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.mqtt.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.mqtt.parent.id}`, e);
                 }
             }
 
@@ -780,7 +794,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.name);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.name.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.name.parent.id}`, e);
                 }
             }
 
@@ -794,7 +808,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.networkStatus);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.networkStatus.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.networkStatus.parent.id}`, e);
                 }
             }
 
@@ -806,7 +820,7 @@ async function poll(specificConnection = '', filter = []) {
                     await checkTwinklyResponse(connectionName, response.status, apiObjectsMap.status);
                     await saveJSONinState(connectionName, connectionName, response.status, apiObjectsMap.status);
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.status.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.status.id}`, e);
                 }
             }
 
@@ -820,7 +834,7 @@ async function poll(specificConnection = '', filter = []) {
                         await saveJSONinState(connectionName, connectionName, response, apiObjectsMap.timer);
                     }
                 } catch (e) {
-                    adapter.log.error(`Could not get ${connectionName}.${apiObjectsMap.timer.parent.id} ${e}`);
+                    logRequestError(`Could not get ${connectionName}.${apiObjectsMap.timer.parent.id}`, e);
                 }
             }
         }
@@ -1900,7 +1914,7 @@ async function updateEffects(connectionName) {
     try {
         await connection.twinkly.getListOfLEDEffects();
     } catch (e) {
-        adapter.log.error(`[updateEffects.${connectionName}] Could not get effects! ${e.message}`);
+        logRequestError(`[updateEffects.${connectionName}] Could not get effects!`, e);
         return;
     }
 
@@ -1944,7 +1958,7 @@ async function updateMovies(connectionName) {
             }
         }
     } catch (e) {
-        adapter.log.error(`[updateMovies.${connectionName}] Could not get movies ${e}`);
+        logRequestError(`[updateMovies.${connectionName}] Could not get movies`, e);
     }
 
     try {
@@ -1976,7 +1990,7 @@ async function updatePlaylist(connectionName) {
     try {
         await connection.twinkly.getPlaylist();
     } catch (e) {
-        adapter.log.error(`[updatePlaylist.${connectionName}] Could not get playlist ${e}`);
+        logRequestError(`[updatePlaylist.${connectionName}] Could not get playlist`, e);
     }
 
     try {

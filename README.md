@@ -139,6 +139,7 @@ response => {
 <!--
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
+- (patrickbs96) Connection problems while polling (ECONNRESET, ETIMEDOUT, EHOSTUNREACH, timeout) are logged as a warning instead of an error (#213)
 - (patrickbs96) No more error `Parse Error: Data after Connection: close` for devices without playlist or movie (#486, #452, #357)
 -->
 ### 1.1.1 (2026-10-25)
